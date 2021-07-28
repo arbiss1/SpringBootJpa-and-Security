@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+xmlns:sec="https://www.thymeleaf.org/thymeleaf-extras-springsecurity5"
+      xmlns:th="http://www.thymeleaf.org">
+      <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+<head>
+<meta charset="utf-8"/>
+<title>Product Manager</title>
+</head>
+<body>
+<div align="center">
+    <h1>Order List</h1>
+    <div sec:authorize = "isAuthenticated()">
+    Hello <span sec:authentication = "name"></span>
+    Your role is : <span sec:authentication = "principal.authorities">Roles</span>
+    </div>
+    <br/><br/>
+    <table border="1" cellpadding="10" class="table" style ="width:65%">
+        <thead class="thead-dark">
+            <tr>
+                <th scope="col">Order ID</th>
+                <th scope ="col">Customer Name</th>
+                <th scope="col">Order Name</th>
+                <th scope="col">Address</th>
+                <th scope ="col">Phone Number</th>
+                <th scope="col">Quantity</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr scope="row" th:each="order : ${listOrders}">
+            	<td th:text="${order.id}">Product ID</td>
+            	<td th:text="${order.customer}">Customer Name</td>
+                <td th:text="${order.name}">Name</td>
+                <td th:text="${order.address}">Address</td>
+                <td th:text="${order.nrCel}">Phone Number</td>
+                <td th:text="${order.quantity}">Quantity</td>
+            </tr>
+        </tbody>
+    </table>   
+    </div> 
+</body>
+</html>

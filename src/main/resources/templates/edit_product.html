@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org">
+      <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+<head>
+<head>
+<meta charset="utf-8" />
+<title>Edit Order</title>
+</head>
+
+<body>
+	<div align="center">
+		<h1>Edit Order</h1>
+		<br />
+		<form action="POST" th:action="@{'/edit/' + ${order.id}}" th:object="${order}"
+			method="post">
+
+			<table border="0" cellpadding="10" class="thead-dark">
+				<tr>				
+					<td>Order ID:</td>
+					<td>
+						<input type="text" th:field="*{id}" readonly="readonly" />
+					</td>
+				</tr>	
+				<tr>				
+					<td>Customer Name:</td>
+					<td>
+						<input type="text" th:field="*{customer}" />
+					</td>
+				</tr>		
+				<tr>				
+					<td>Order Name:</td>
+					<td>
+						<input type="text" th:field="*{orderList.listName}" disabled/>
+					</td>
+				</tr>
+				<tr>
+					<td>Address:</td>
+					<td><input type="text" th:field="*{address}" /></td>
+				</tr>
+				<tr>				
+					<td>Phone Number:</td>
+					<td>
+						<input type="text" th:field="*{nrCel}" />
+					</td>
+				</tr>
+				<tr>
+					<td>Quantity:</td>
+					<td><input type="text" th:field="*{quantity}" /></td>
+				</tr>								
+				<tr>
+					<td colspan="2"><button type="submit">Save</button> </td>
+				</tr>
+			</table>
+		</form>
+	</div>
+</body>
+</html>

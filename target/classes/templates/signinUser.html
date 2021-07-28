@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org">
+      <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+<head>
+<meta charset="ISO-8859-1">
+<title>User Login</title>
+<style>
+    .centerDiv {
+  width: 30%;
+  height: 50%;
+  background: white;
+  border : solid 2px lighblue ;
+  border-radius : 8px ;
+  padding :50px;
+  margin-top : 5%;
+  }
+  body {
+  height : auto;
+  background-color:lightgray ;
+  }
+  .labelStyle {
+  text-align : left ;
+  width : 100%
+  }
+  .buttonStyle {
+  width:100%;
+  margin-top:10px;
+  }
+</style>
+</head>
+<body>
+<div class="container text-center centerDiv">
+    <h1>Login</h1>
+      <form th:action="@{/login}" method="post" style="max-width: 350px; margin: 0 auto;">
+    <div th:if="${param.error}">
+            <p class="text-danger" th:id = "exception">[[${session.SPRING_SECURITY_LAST_EXCEPTION.message}]]</p>
+        </div>
+    <p>Dont have an account ?<a href = "/register" th:onclick = "signupRedirect()" > Sign up</a></p>
+   <div align = "center" style = "margin-top:20px">
+            <p></p>
+            <p>
+                <input type="text" name="username" class="form-control" placeholder="Username" required autofocus/>
+            </p>
+            <p>
+                <input type="password" name="password" class="form-control" placeholder="Password" required />
+            </p>
+            <p>
+                <input type="submit"  th:onclick = "login()" value="Login" class="btn btn-primary" />
+            </p>
+        </div>
+        </form>
+</div> 
+
+<script>
+ function signupRedirect(){
+	 href.location = "/register";
+ }
+</script>  
+</body>
+</html>

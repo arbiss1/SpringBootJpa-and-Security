@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="ISO-8859-1">
+    <title>Sign up</title>
+    <link rel="stylesheet" type="text/css" href="/webjars/bootstrap/css/bootstrap.min.css" />
+    <script type="text/javascript" src="/webjars/jquery/jquery.min.js"></script>
+     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+    <script type="text/javascript" src="/webjars/bootstrap/js/bootstrap.min.js"></script>
+    <style>
+    .buttonDiv {
+    margin-top : 20px ;
+    display : inline ;
+    }
+    .centerDiv {
+  width: 30%;
+  height: 50%;
+  background: white;
+  border : solid 2px lighblue ;
+  border-radius : 8px ;
+  padding :50px;
+  margin-top : 5%;
+  }
+  body {
+  height : auto;
+  background-color:lightgray ;
+  }
+  .labelStyle {
+  text-align : left ;
+  width : 100%
+  }
+    </style>
+</head>
+<body>
+    <div class="container text-center centerDiv">
+        <div align = "center" "margin-top:20px" >
+            <h1>Sign Up</h1>
+        </div>
+        <form th:action="@{/process_register}" th:object="${user}"
+            method="post" style="max-width: 600px; margin: 0 auto;">
+        <div align = "center" style = "margin-top:20px">
+        
+              <div align = "center">  <label class = "labelStyle" >Username <input class="form-control" th:id ="userEmail" type="text" th:field="*{username}"  required placeholder = "Username"/> </label><div>
+                    <br>
+                <div align = "center"><label class = "labelStyle" >Password <input class="form-control" type="password" th:id ="errorInput" th:field="*{password}" required placeholder = "Password"/></label><div>
+                    <br>
+               <div align = "center"> <label class = "labelStyle">First Name    <input class="form-control" th:id = "userName"  type="text" th:field="*{first_name}"
+                            required minlength="2" maxlength="20" placeholder = "First Name"/> </label><div>
+                 <br>
+               <div align = "center"> <label class = "labelStyle">Last Name <input class="form-control" type="text" th:field="*{lastName}"
+                            required minlength="2" maxlength="20" placeholder = "Last Name"/></label><div>
+              
+            <div align = "center" class = "buttonDiv">
+                <button type="submit" style = "margin: 15px ;" class="btn btn-primary" th:onclick = "errorCheck()">Sign Up</button>
+                <button type="button" style = "margin: 15px ;" class="btn btn-secondary" th:onclick = "gotoLogin()" >Log in</button>
+            </div>
+        </div>
+        </form>
+    </div>
+    <script>
+    
+    function errorCheck(){
+    var error = document.getElementById("userName").value;
+    if(error  === ""){
+    	alert("Please fill all fields !");
+    }else{
+    alert(error + " you are registered sucessfully !");
+    }
+    }
+    function gotoLogin(){
+    	
+    	location.href = "/login";
+    }
+    </script>
+</body>
+</html>

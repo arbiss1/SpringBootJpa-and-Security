@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org">
+      <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+<head>
+<head>
+<meta charset="utf-8" />
+<title>Create New Product</title>
+<style>
+   .centerDiv {
+  width: 30%;
+  height: 50%;
+  background: white;
+  border : solid 2px lighblue ;
+  border-radius : 8px ;
+  padding :50px;
+  margin-top : 5%;
+  }
+  body {
+  height : auto;
+  background-color:lightgray ;
+  }
+  .saveButton {
+  width:100%;
+  margin-top: 20px;
+  }
+  .selectNew {
+  width:100%;
+  border: solid 2px lightgray;
+    padding: 5px;
+    border-radius: 5px;
+  }
+</style>
+</head>
+<body>
+	<div class="container text-center centerDiv">
+		<h1>Create New Order</h1>
+		<br />
+		<form action="#" th:action="@{/save}" th:object="${order}"
+			method="post">
+			<label>Customer Name:</label>
+					<input class="form-control" type="text" th:field="*{customer}" th:id = "customerName" required/>
+			<label>Order:</label>
+					<select class="selectNew" th:object = "${choseOrder}" th:field = "*{listName}">
+                    <option th:value = "null" disabled selected>--Please choose an option--</option>
+                    <option th:each ="orderName:${orderList}" th:text = "${orderName.listName}" th:value = "${orderName.listName}"></option>
+                    </select>
+            <label>Address:</label>
+					<input class="form-control" type="text" th:field="*{address}" required />
+			<label>Phone Number:</label>
+					<input class="form-control" type="text" th:field="*{nrCel}" required />
+			<label>Quantity:</label>
+					<input  class="form-control" type="text" th:field="*{quantity}"  required/>
+					<button th:onclick = "saveOrder()" class = "btn btn-secondary saveButton" type="submit">Save</button>
+		</form>
+	</div>
+	<script>
+	  function saveOrder()
+	  {
+		  var customerName = document.getElementById("customerName").value;
+		  if(customerName === ""){
+			  alert("Fill all fields !");
+		  }else
+		  alert(customerName + " your order was successfully made !");
+		  location.href ("/new");
+	  }
+	</script>
+</body>
+</html>
