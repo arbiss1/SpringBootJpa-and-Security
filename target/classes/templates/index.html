@@ -6,6 +6,11 @@ xmlns:sec="https://www.thymeleaf.org/thymeleaf-extras-springsecurity5"
 <head>
 <meta charset="utf-8"/>
 <title>Product Manager</title>
+    <style>
+		body {
+		background-color : lightgray;
+		}
+	</style>
 </head>
 <body>
 <div align="center">
@@ -27,17 +32,19 @@ xmlns:sec="https://www.thymeleaf.org/thymeleaf-extras-springsecurity5"
                 <th scope="col">Address</th>
                 <th scope ="col">Phone Number</th>
                 <th scope="col">Quantity</th>
+                <th scope="col">Price</th>
                 <th scope="col" sec:authorize = "permitAll()">Actions</th>
             </tr>
         </thead>
         <tbody>
-            <tr scope="row" th:each="order : ${listOrders}">
+            <tr  style = "background-color:white;" scope="row" th:each="order : ${listOrders}">
             	<td  sec:authorize = "hasAuthority('ADMIN')" th:text="${order.id}">Product ID</td>
-            	<td th:text="${order.customer}">Customer Name</td>
+            	<td th:text="${order.customer}">Customer Name<\td>
                 <td th:text="${order.orderList.listName}">Name</td>
                 <td th:text="${order.user_address}">Address</td>
                 <td th:text="${order.user_number}">Phone Number</td>
                 <td th:text="${order.quantity}">Quantity</td>
+                <td th:text="${order.price}">Price</td>
                 <td sec:authorize = "hasAnyAuthority('USER','ADMIN')">
                 	<div sec:authorize = "hasAuthority('USER')">
                 	<a th:href="@{'/edit/' + ${order.id}}">Edit</a>

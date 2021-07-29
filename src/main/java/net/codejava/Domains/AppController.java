@@ -1,6 +1,7 @@
 package net.codejava.Domains;
 
 import java.util.List;
+import java.util.Locale;
 import java.util.Optional;
 import net.codejava.Domains.OrderList;
 import net.codejava.Domains.Orders;
@@ -50,6 +51,12 @@ public class AppController {
 		return "index";
 	}
 
+	@RequestMapping("/homepage")
+		public String homepage(){
+
+			return "homepage";
+		}
+
 	@RequestMapping("/admin")
 	public String viewHomePageAdmin(Model model) {
 
@@ -86,6 +93,13 @@ public class AppController {
 
 	@RequestMapping("/process_register")
 	public String processRegister(User user) {
+		String firstnameUppercase = user.getfirst_name().substring(0, 1).toUpperCase(Locale.ROOT)
+				+  user.getfirst_name().substring(1).toLowerCase();
+		user.setFirst_name(firstnameUppercase);
+		String lastnameUppercase = user.getLastName().substring(0,1).toUpperCase(Locale.ROOT)
+				+ user.getLastName().substring(1).toLowerCase();
+		user.setLastName(lastnameUppercase);
+		System.out.println(firstnameUppercase);
 		repo.save(user);
 		return "signup_form";
 	}
@@ -98,8 +112,17 @@ public class AppController {
 		order.setUser_address(user.get().getUser_address());
 		order.setUser_number(user.get().getUser_number());
 		order.setCustomer(user.get().getFirst_name());
+
+			String[] listNameSplit = orderList.getListName().split("[(]|[)]");
+			String category = listNameSplit[0];
+			String price = listNameSplit[1];
+			orderList.setListName(category);
+			System.out.println(orderList.getListName());
+
 		order.setOrderList(orderList);//krijon nje orderlist te ri brenda order.OrderList
 		order.setUserId(user.get().getUserId());
+//		orderList.getListName().substring(orderList.getListName().indexOf("(")+1,orderList.getListName().indexOf(")"));
+		order.setPrice(price);
 		repoOrders.save(order);
 		model.addAttribute("order", order);
 		if (user.get().getRoles().equals("USER")) {
@@ -120,6 +143,8 @@ public class AppController {
 		order.setQuantity(orderEdit.getQuantity());
 		order.setUser_number(orderEdit.getUser_number());
 		order.setCustomer(orderEdit.getCustomer());
+		System.out.println(orderEdit.getPrice());
+		order.setPrice(orderEdit.getPrice());
 		repoOrders.save(order);
 		model.addAttribute("order", order);
 		if (user.get().getRoles().equals("USER")) {

@@ -42,26 +42,23 @@
         <form th:action="@{/process_register}" th:object="${user}"
             method="post" style="max-width: 600px; margin: 0 auto;">
         <div align = "center" style = "margin-top:20px">
-        
-              <div align = "center">  <label class = "labelStyle" >Username <input class="form-control" th:id ="userEmail" type="text" th:field="*{username}"  required placeholder = "Username"/> </label><div>
+              <div align = "center"><input class="form-control" th:id ="userEmail" type="text" th:field="*{username}"  required placeholder = "Username..."/><div>
                     <br>
-                <div align = "center"><label class = "labelStyle" >Password <input class="form-control" type="password" th:id ="errorInput" th:field="*{password}" required placeholder = "Password"/></label><div>
+                <div align = "center"><input class="form-control" type="password" th:id ="errorInput" th:field="*{password}" required placeholder = "Password..."/><div>
                     <br>
-               <div align = "center"> <label class = "labelStyle">First Name    <input class="form-control" th:id = "userName"  type="text" th:field="*{first_name}"
-                            required minlength="2" maxlength="20" placeholder = "First Name"/> </label><div>
+               <div align = "center"><input class="form-control" th:id = "userName"  type="text" th:field="*{first_name}"
+                            required minlength="2" maxlength="20" placeholder = "First Name..."/><div>
                  <br>
-               <div align = "center"> <label class = "labelStyle">Last Name <input class="form-control" type="text" th:field="*{lastName}"
-                            required minlength="2" maxlength="20" placeholder = "Last Name"/></label><div>
+               <div align = "center"><input class="form-control" type="text" th:field="*{lastName}"
+                            required minlength="2" maxlength="20" placeholder = "Last Name..."/><div>
                    <br>
-                   <div align = "center"> <label class = "labelStyle">Address <input class="form-control" type="text" th:field="*{user_address}"
-                                                                                       required minlength="2" maxlength="20" placeholder = "Address"/></label><div>
+                   <div align = "center"><input class="form-control" type="text" th:field="*{user_address}"
+                                                                                       required minlength="2" maxlength="20" placeholder = "Address..."/><div>
                        <br>
-                       <div align = "center"> <label class = "labelStyle">Phone number <input class="form-control" type="text" th:field="*{user_number}"
-                                                                                           required minlength="2" maxlength="20" placeholder = "Phone number"/></label><div>
-              
+                       <div align = "center"><input class="form-control" type="text" th:field="*{user_number}"
+                                                                                           required minlength="2" maxlength="20" placeholder = "Phone number..."/><div>
             <div align = "center" class = "buttonDiv">
                 <button type="submit" style = "margin: 15px ;" class="btn btn-primary" th:onclick = "errorCheck()">Sign Up</button>
-
             </div>
         </div>
         </form>

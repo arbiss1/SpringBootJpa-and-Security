@@ -5,13 +5,36 @@
 
       <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
 <head>
-<head>
 <meta charset="utf-8" />
 <title>Edit Order</title>
+	<style>
+	.centerDiv{
+    text-align: center;
+    background-color: white;
+    border-radius: 8px;
+    margin-top: 10%;
+    width: 27%;
+    padding: 25px;
+    }
+  body {
+  height : auto;
+  background-color:lightgray ;
+  }
+  .saveButton {
+  width:100%;
+  margin-top: 20px;
+  }
+  .selectNew {
+  width:100%;
+  border: solid 2px lightgray;
+    padding: 5px;
+    border-radius: 5px;
+  }
+</style>
 </head>
 
 <body>
-	<div align="center">
+	<div align="center" class = "container text-center centerDiv">
 		<h1>Edit Order</h1>
 		<br />
 		<form action="POST" th:action="@{'/edit/' + ${order.id}}" th:object="${order}"
@@ -21,40 +44,41 @@
 				<tr>				
 					<td  sec:authorize = "hasAuthority('ADMIN')"  >Order ID:</td>
 					<td  sec:authorize = "hasAuthority('ADMIN')"  >
-						<input type="text" th:field="*{id}" readonly="readonly" />
+						<input type="text" class="form-control" th:field="*{id}" readonly="readonly" />
 					</td>
 				</tr>	
 				<tr>				
 					<td>Customer Name:</td>
 					<td>
-						<input type="text" th:field="*{customer}" />
+						<input type="text" class="form-control" th:field="*{customer}" />
 					</td>
 				</tr>		
 				<tr>				
 					<td>Order Name:</td>
 					<td>
-						<input type="text" th:field="*{orderList.listName}" disabled/>
+						<input type="text" class="form-control" th:field="*{orderList.listName}" disabled/>
 					</td>
 				</tr>
 				<tr>
 					<td>Address:</td>
-					<td><input type="text" th:field="*{address}" /></td>
+					<td><input type="text" class="form-control" th:field="*{user_address}" /></td>
 				</tr>
 				<tr>				
 					<td>Phone Number:</td>
 					<td>
-						<input type="text" th:field="*{nrCel}" />
+						<input type="text" class="form-control" th:field="*{user_number}" />
 					</td>
 				</tr>
 				<tr>
 					<td>Quantity:</td>
-					<td><input type="text" th:field="*{quantity}" /></td>
+					<td><input type="text" class="form-control" th:field="*{quantity}" /></td>
 				</tr>								
 				<tr>
-					<td colspan="2"><button type="submit">Save</button> </td>
+					<td colspan="2"><button class = "btn btn-secondary saveButton" type="submit">Save</button> </td>
 				</tr>
 			</table>
 		</form>
 	</div>
+
 </body>
 </html>

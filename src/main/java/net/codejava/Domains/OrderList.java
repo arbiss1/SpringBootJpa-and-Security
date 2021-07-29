@@ -13,9 +13,7 @@ public class OrderList {
 	@Column(name="list_Name")
 	private String listName;
 
-
 	public OrderList() {
-		
 	}
 	public OrderList(int listId, String listName) {
 		super();

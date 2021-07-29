@@ -15,7 +15,7 @@ public class Orders {
 	private int quantity;
     private String user_address;
     private String user_number;
-
+    private String price;
 	private Long userId;
 
 	@OneToOne(cascade=CascadeType.ALL)
@@ -64,6 +64,14 @@ public class Orders {
 	}
 	public void setQuantity(int quantity) {
 		this.quantity = quantity;
+	}
+
+	public String getPrice() {
+		return price;
+	}
+
+	public void setPrice(String price) {
+		this.price = price;
 	}
 
 	public String getUser_address() {
