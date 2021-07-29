@@ -22,7 +22,6 @@ public class OrderList {
 		this.listId = listId;
 		this.listName = listName;
 	}
-
 	public int getListId() {
 		return listId;
 	}
@@ -32,40 +31,13 @@ public class OrderList {
 	public String getListName() {
 		return listName;
 	}
-
 	public void setListName(String listName) {
 		this.listName = listName;
 	}
-	
-//	
-//	public List<Orders> getOrders() {
-//		return orders;
-//	}
-//	public void setOrders(List<Orders> orders) {
-//		this.orders = orders;
-//	}
-	//public Orders getOrder() {
-	//	return order;
-	//}
-	//public void setOrder(Orders order) {
-	//	this.order = order;
-	//}
-	/*public Orders getOrder() {
-		return order;
-	}
-	public void setOrder(Orders order) {
-		this.order = order;
-	}*/
+
 	@Override
 	public String toString() {
 		return "OrderList [listId=" + listId + ", listName=" + listName + ", order="  + "]";
 	}
-	/*public Orders getOrder() {
-		return order;
-	}
-	public void setOrder(Orders order) {
-		this.order = order;
-	}*/
-	
 }
 

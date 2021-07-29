@@ -36,6 +36,9 @@
         <div align = "center" "margin-top:20px" >
             <h1>Sign Up</h1>
         </div>
+    <div align="center">
+        <p>Already have an account ? <a href = "/login">Login</a></p>
+    </div>
         <form th:action="@{/process_register}" th:object="${user}"
             method="post" style="max-width: 600px; margin: 0 auto;">
         <div align = "center" style = "margin-top:20px">
@@ -49,24 +52,21 @@
                  <br>
                <div align = "center"> <label class = "labelStyle">Last Name <input class="form-control" type="text" th:field="*{lastName}"
                             required minlength="2" maxlength="20" placeholder = "Last Name"/></label><div>
+                   <br>
+                   <div align = "center"> <label class = "labelStyle">Address <input class="form-control" type="text" th:field="*{user_address}"
+                                                                                       required minlength="2" maxlength="20" placeholder = "Address"/></label><div>
+                       <br>
+                       <div align = "center"> <label class = "labelStyle">Phone number <input class="form-control" type="text" th:field="*{user_number}"
+                                                                                           required minlength="2" maxlength="20" placeholder = "Phone number"/></label><div>
               
             <div align = "center" class = "buttonDiv">
                 <button type="submit" style = "margin: 15px ;" class="btn btn-primary" th:onclick = "errorCheck()">Sign Up</button>
-                <button type="button" style = "margin: 15px ;" class="btn btn-secondary" th:onclick = "gotoLogin()" >Log in</button>
+
             </div>
         </div>
         </form>
     </div>
     <script>
-    
-    function errorCheck(){
-    var error = document.getElementById("userName").value;
-    if(error  === ""){
-    	alert("Please fill all fields !");
-    }else{
-    alert(error + " you are registered sucessfully !");
-    }
-    }
     function gotoLogin(){
     	
     	location.href = "/login";

@@ -2,7 +2,6 @@ package net.codejava.Domains;
 
 import java.util.List;
 import java.util.Optional;
-
 import net.codejava.Domains.OrderList;
 import net.codejava.Domains.Orders;
 import net.codejava.Domains.User;
@@ -11,6 +10,7 @@ import net.codejava.Repositories.OrdersRepository;
 import net.codejava.Repositories.UserRepository;
 import net.codejava.Services.OrderListService;
 import net.codejava.Services.OrderService;
+import net.codejava.Services.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -22,7 +22,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.servlet.ModelAndView;
 
-
 @Controller
 public class AppController {
 
@@ -30,6 +29,8 @@ public class AppController {
 	private OrderService service;
 	@Autowired
 	private UserRepository repo;
+	@Autowired
+	private UserService userService;
 	@Autowired
 	private OrderListService orderlistService;
 	@Autowired
@@ -48,6 +49,7 @@ public class AppController {
 
 		return "index";
 	}
+
 	@RequestMapping("/admin")
 	public String viewHomePageAdmin(Model model) {
 
@@ -56,6 +58,7 @@ public class AppController {
 
 		return "index";
 	}
+
 	@RequestMapping("/login")
 	public String showUserSignin() {
 		return "signinUser";
@@ -87,14 +90,15 @@ public class AppController {
 		return "signup_form";
 	}
 
-
 	@RequestMapping(value = "/save", method = RequestMethod.POST)
 	public String saveOrder(@ModelAttribute("product") Orders order, OrderList orderList, Model model) {
-		System.out.println(orderList + "orderlist");
 		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 		String username = authentication.getName();
 		Optional<User> user = repo.findByUsername(username);
-		order.setOrderList(orderList);
+		order.setUser_address(user.get().getUser_address());
+		order.setUser_number(user.get().getUser_number());
+		order.setCustomer(user.get().getFirst_name());
+		order.setOrderList(orderList);//krijon nje orderlist te ri brenda order.OrderList
 		order.setUserId(user.get().getUserId());
 		repoOrders.save(order);
 		model.addAttribute("order", order);
@@ -112,9 +116,9 @@ public class AppController {
 		Orders order = service.get(id);
 		Optional<User> user = repo.findByUsername(username);
 		order.setUserId(user.get().getUserId());
-		order.setAddress(orderEdit.getAddress());
+		order.setUser_address(orderEdit.getUser_address());
 		order.setQuantity(orderEdit.getQuantity());
-		order.setNrCel(orderEdit.getNrCel());
+		order.setUser_number(orderEdit.getUser_number());
 		order.setCustomer(orderEdit.getCustomer());
 		repoOrders.save(order);
 		model.addAttribute("order", order);
@@ -135,6 +139,7 @@ public class AppController {
 		repoOrders.save(order);
 		return mav;
 	}
+
 	@RequestMapping("/delete/{id}")
 	public String deleteOrder(@PathVariable(name = "id") int id) {
 		service.delete(id);

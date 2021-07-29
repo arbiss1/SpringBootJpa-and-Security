@@ -38,32 +38,15 @@
 		<br />
 		<form action="#" th:action="@{/save}" th:object="${order}"
 			method="post">
-			<label>Customer Name:</label>
-					<input class="form-control" type="text" th:field="*{customer}" th:id = "customerName" required/>
 			<label>Order:</label>
 					<select class="selectNew" th:object = "${choseOrder}" th:field = "*{listName}">
                     <option th:value = "null" disabled selected>--Please choose an option--</option>
                     <option th:each ="orderName:${orderList}" th:text = "${orderName.listName}" th:value = "${orderName.listName}"></option>
                     </select>
-            <label>Address:</label>
-					<input class="form-control" type="text" th:field="*{address}" required />
-			<label>Phone Number:</label>
-					<input class="form-control" type="text" th:field="*{nrCel}" required />
 			<label>Quantity:</label>
 					<input  class="form-control" type="text" th:field="*{quantity}"  required/>
 					<button th:onclick = "saveOrder()" class = "btn btn-secondary saveButton" type="submit">Save</button>
 		</form>
 	</div>
-	<script>
-	  function saveOrder()
-	  {
-		  var customerName = document.getElementById("customerName").value;
-		  if(customerName === ""){
-			  alert("Fill all fields !");
-		  }else
-		  alert(customerName + " your order was successfully made !");
-		  location.href ("/new");
-	  }
-	</script>
 </body>
 </html>

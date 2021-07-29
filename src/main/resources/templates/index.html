@@ -35,10 +35,9 @@ xmlns:sec="https://www.thymeleaf.org/thymeleaf-extras-springsecurity5"
             	<td  sec:authorize = "hasAuthority('ADMIN')" th:text="${order.id}">Product ID</td>
             	<td th:text="${order.customer}">Customer Name</td>
                 <td th:text="${order.orderList.listName}">Name</td>
-                <td th:text="${order.address}">Address</td>
-                <td th:text="${order.nrCel}">Phone Number</td>
+                <td th:text="${order.user_address}">Address</td>
+                <td th:text="${order.user_number}">Phone Number</td>
                 <td th:text="${order.quantity}">Quantity</td>
-
                 <td sec:authorize = "hasAnyAuthority('USER','ADMIN')">
                 	<div sec:authorize = "hasAuthority('USER')">
                 	<a th:href="@{'/edit/' + ${order.id}}">Edit</a>

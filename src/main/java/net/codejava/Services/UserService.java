@@ -2,9 +2,12 @@ package net.codejava.Services;
 
 import javax.transaction.Transactional;
 
+import net.codejava.Domains.Orders;
 import net.codejava.Repositories.UserRepository;
 import net.codejava.Domains.User;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
 
 @Service
 @Transactional
@@ -18,6 +21,10 @@ public class UserService {
 	
 	public User get(String roles) {
 		return repo.findByRoles(roles).get();
+	}
+
+	public List<User> listAll() {
+		return repo.findAll();
 	}
 	
 }
