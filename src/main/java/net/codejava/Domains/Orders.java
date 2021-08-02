@@ -17,7 +17,7 @@ public class Orders {
     private String user_number;
     private String price;
 	private Long userId;
-
+    private String status;
 	@OneToOne(cascade=CascadeType.ALL)
 	@JoinColumn
 	private OrderList order;
@@ -64,6 +64,14 @@ public class Orders {
 	}
 	public void setQuantity(int quantity) {
 		this.quantity = quantity;
+	}
+
+	public String getStatus() {
+		return status;
+	}
+
+	public void setStatus(String status) {
+		this.status = status;
 	}
 
 	public String getPrice() {

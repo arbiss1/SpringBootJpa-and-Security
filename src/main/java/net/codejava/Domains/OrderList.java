@@ -9,9 +9,21 @@ import javax.persistence.*;
 public class OrderList {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	private int listId;
+	private int listId ;
 	@Column(name="list_Name")
 	private String listName;
+
+	@ManyToOne(cascade=CascadeType.ALL)
+	@JoinColumn(name = "category_id")
+	private OrderCategory category_id;
+
+	public OrderCategory getCategory_id() {
+		return category_id;
+	}
+
+	public void setCategory_id(OrderCategory category_id) {
+		this.category_id = category_id;
+	}
 
 	public OrderList() {
 	}

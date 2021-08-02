@@ -33,7 +33,7 @@
 </head>
 <body>
     <div class="container text-center centerDiv">
-        <div align = "center" "margin-top:20px" >
+        <div align = "center" style ="margin-top:20px" >
             <h1>Sign Up</h1>
         </div>
     <div align="center">
@@ -42,7 +42,7 @@
         <form th:action="@{/process_register}" th:object="${user}"
             method="post" style="max-width: 600px; margin: 0 auto;">
         <div align = "center" style = "margin-top:20px">
-              <div align = "center"><input class="form-control" th:id ="userEmail" type="text" th:field="*{username}"  required placeholder = "Username..."/><div>
+              <div align = "center"><input class="form-control" th:id ="userEmail" type="text" th:field="*{username}" id = "username"  required placeholder = "Username..."/><div>
                     <br>
                 <div align = "center"><input class="form-control" type="password" th:id ="errorInput" th:field="*{password}" required placeholder = "Password..."/><div>
                     <br>

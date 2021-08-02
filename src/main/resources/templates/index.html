@@ -10,41 +10,99 @@ xmlns:sec="https://www.thymeleaf.org/thymeleaf-extras-springsecurity5"
 		body {
 		background-color : lightgray;
 		}
+		.centerDiv {
+  width: 40%;
+ background: white;
+  border : solid 2px lighblue ;
+  border-radius : 8px ;
+  padding :50px;
+  }
+		header{
+		heigh : 20%;
+		}
+		main {
+		heigh : 80%;
+		}
+		.topTitle {
+		font-weight:bolder;
+		}
+		tr:hover{
+		background-color : lightblack;
+		}
+		tr{
+		background-color : white;
+		}
 	</style>
 </head>
 <body>
-<div align="center">
-    <h1>Order List</h1>
-    <div sec:authorize = "isAuthenticated()">
-    Hello <span sec:authentication = "name"></span>
-    Your role is : <span sec:authentication = "principal.authorities">Roles</span>
-    </div>
+<header>
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarTogglerDemo03" aria-controls="navbarTogglerDemo03" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <a  sec:authorize = "hasAuthority('ADMIN')" class="navbar-brand topTitle" href="/admin">Order Manager</a>
+        <a  sec:authorize = "hasAuthority('USER')" class="navbar-brand topTitle" href="/user">Order Manager</a>
+
+        <div class="collapse navbar-collapse" id="navbarTogglerDemo03">
+            <ul class="navbar-nav mr-auto mt-2 mt-lg-0">
+                <li class="nav-item">
+                    <a sec:authorize = "hasAuthority('ADMIN')" class="nav-link" href="/registerCategory" th:onclick = "showModal()">Add new category</a>
+                </li>
+                <li class="nav-item">
+                    <a sec:authorize = "hasAuthority('ADMIN')" class="nav-link " href="/new_product_listItems">Add new product</a>
+                </li>
+                <li class="nav-item">
+                    <a sec:authorize = "hasAuthority('USER')" class="nav-link " href="#">This is for users</a>
+                </li>
+            </ul>
+            <form  sec:authorize = "hasAnyAuthority('USER','ADMIN')" action = "/login" class="form-inline my-2 my-lg-0">
+                <button class="btn btn-danger my-2 my-sm-0" type="submit">Logout</button>
+            </form>
+        </div>
+    </nav>
+</header>
+<main>
+
+<div align="center" style="margin-top:5%;">
+   <h1>Here are your orders</h1>
+<!--    <div sec:authorize = "isAuthenticated()">-->
+<!--    <h4 style = "font-wight:bold;">Hello <span sec:authentication = "name"></span></h4>-->
+<!--&lt;!&ndash;    Your role is : <span sec:authentication = "principal.authorities">Roles</span>&ndash;&gt;-->
+<!--    </div>-->
     <div sec:authorize = "hasAnyAuthority('USER')">
-    <a href="new">Create New Order</a>
+        <form th:action = "@{/new}" method="post">
+    <button class = "btn btn-primary">Create New Order</button>
+        </form>
     </div>
     <br/><br/>
     <table border="1" cellpadding="10" class="table" style ="width:65%">
         <thead class="thead-dark">
-            <tr>
-                <th  sec:authorize = "hasAuthority('ADMIN')" scope="col">Order ID</th>
+            <tr scope = "row">
                 <th scope ="col">Customer Name</th>
                 <th scope="col">Order Name</th>
                 <th scope="col">Address</th>
                 <th scope ="col">Phone Number</th>
                 <th scope="col">Quantity</th>
                 <th scope="col">Price</th>
+<!--                <th scope = "col" sec:authorize = "hasAuthority('ADMIN')">Status</th>-->
                 <th scope="col" sec:authorize = "permitAll()">Actions</th>
             </tr>
         </thead>
         <tbody>
-            <tr  style = "background-color:white;" scope="row" th:each="order : ${listOrders}">
-            	<td  sec:authorize = "hasAuthority('ADMIN')" th:text="${order.id}">Product ID</td>
+            <tr scope="row" th:each="order : ${listOrders}">
             	<td th:text="${order.customer}">Customer Name<\td>
                 <td th:text="${order.orderList.listName}">Name</td>
                 <td th:text="${order.user_address}">Address</td>
                 <td th:text="${order.user_number}">Phone Number</td>
                 <td th:text="${order.quantity}">Quantity</td>
                 <td th:text="${order.price}">Price</td>
+<!--                <td sec:authorize = "hasAuthority('ADMIN')"><select class="form-select" aria-label="Default select example">-->
+<!--                    <option selected disabled>&#45;&#45;Select an option&#45;&#45;</option>-->
+<!--                    <option th:value="Your order was sent sucessfully" th:text = "Your order was sent sucessfully"></option>-->
+<!--                    <option th:value="Is being prepared" th:text = "Is being prepared" ></option>-->
+<!--                    <option th:value="Is being delivered to your destination" th:text ="Is being delivered to your destination"></option>-->
+<!--                    <option th:value="Arrived" th:text = "Arrived"></option>-->
+<!--                </select></td>-->
                 <td sec:authorize = "hasAnyAuthority('USER','ADMIN')">
                 	<div sec:authorize = "hasAuthority('USER')">
                 	<a th:href="@{'/edit/' + ${order.id}}">Edit</a>
@@ -57,13 +115,12 @@ xmlns:sec="https://www.thymeleaf.org/thymeleaf-extras-springsecurity5"
             </tr>
         </tbody>
     </table>
-    <div align = "center">
-        <button class = "btn btn-danger" th:onclick = "logout()">Logout</button>
-    </div>
 </div>
+</main>
 <script>
-    function logout(){
-       location.href = "/login";
+    function showModal(){
+     var modal = document.getElementById("dialog");
+     modal.showModal();
     }
 </script>
 </body>

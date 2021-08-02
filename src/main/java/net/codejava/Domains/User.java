@@ -17,6 +17,8 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToMany;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
+import javax.validation.constraints.NotEmpty;
+
 @Table
 @Entity
 public class User {
@@ -29,6 +31,7 @@ public class User {
 	private String first_name;
 	@Column (name = "lastName")
 	private String lastName;
+	@NotEmpty(message = "User's name cannot be empty.")
 	@Column(name = "username")
 	private String username;
 	@Column (name = "password")

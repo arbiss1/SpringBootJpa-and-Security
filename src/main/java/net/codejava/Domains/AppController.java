@@ -6,9 +6,11 @@ import java.util.Optional;
 import net.codejava.Domains.OrderList;
 import net.codejava.Domains.Orders;
 import net.codejava.Domains.User;
+import net.codejava.Repositories.OrderCategoryRepository;
 import net.codejava.Repositories.OrderListRepository;
 import net.codejava.Repositories.OrdersRepository;
 import net.codejava.Repositories.UserRepository;
+import net.codejava.Services.OrderCategoryService;
 import net.codejava.Services.OrderListService;
 import net.codejava.Services.OrderService;
 import net.codejava.Services.UserService;
@@ -17,6 +19,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -38,6 +41,10 @@ public class AppController {
 	private OrdersRepository repoOrders;
 	@Autowired
 	private OrderListRepository listRepo;
+	@Autowired
+	private OrderCategoryService categoryService;
+	@Autowired
+	private OrderCategoryRepository categoryRepo;
 
 
 	@RequestMapping("/user")
@@ -72,11 +79,11 @@ public class AppController {
 	}
 
 	@RequestMapping("/new")
-	public String showNewProductPage(Model model) {
+	public String showNewProductPage(Model model , OrderList choseOrder ) {
 		List<Orders> listOrders = service.listAll();
 		List<OrderList> orderList = orderlistService.listAllorders();
 		Orders order = new Orders();
-		OrderList choseOrder = new OrderList();
+//		OrderList choseOrder = new OrderList();
 		model.addAttribute("listOrders", listOrders);
 		model.addAttribute("order", order);
 		model.addAttribute("orderList", orderList);
@@ -101,7 +108,7 @@ public class AppController {
 		user.setLastName(lastnameUppercase);
 		System.out.println(firstnameUppercase);
 		repo.save(user);
-		return "signup_form";
+		return "signinUser";
 	}
 
 	@RequestMapping(value = "/save", method = RequestMethod.POST)
@@ -109,10 +116,11 @@ public class AppController {
 		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 		String username = authentication.getName();
 		Optional<User> user = repo.findByUsername(username);
+		String lastName = user.get().getLastName();
 		order.setUser_address(user.get().getUser_address());
 		order.setUser_number(user.get().getUser_number());
-		order.setCustomer(user.get().getFirst_name());
-
+		order.setCustomer(user.get().getFirst_name() + " " +  lastName);
+		System.out.println(lastName);
 			String[] listNameSplit = orderList.getListName().split("[(]|[)]");
 			String category = listNameSplit[0];
 			String price = listNameSplit[1];
@@ -123,6 +131,7 @@ public class AppController {
 		order.setUserId(user.get().getUserId());
 //		orderList.getListName().substring(orderList.getListName().indexOf("(")+1,orderList.getListName().indexOf(")"));
 		order.setPrice(price);
+
 		repoOrders.save(order);
 		model.addAttribute("order", order);
 		if (user.get().getRoles().equals("USER")) {
@@ -143,8 +152,7 @@ public class AppController {
 		order.setQuantity(orderEdit.getQuantity());
 		order.setUser_number(orderEdit.getUser_number());
 		order.setCustomer(orderEdit.getCustomer());
-		System.out.println(orderEdit.getPrice());
-		order.setPrice(orderEdit.getPrice());
+		order.setPrice(order.getPrice());
 		repoOrders.save(order);
 		model.addAttribute("order", order);
 		if (user.get().getRoles().equals("USER")) {
@@ -181,4 +189,39 @@ public class AppController {
 			return "redirect:/";
 		}
 	}
+
+	@RequestMapping("/new_product_listItems")
+	public String addNewProduct(Model model){
+		List<OrderCategory> categories = categoryService.listAll();
+		model.addAttribute("listCategory", categories);
+		return "new_product_listItems";
+	}
+
+	@RequestMapping(value = "/saveProduct", method = RequestMethod.POST)
+	public String saveProduct(@ModelAttribute("category")OrderCategory orderCategory, Model model) {
+		String categoryName = orderCategory.getCategory();
+		System.out.println(categoryName);
+		return "new_product_listItems";
+	}
+
+	@RequestMapping("/registerCategory")
+	public String saveCategory(Model model) {
+		OrderCategory category = new OrderCategory();
+		model.addAttribute("category", category);
+		return "new_category_listItems";
+	}
+
+	@RequestMapping("/process_register_category")
+	public String processRegister(OrderCategory orderCategory) {
+		categoryRepo.save(orderCategory);
+		return "redirect:/admin";
+	}
+	@RequestMapping("/listAllCategories")
+	public String listCategories(Model model){
+		List<OrderCategory> listCategories = categoryService.listAll();
+		model.addAttribute("listCategories" , listCategories);
+		System.out.println(listCategories);
+		return "new_category_listItems";
+	}
+
 }

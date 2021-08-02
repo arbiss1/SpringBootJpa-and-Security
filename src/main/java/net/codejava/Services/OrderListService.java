@@ -22,4 +22,8 @@ public class OrderListService {
 	public OrderList get(String listName) {
 		return repoList.findByListName(listName).get();
 	}
+
+	public void delete(long listId) {
+		repoList.deleteById(listId);
+	}
 }
