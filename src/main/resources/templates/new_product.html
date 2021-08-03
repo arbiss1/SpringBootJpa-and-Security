@@ -36,17 +36,27 @@
 	<div class="container text-center centerDiv">
 		<h1>Create New Order</h1>
 		<br />
-		<form action="#" th:action="@{/save}" th:object="${order}"
+		<form action="#" th:action="@{/proccess-save}" th:object="${order}"
 			method="post">
-			<label>Order:</label>
+			<label>Category:</label>
+			<select class="selectNew" th:object = "${choseCategory}" th:field = "*{category}">
+				<option th:value = "null" disabled selected>--Please choose an option--</option>
+				<option th:each ="orderCategory:${listCategory}" th:text = "${orderCategory.category}" th:value = "${orderCategory.categoryId}"></option>
+			</select>
+			<label>Product:</label>
 					<select class="selectNew" th:object = "${choseOrder}" th:field = "*{listName}">
                     <option th:value = "null" disabled selected>--Please choose an option--</option>
-                    <option th:each ="orderName:${orderList}" th:text = "${orderName.listName}" th:value = "${orderName.listName}"></option>
+                    <option th:each ="orderProduct:${orderList}"  th:text = "${orderProduct.listName}" th:value = "${orderProduct.listName}"></option>
                     </select>
 			<label>Quantity:</label>
 					<input  class="form-control" type="text" th:field="*{quantity}"  required/>
-					<button th:onclick = "saveOrder()" class = "btn btn-secondary saveButton" type="submit">Save</button>
+<!--			<p style = "display:none;">Price for your order is <span th:value = "${orderName.price}"><span th:value = "${order.quantity}"></span></span><p th:id = "totalPrice"></p></p>-->
+					<button  class = "btn btn-secondary saveButton" type="submit">Save</button>
 		</form>
 	</div>
+<!--	  <script>-->
+<!--		  var totalPrice = document.getElementById("totalPrice");-->
+
+<!--	  </script>-->
 </body>
 </html>

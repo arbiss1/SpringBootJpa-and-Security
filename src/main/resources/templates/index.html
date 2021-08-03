@@ -52,7 +52,7 @@ xmlns:sec="https://www.thymeleaf.org/thymeleaf-extras-springsecurity5"
                     <a sec:authorize = "hasAuthority('ADMIN')" class="nav-link " href="/new_product_listItems">Add new product</a>
                 </li>
                 <li class="nav-item">
-                    <a sec:authorize = "hasAuthority('USER')" class="nav-link " href="#">This is for users</a>
+                    <a sec:authorize = "hasAuthority('USER')" class="nav-link " href="#">My profile</a>
                 </li>
             </ul>
             <form  sec:authorize = "hasAnyAuthority('USER','ADMIN')" action = "/login" class="form-inline my-2 my-lg-0">
@@ -64,7 +64,8 @@ xmlns:sec="https://www.thymeleaf.org/thymeleaf-extras-springsecurity5"
 <main>
 
 <div align="center" style="margin-top:5%;">
-   <h1>Here are your orders</h1>
+   <h1 sec:authorize = "hasAuthority('USER')">Here are your orders</h1>
+    <h1 sec:authorize = "hasAuthority('ADMIN')">All orders </h1>
 <!--    <div sec:authorize = "isAuthenticated()">-->
 <!--    <h4 style = "font-wight:bold;">Hello <span sec:authentication = "name"></span></h4>-->
 <!--&lt;!&ndash;    Your role is : <span sec:authentication = "principal.authorities">Roles</span>&ndash;&gt;-->
@@ -91,11 +92,11 @@ xmlns:sec="https://www.thymeleaf.org/thymeleaf-extras-springsecurity5"
         <tbody>
             <tr scope="row" th:each="order : ${listOrders}">
             	<td th:text="${order.customer}">Customer Name<\td>
-                <td th:text="${order.orderList.listName}">Name</td>
+                <td th:text="${order.listName}">Name</td>
                 <td th:text="${order.user_address}">Address</td>
                 <td th:text="${order.user_number}">Phone Number</td>
                 <td th:text="${order.quantity}">Quantity</td>
-                <td th:text="${order.price}">Price</td>
+                <td th:text="${order.totalPrice}">Price</td>
 <!--                <td sec:authorize = "hasAuthority('ADMIN')"><select class="form-select" aria-label="Default select example">-->
 <!--                    <option selected disabled>&#45;&#45;Select an option&#45;&#45;</option>-->
 <!--                    <option th:value="Your order was sent sucessfully" th:text = "Your order was sent sucessfully"></option>-->

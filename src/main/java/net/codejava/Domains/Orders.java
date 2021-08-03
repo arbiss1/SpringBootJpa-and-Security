@@ -1,114 +1,123 @@
 package net.codejava.Domains;
 
 
-import java.util.List;
-
 import javax.persistence.*;
 
 @Entity
-@Table(name="orders")
+@Table(name = "orders")
 public class Orders {
-	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	private Long id;
-	private String Customer;
-	private int quantity;
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+    private String Customer;
+    private int quantity;
     private String user_address;
     private String user_number;
+    private String totalPrice;
+    private Long userId;
+    private String listName;
     private String price;
-	private Long userId;
-    private String status;
-	@OneToOne(cascade=CascadeType.ALL)
-	@JoinColumn
-	private OrderList order;
 
-	protected Orders() {
-	}
-	
-	public Orders(Long id, String customer, OrderList orderList, String user_address, int quantity, String user_number) {
-		super();
-		this.id = id;
-		Customer = customer;
-		this.order = orderList;
-		this.user_address = user_address;
-		this.quantity = quantity;
-		this.user_number = user_number;
-	}
+    @ManyToOne
+    @JoinColumn
+    private OrderCategory category;
 
-	public Long getUserId() {
-		return userId;
-	}
-	public void setUserId(Long userId) {
-		this.userId = userId;
-	}
-	public String getCustomer() {
-		return Customer;
-	}
-	public void setCustomer(String customer) {
-		Customer = customer;
-	}
-	public Long getId() {
-		return id;
-	}
-	public void setId(Long id) {
-		this.id = id;
-	}
-	public OrderList getOrderList() {
-		return order;
-	}
-	public void setOrderList(OrderList orderList) {
-		this.order = orderList;
-	}
-	public int getQuantity() {
-		return quantity;
-	}
-	public void setQuantity(int quantity) {
-		this.quantity = quantity;
-	}
+    protected Orders() {
+    }
 
-	public String getStatus() {
-		return status;
-	}
+    public Orders(Long id, String customer, OrderList orderList, String user_address, int quantity, String user_number) {
+        super();
+        this.id = id;
+        this.Customer = customer;
+        this.user_address = user_address;
+        this.quantity = quantity;
+        this.user_number = user_number;
+    }
 
-	public void setStatus(String status) {
-		this.status = status;
-	}
+    public String getTotalPrice() {
+        return totalPrice;
+    }
 
-	public String getPrice() {
-		return price;
-	}
+    public void setTotalPrice(String totalPrice) {
+        this.totalPrice = totalPrice;
+    }
 
-	public void setPrice(String price) {
-		this.price = price;
-	}
+    public OrderCategory getCategory() {
+        return category;
+    }
 
-	public String getUser_address() {
-		return user_address;
-	}
+    public void setCategory(OrderCategory category) {
+        this.category = category;
+    }
 
-	public void setUser_address(String user_address) {
-		this.user_address = user_address;
-	}
+    public String getListName() {
+        return listName;
+    }
 
-	public String getUser_number() {
-		return user_number;
-	}
+    public void setListName(String listName) {
+        this.listName = listName;
+    }
 
-	public void setUser_number(String user_number) {
-		this.user_number = user_number;
-	}
 
-	public OrderList getOrder() {
-		return order;
-	}
+    public Long getUserId() {
+        return userId;
+    }
 
-	public void setOrder(OrderList order) {
-		this.order = order;
-	}
+    public void setUserId(Long userId) {
+        this.userId = userId;
+    }
 
-	@Override
-	public String toString() {
-		return "Orders [id=" + id + ", Customer=" + Customer + ", name=" + order + ", address=" + user_address + ", quantity="
-				+ quantity + ", nrCel=" + user_number + "]";
-	}
+    public String getCustomer() {
+        return Customer;
+    }
+
+    public void setCustomer(String customer) {
+        Customer = customer;
+    }
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public int getQuantity() {
+        return quantity;
+    }
+
+    public void setQuantity(int quantity) {
+        this.quantity = quantity;
+    }
+
+    public String getPrice() {
+        return price;
+    }
+
+    public void setPrice(String price) {
+        this.price = price;
+    }
+
+    public String getUser_address() {
+        return user_address;
+    }
+
+    public void setUser_address(String user_address) {
+        this.user_address = user_address;
+    }
+
+    public String getUser_number() {
+        return user_number;
+    }
+
+    public void setUser_number(String user_number) {
+        this.user_number = user_number;
+    }
+
+    @Override
+    public String toString() {
+        return "Orders [id=" + id + ", Customer=" + Customer + ", name=" + ", address=" + user_address + ", quantity="
+                + quantity + ", nrCel=" + user_number + "]";
+    }
 }

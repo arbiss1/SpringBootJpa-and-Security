@@ -3,9 +3,6 @@ package net.codejava.Domains;
 import java.util.List;
 import java.util.Locale;
 import java.util.Optional;
-import net.codejava.Domains.OrderList;
-import net.codejava.Domains.Orders;
-import net.codejava.Domains.User;
 import net.codejava.Repositories.OrderCategoryRepository;
 import net.codejava.Repositories.OrderListRepository;
 import net.codejava.Repositories.OrdersRepository;
@@ -19,11 +16,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 
 @Controller
@@ -50,19 +43,13 @@ public class AppController {
 	@RequestMapping("/user")
 	public String viewHomePageUser(Model model) {
 		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-		String username = authentication.getName(); // merr username e perdoruesit
-		Optional<User> user = repo.findByUsername(username); // gjen perdoruesin me emrin e futur ne databaze
-		List<Orders> listOrders = service.listAllByUser(user.get().getUserId()); // liston gjithe porosite e userit perkates
+		String username = authentication.getName();
+		Optional<User> user = repo.findByUsername(username);
+		List<Orders> listOrders = service.listAllByUser(user.get().getUserId());
 		model.addAttribute("listOrders", listOrders);
 
 		return "index";
 	}
-
-	@RequestMapping("/homepage")
-		public String homepage(){
-
-			return "homepage";
-		}
 
 	@RequestMapping("/admin")
 	public String viewHomePageAdmin(Model model) {
@@ -79,11 +66,14 @@ public class AppController {
 	}
 
 	@RequestMapping("/new")
-	public String showNewProductPage(Model model , OrderList choseOrder ) {
+	public String showNewProductPage(Model model , OrderList choseOrder , OrderCategory choseCategory) {
 		List<Orders> listOrders = service.listAll();
+		List<OrderCategory> listCategory = categoryService.listAll();
 		List<OrderList> orderList = orderlistService.listAllorders();
+		System.out.println(choseCategory.getCategory());
 		Orders order = new Orders();
-//		OrderList choseOrder = new OrderList();
+		model.addAttribute("choseCategory" , choseCategory);
+		model.addAttribute("listCategory" , listCategory);
 		model.addAttribute("listOrders", listOrders);
 		model.addAttribute("order", order);
 		model.addAttribute("orderList", orderList);
@@ -116,23 +106,6 @@ public class AppController {
 		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 		String username = authentication.getName();
 		Optional<User> user = repo.findByUsername(username);
-		String lastName = user.get().getLastName();
-		order.setUser_address(user.get().getUser_address());
-		order.setUser_number(user.get().getUser_number());
-		order.setCustomer(user.get().getFirst_name() + " " +  lastName);
-		System.out.println(lastName);
-			String[] listNameSplit = orderList.getListName().split("[(]|[)]");
-			String category = listNameSplit[0];
-			String price = listNameSplit[1];
-			orderList.setListName(category);
-			System.out.println(orderList.getListName());
-
-		order.setOrderList(orderList);//krijon nje orderlist te ri brenda order.OrderList
-		order.setUserId(user.get().getUserId());
-//		orderList.getListName().substring(orderList.getListName().indexOf("(")+1,orderList.getListName().indexOf(")"));
-		order.setPrice(price);
-
-		repoOrders.save(order);
 		model.addAttribute("order", order);
 		if (user.get().getRoles().equals("USER")) {
 			return "redirect:/user";
@@ -140,6 +113,41 @@ public class AppController {
 			return "redirect:/admin";
 		}
 	}
+
+	@PostMapping(value = "/proccess-save")
+	public String processRegisterSave(Model model , Orders order  , OrderList orderList) {
+		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+		System.out.println("here");
+		String username = authentication.getName();
+		System.out.println(username);
+		List<OrderList> listAllProdcts = orderlistService.listAllorders();
+		Optional<User> user = repo.findByUsername(username);;
+		String orderName = orderList.getListName();
+		order.setUser_address(user.get().getUser_address());
+		order.setUser_number(user.get().getUser_number());
+		String lastName = user.get().getLastName();
+		order.setCustomer(user.get().getFirst_name() + " " +  lastName);
+		order.setUserId(user.get().getUserId());
+		int quantity = order.getQuantity();
+		Optional<OrderList> orderListDb = listRepo.findByListName(orderList.getListName());
+		OrderCategory category = orderlistService.get(orderList.getListName()).getCategory();
+		String priceWithout$sign = orderListDb.get().getPrice().substring(0,orderListDb.get().getPrice().length() - 1);
+		System.out.println(priceWithout$sign);
+		double sumofPrice = (Double.valueOf(priceWithout$sign)  * quantity);
+		System.out.println(sumofPrice);
+		order.setTotalPrice(Integer.toString((int) sumofPrice) + "$");
+		order.setPrice(orderListDb.get().getPrice());
+		order.setCategory(category);
+		order.setListName(orderList.getListName());
+		repoOrders.save(order);
+		if (user.get().getRoles().equals("USER")) {
+			return "redirect:/user";
+		} else {
+			return "redirect:/admin";
+		}
+	}
+
+
 
 	@RequestMapping(value = "/edit/{id}", method = RequestMethod.POST)
 	public String editOrder(@PathVariable(name = "id") int id,Orders orderEdit,  Model model) {
@@ -151,8 +159,12 @@ public class AppController {
 		order.setUser_address(orderEdit.getUser_address());
 		order.setQuantity(orderEdit.getQuantity());
 		order.setUser_number(orderEdit.getUser_number());
+		System.out.println(orderEdit.getCustomer());
 		order.setCustomer(orderEdit.getCustomer());
-		order.setPrice(order.getPrice());
+		String priceWithout$sign = order.getPrice().substring(0,order.getPrice().length() - 1);
+		Integer quantity = order.getQuantity();
+		double newSum = (Double.valueOf(priceWithout$sign) *quantity);
+		order.setTotalPrice(Integer.toString((int)newSum )+"$");
 		repoOrders.save(order);
 		model.addAttribute("order", order);
 		if (user.get().getRoles().equals("USER")) {
@@ -163,10 +175,11 @@ public class AppController {
 	}
 
 	@RequestMapping("/edit/{id}")
-	public ModelAndView showEditOrderPage(@PathVariable(name = "id") int id) {
+	public ModelAndView showEditOrderPage(@PathVariable(name = "id") int id ,Orders orderEdit) {
 		ModelAndView mav = new ModelAndView("edit_product");
 		Orders order = service.get(id);
 		System.out.println(order);
+		order.setCustomer(orderEdit.getCustomer());
 		mav.addObject("order", order);
 		System.out.println(mav);
 		repoOrders.save(order);
@@ -189,24 +202,30 @@ public class AppController {
 			return "redirect:/";
 		}
 	}
-
 	@RequestMapping("/new_product_listItems")
-	public String addNewProduct(Model model){
-		List<OrderCategory> categories = categoryService.listAll();
-		model.addAttribute("listCategory", categories);
+	public String showProductForm(Model model , OrderCategory choseCategory) {
+		OrderList orderList = new OrderList();
+		List<OrderCategory> listCategory = categoryService.listAll();
+		model.addAttribute("listCategory", listCategory);
+		System.out.println(listCategory);
+		model.addAttribute("choseCategory", choseCategory);
+		model.addAttribute("orderList", orderList);
 		return "new_product_listItems";
 	}
 
-	@RequestMapping(value = "/saveProduct", method = RequestMethod.POST)
-	public String saveProduct(@ModelAttribute("category")OrderCategory orderCategory, Model model) {
-		String categoryName = orderCategory.getCategory();
-		System.out.println(categoryName);
-		return "new_product_listItems";
+	@RequestMapping("/process_register_product")
+	public String processRegisterProduct(Model model , OrderList orderList , OrderCategory listCategory) {
+		String categoryName = listCategory.getCategory();
+		model.addAttribute("listCategory" , listCategory);
+		listRepo.save(orderList);
+		return "redirect:/admin";
 	}
-
 	@RequestMapping("/registerCategory")
-	public String saveCategory(Model model) {
+	public String saveCategory(Model model , OrderCategory choseCategory) {
 		OrderCategory category = new OrderCategory();
+		List<OrderCategory> listCategories = categoryService.listAll();
+		model.addAttribute("choseCategory",choseCategory);
+		model.addAttribute("listCategories" , listCategories);
 		model.addAttribute("category", category);
 		return "new_category_listItems";
 	}
@@ -214,14 +233,13 @@ public class AppController {
 	@RequestMapping("/process_register_category")
 	public String processRegister(OrderCategory orderCategory) {
 		categoryRepo.save(orderCategory);
-		return "redirect:/admin";
+		return "redirect:/registerCategory";
 	}
-	@RequestMapping("/listAllCategories")
-	public String listCategories(Model model){
-		List<OrderCategory> listCategories = categoryService.listAll();
-		model.addAttribute("listCategories" , listCategories);
-		System.out.println(listCategories);
-		return "new_category_listItems";
+	@RequestMapping("/delete-category/{categoryId}")
+	public String deleteCategory(@PathVariable(name = "categoryId")long categoryId) {
+		System.out.println(categoryId);
+		categoryService.delete(categoryId);
+			return "redirect:/registerCategory";
 	}
 
 }

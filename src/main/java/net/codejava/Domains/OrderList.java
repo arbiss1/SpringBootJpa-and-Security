@@ -12,18 +12,24 @@ public class OrderList {
 	private int listId ;
 	@Column(name="list_Name")
 	private String listName;
+	@ManyToOne
+	@JoinColumn
+	private OrderCategory category;
 
-	@ManyToOne(cascade=CascadeType.ALL)
-	@JoinColumn(name = "category_id")
-	private OrderCategory category_id;
+	private String price;
 
-	public OrderCategory getCategory_id() {
-		return category_id;
-	}
-
-	public void setCategory_id(OrderCategory category_id) {
-		this.category_id = category_id;
-	}
+//	@ManyToOne(cascade=CascadeType.ALL)
+//	@JoinColumn(name = "category")
+//	private OrderCategory category;
+//
+//
+//	public OrderCategory getCategory() {
+//		return category;
+//	}
+//
+//	public void setCategory(OrderCategory category) {
+//		this.category = category;
+//	}
 
 	public OrderList() {
 	}
@@ -32,6 +38,23 @@ public class OrderList {
 		this.listId = listId;
 		this.listName = listName;
 	}
+
+	public OrderCategory getCategory() {
+		return category;
+	}
+
+	public void setCategory(OrderCategory category) {
+		this.category = category;
+	}
+
+	public String getPrice() {
+		return price;
+	}
+
+	public void setPrice(String price) {
+		this.price = price;
+	}
+
 	public int getListId() {
 		return listId;
 	}
