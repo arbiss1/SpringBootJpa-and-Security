@@ -1,10 +1,10 @@
 package net.codejava.Services;
 
 import java.util.List;
+import java.util.Optional;
 
 import net.codejava.Domains.OrderCategory;
 import net.codejava.Domains.OrderList;
-import net.codejava.Domains.Orders;
 import net.codejava.Repositories.OrderListRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -29,7 +29,7 @@ public class OrderListService {
         repoList.deleteById(listId);
     }
 
-    public List<OrderList> listAllByProductCategory(OrderCategory category) {
+    public Optional<OrderList> listAllByProductCategory(Optional<OrderCategory> category) {
         return repoList.findByCategory(category);
     }
 }

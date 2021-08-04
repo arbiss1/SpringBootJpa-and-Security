@@ -163,6 +163,7 @@ public class AppController {
 		order.setCustomer(orderEdit.getCustomer());
 		String priceWithout$sign = order.getPrice().substring(0,order.getPrice().length() - 1);
 		Integer quantity = order.getQuantity();
+		System.out.println(quantity);
 		double newSum = (Double.valueOf(priceWithout$sign) *quantity);
 		order.setTotalPrice(Integer.toString((int)newSum )+"$");
 		repoOrders.save(order);
@@ -175,11 +176,9 @@ public class AppController {
 	}
 
 	@RequestMapping("/edit/{id}")
-	public ModelAndView showEditOrderPage(@PathVariable(name = "id") int id ,Orders orderEdit) {
+	public ModelAndView showEditOrderPage(@PathVariable(name = "id") int id) {
 		ModelAndView mav = new ModelAndView("edit_product");
 		Orders order = service.get(id);
-		System.out.println(order);
-		order.setCustomer(orderEdit.getCustomer());
 		mav.addObject("order", order);
 		System.out.println(mav);
 		repoOrders.save(order);
@@ -206,16 +205,22 @@ public class AppController {
 	public String showProductForm(Model model , OrderCategory choseCategory) {
 		OrderList orderList = new OrderList();
 		List<OrderCategory> listCategory = categoryService.listAll();
+		List<OrderList> listProducts = listRepo.findAll();
 		model.addAttribute("listCategory", listCategory);
 		System.out.println(listCategory);
 		model.addAttribute("choseCategory", choseCategory);
 		model.addAttribute("orderList", orderList);
+		model.addAttribute("listProducts", listProducts);
 		return "new_product_listItems";
 	}
 
 	@RequestMapping("/process_register_product")
 	public String processRegisterProduct(Model model , OrderList orderList , OrderCategory listCategory) {
-		String categoryName = listCategory.getCategory();
+//		Long categoryId = listCategory.getCategoryId();
+//		orderList.setCategory(listCategory.getCategory());
+		Optional<OrderCategory> categoryName = categoryRepo.findByCategory(listCategory.getCategory());
+		Optional<OrderList> category = listRepo.findByCategory(categoryName);
+		System.out.println(categoryName);
 		model.addAttribute("listCategory" , listCategory);
 		listRepo.save(orderList);
 		return "redirect:/admin";
@@ -241,5 +246,12 @@ public class AppController {
 		categoryService.delete(categoryId);
 			return "redirect:/registerCategory";
 	}
+	@RequestMapping("/delete-product/{listId}")
+	public String deleteProduct(@PathVariable(name = "listId")long listId) {
+		System.out.println(listId);
+		orderlistService.delete(listId);
+		return "redirect:/new_product_listItems";
+	}
+
 
 }

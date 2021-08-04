@@ -1,6 +1,5 @@
 package net.codejava.Repositories;
 
-import java.util.List;
 import java.util.Optional;
 
 import net.codejava.Domains.OrderCategory;
@@ -13,7 +12,7 @@ public interface OrderListRepository extends JpaRepository<OrderList, Long> {
 
 	Optional <OrderList> findByListName (String listName);
 
-    List<OrderList> findByCategory(OrderCategory category);
+    Optional<OrderList> findByCategory(Optional<OrderCategory> category);
 }
 
 

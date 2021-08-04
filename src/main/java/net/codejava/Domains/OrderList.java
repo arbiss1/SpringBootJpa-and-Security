@@ -9,7 +9,7 @@ import javax.persistence.*;
 public class OrderList {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	private int listId ;
+	private long listId ;
 	@Column(name="list_Name")
 	private String listName;
 	@ManyToOne
@@ -17,20 +17,6 @@ public class OrderList {
 	private OrderCategory category;
 
 	private String price;
-
-//	@ManyToOne(cascade=CascadeType.ALL)
-//	@JoinColumn(name = "category")
-//	private OrderCategory category;
-//
-//
-//	public OrderCategory getCategory() {
-//		return category;
-//	}
-//
-//	public void setCategory(OrderCategory category) {
-//		this.category = category;
-//	}
-
 	public OrderList() {
 	}
 	public OrderList(int listId, String listName) {
@@ -55,10 +41,10 @@ public class OrderList {
 		this.price = price;
 	}
 
-	public int getListId() {
+	public long getListId() {
 		return listId;
 	}
-	public void setListId(int listId) {
+	public void setListId(long listId) {
 		this.listId = listId;
 	}
 	public String getListName() {
