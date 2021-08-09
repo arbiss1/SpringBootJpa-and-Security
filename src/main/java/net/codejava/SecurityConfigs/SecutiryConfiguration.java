@@ -7,10 +7,13 @@ import org.springframework.security.authentication.dao.DaoAuthenticationProvider
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
+import org.springframework.security.core.userdetails.User;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.NoOpPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.provisioning.InMemoryUserDetailsManager;
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
 import org.springframework.web.servlet.config.annotation.ViewControllerRegistry;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -35,10 +38,11 @@ public class SecutiryConfiguration extends WebSecurityConfigurerAdapter {
 	protected void configure(HttpSecurity http) throws Exception {
 		
 		http.authorizeRequests()
-		.antMatchers("/").permitAll()
+		.antMatchers("/").hasAnyAuthority("USER", "ADMIN")
 		.antMatchers("/new").hasAuthority("USER")
 		.antMatchers("/edit/{id}").hasAnyAuthority("USER")
 		.antMatchers("/delete/{id}").hasAnyAuthority("ADMIN","USER")
+				.antMatchers("/delete/{id}").hasRole("USER")
 		.and()
 		.formLogin()
 		.loginPage("/login")
@@ -50,6 +54,7 @@ public class SecutiryConfiguration extends WebSecurityConfigurerAdapter {
 	public PasswordEncoder getPasswordEncoder() {
 		return NoOpPasswordEncoder.getInstance();
 	}
+
 }
 
 

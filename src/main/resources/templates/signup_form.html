@@ -3,8 +3,11 @@
 <head>
     <meta charset="ISO-8859-1">
     <title>Sign up</title>
+    <script src="https://use.fontawesome.com/your-embed-code.js"></script>
+    <link rel="stylesheet" href="https://pro.fontawesome.com/releases/v5.10.0/css/all.css" integrity="sha384-AYmEC3Yw5cVb3ZcuHtOA93w35dYTsvhLPVnYs9eStHfGJvOvKxVfELGroGkvsg+p" crossorigin="anonymous"/>
     <link rel="stylesheet" type="text/css" href="/webjars/bootstrap/css/bootstrap.min.css" />
-    <script type="text/javascript" src="/webjars/jquery/jquery.min.js"></script>
+    <script src="pwstrength.js"></script>
+    <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.8.3/jquery.min.js"></script>
      <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
     <script type="text/javascript" src="/webjars/bootstrap/js/bootstrap.min.js"></script>
     <style>
@@ -29,6 +32,9 @@
   text-align : left ;
   width : 100%
   }
+  .errorSpan {
+
+  }
     </style>
 </head>
 <body>
@@ -38,30 +44,51 @@
         </div>
     <div align="center">
         <p>Already have an account ? <a href = "/login">Login</a></p>
+        <span style = "color:red;" th:if="${nonUniqueUsername}" th:text = "${nonUniqueUsername}"></span>
+        <span id = "message"></span>
+        <span id = "errorMessage"></span>
     </div>
-        <form th:action="@{/process_register}" th:object="${user}"
+        <form th:action="@{/process_register}" th:object="${user}" onsubmit ="return verifyPassword()"
             method="post" style="max-width: 600px; margin: 0 auto;">
         <div align = "center" style = "margin-top:20px">
-              <div align = "center"><input class="form-control" th:id ="userEmail" type="text" th:field="*{username}" id = "username"  required placeholder = "Username..."/><div>
+              <div align = "center"><input class="form-control" th:id ="userEmail" type="text" th:field="*{username}" id = "username"
+                  placeholder = "Username..."/><div>
                     <br>
-                <div align = "center"><input class="form-control" type="password" th:id ="errorInput" th:field="*{password}" required placeholder = "Password..."/><div>
+                <div align = "center">
+                    <span id = "strength"></span>
+                    <input class="form-control" type="password" onkeyup="return passwordChanged();"  th:field="*{password}"
+                           id="password" name="password"  placeholder = "Password..."/>
+                    </div>
                     <br>
-               <div align = "center"><input class="form-control" th:id = "userName"  type="text" th:field="*{first_name}"
-                            required minlength="2" maxlength="20" placeholder = "First Name..."/><div>
+                    <div align = "center" style = "display:inline;"><input class="form-control" type="password"
+                    id = "passwordConfirm" th:field="*{MatchingPassword}"  placeholder = "Confirm Password..."/></div>
+
+<!--                        <span th:if="${#fields.hasErrors('MatchingPassword')}" th:errors="*{MatchingPassword}"-->
+<!--                              class="text-danger"></span>-->
+                        <br>
+               <div align = "center"><input class="form-control" id = "firstname"  type="text" th:field="*{first_name}"
+                             minlength="2" maxlength="20" placeholder = "First Name..."/></div>
+<!--                  <p th:each="error : ${#fields.hasErrors('first_name')}"-->
+<!--                     th:text="${error}">Validation error</p>-->
                  <br>
-               <div align = "center"><input class="form-control" type="text" th:field="*{lastName}"
-                            required minlength="2" maxlength="20" placeholder = "Last Name..."/><div>
+               <div align = "center"><input class="form-control" type="text" id="lastname" th:field="*{lastName}"
+                             minlength="2" maxlength="20" placeholder = "Last Name..."/></div>
+<!--                  <p th:each="error : ${#fields.hasErrors('lastName')}"-->
+<!--                     th:text="${error}">Validation error</p>-->
                    <br>
-                   <div align = "center"><input class="form-control" type="text" th:field="*{user_address}"
-                                                                                       required minlength="2" maxlength="20" placeholder = "Address..."/><div>
+                   <div align = "center"><input class="form-control" type="text" th:field="*{user_address}" id="address"
+                                                minlength="2" maxlength="20" placeholder = "Address..."/></div>
+<!--                  <p th:each="error : ${#fields.hasErrors('user_address')}"-->
+<!--                     th:text="${error}">Validation error</p>-->
                        <br>
-                       <div align = "center"><input class="form-control" type="text" th:field="*{user_number}"
-                                                                                           required minlength="2" maxlength="20" placeholder = "Phone number..."/><div>
+                       <div align = "center"><input class="form-control" type="text" th:field="*{user_number}" id="phonenumber"
+                       minlength="2" maxlength="20" placeholder = "Phone number..."/></div>
             <div align = "center" class = "buttonDiv">
-                <button type="submit" style = "margin: 15px ;" class="btn btn-primary" th:onclick = "errorCheck()">Sign Up</button>
+                <button type="submit" style = "margin: 15px ;" class="btn btn-primary" th:id = "submit"
+                        th:onclick = "errorCheck()">Sign Up</button>
             </div>
-        </div>
         </form>
+
     </div>
     <script>
     function gotoLogin(){
@@ -69,5 +96,71 @@
     	location.href = "/login";
     }
     </script>
+    <script type="text/javascript">
+  $('form').validate();
+</script>
+    <script language="javascript">
+   $(function () {
+        $("#submit").click(function () {
+            var password = $("#password").val();
+            var confirmPassword = $("#passwordConfirm").val();
+            var message =  $("#message");
+            if (password != confirmPassword) {
+                 message.html("Password don't match !").css('color','red');
+                return false;
+            }
+            return true;
+        });
+    })
+ $(function () {
+        $("#submit").click(function () {
+            var password = $("#password").val();
+            var confirmPassword = $("#passwordConfirm").val();
+            var username = $("#username").val();
+            var firstname = $("#firsname").val();
+            var lastname = $("#lastname").val();
+            var address = $("#address").val();
+            var phonenumber = $("#phonenumber").val();
+            var errorMessage = $("#errorMessage").val();
+            var message =  $("#message");
+            if (password === "") {
+            errorMessage.html().css('color' ,'red');
+            password.html().css('border-color','red');
+            return false;
+            }
+            if (confirmPassword === "") {
+            errorMessage.html().css('color' ,'red');
+            confirmPassword.html().css('border-color','red');
+            return false;
+            }
+            if (username === ""){
+            errorMessage.html().css('color' ,'red');
+            username.html().css('border-color','red');
+            return false;
+            }
+            if (firstname === ""){
+            errorMessage.html().css('color' ,'red');
+            firstname.html().css('border-color','red');
+            return false;
+            }
+            if (lastname === ""){
+            errorMessage.html().css('color' ,'red');
+            lastname.html().css('border-color','red');
+            return false;
+            }
+            if (address === ""){
+            errorMessage.html().css('color' ,'red');
+            address.html().css('border-color','red');
+            return false;
+            }
+            if (phonenumber === ""){
+            errorMessage.html().css('color' ,'red');
+            phonenumber.html().css('border-color','red');
+            return false;
+            }
+            return true;
+        });
+    })
+</script>
 </body>
 </html>

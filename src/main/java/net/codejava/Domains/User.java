@@ -1,23 +1,17 @@
 package net.codejava.Domains;
 
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
 
-import javax.persistence.CascadeType;
+import net.codejava.PasswordAnotation.ValidPassword;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.JoinTable;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToMany;
-import javax.persistence.OneToMany;
 import javax.persistence.Table;
+import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.NotNull;
 
 @Table
 @Entity
@@ -27,24 +21,51 @@ public class User {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Column (name = "user_id")
 	private Long userId;
+
+//	@NotNull(message = "stringValue has to be present")
+	@NotEmpty
 	@Column (name = "first_name")
 	private String first_name;
+
+//	@NotNull(message = "stringValue has to be present")
+	@NotEmpty
 	@Column (name = "lastName")
 	private String lastName;
-	@NotEmpty(message = "User's name cannot be empty.")
+
+//	@NotNull(message = "stringValue has to be present")
 	@Column(name = "username")
 	private String username;
+
+//	@NotNull(message = "stringValue has to be present")
 	@Column (name = "password")
 	private String password;
+
 	@Column(name = "enabled")
 	private boolean enabled = true;
 	private String roles = "USER";
+
+//	@NotNull(message = "stringValue has to be present")
+	@NotEmpty
 	private String user_address;
+
+//	@NotNull(message = "stringValue has to be present")
+	@NotEmpty
 	private String user_number;
+//
+//	@NotNull
+	private String MatchingPassword;
 
 
 	
 	public User() {}
+
+	public String getMatchingPassword() {
+		return MatchingPassword;
+	}
+
+	public void setMatchingPassword(String matchingPassword) {
+		MatchingPassword = matchingPassword;
+	}
 
 	public String getUser_address() {
 		return user_address;

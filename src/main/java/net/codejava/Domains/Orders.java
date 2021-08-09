@@ -18,9 +18,6 @@ public class Orders {
     private String listName;
     private String price;
 
-    @ManyToOne
-    @JoinColumn
-    private OrderCategory category;
 
     protected Orders() {
     }
@@ -40,14 +37,6 @@ public class Orders {
 
     public void setTotalPrice(String totalPrice) {
         this.totalPrice = totalPrice;
-    }
-
-    public OrderCategory getCategory() {
-        return category;
-    }
-
-    public void setCategory(OrderCategory category) {
-        this.category = category;
     }
 
     public String getListName() {

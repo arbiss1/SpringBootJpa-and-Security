@@ -16,8 +16,13 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
+import org.springframework.validation.FieldError;
+import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
+
+import javax.validation.Valid;
 
 @Controller
 public class AppController {
@@ -39,21 +44,22 @@ public class AppController {
 	@Autowired
 	private OrderCategoryRepository categoryRepo;
 
-
 	@RequestMapping("/user")
-	public String viewHomePageUser(Model model) {
+	public String viewHomePageUser(Model model,User user) {
 		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 		String username = authentication.getName();
-		Optional<User> user = repo.findByUsername(username);
-		List<Orders> listOrders = service.listAllByUser(user.get().getUserId());
+		System.out.println(repo.findByUsername(username).get().getUserId());
+		Optional<User> username1 = repo.findByUsername(username);
+		System.out.println(username1);
+		List<Orders> listOrders = service.listAllByUser(username1.get().getUserId());
 		model.addAttribute("listOrders", listOrders);
+		model.addAttribute("userDetails" , username1);
 
 		return "index";
 	}
 
 	@RequestMapping("/admin")
 	public String viewHomePageAdmin(Model model) {
-
 		List<Orders> listOrders = service.listAll();
 		model.addAttribute("listOrders", listOrders);
 
@@ -66,14 +72,14 @@ public class AppController {
 	}
 
 	@RequestMapping("/new")
-	public String showNewProductPage(Model model , OrderList choseOrder , OrderCategory choseCategory) {
+	public String showNewProductPage(Model model, OrderList choseOrder, net.codejava.Domains.OrderCategory choseCategory) {
 		List<Orders> listOrders = service.listAll();
-		List<OrderCategory> listCategory = categoryService.listAll();
+		List<net.codejava.Domains.OrderCategory> listCategory = categoryService.listAll();
 		List<OrderList> orderList = orderlistService.listAllorders();
 		System.out.println(choseCategory.getCategory());
 		Orders order = new Orders();
-		model.addAttribute("choseCategory" , choseCategory);
-		model.addAttribute("listCategory" , listCategory);
+		model.addAttribute("choseCategory", choseCategory);
+		model.addAttribute("listCategory", listCategory);
 		model.addAttribute("listOrders", listOrders);
 		model.addAttribute("order", order);
 		model.addAttribute("orderList", orderList);
@@ -81,24 +87,50 @@ public class AppController {
 		return "new_product";
 	}
 
-	@RequestMapping("/register")
-	public String showRegistrationForm(Model model) {
-		User user = new User();
-		model.addAttribute("user", user);
-		return "signup_form";
+	@GetMapping("/register")
+	public String showRegistrationForm(Model model , User user2 ,BindingResult result) {
+		if(result.hasErrors()){
+			return "signup_form";
+		}else {
+			System.out.println(result);
+			User user = new User();
+			model.addAttribute("user", user);
+			return "signup_form";
+		}
 	}
 
-	@RequestMapping("/process_register")
-	public String processRegister(User user) {
-		String firstnameUppercase = user.getfirst_name().substring(0, 1).toUpperCase(Locale.ROOT)
-				+  user.getfirst_name().substring(1).toLowerCase();
-		user.setFirst_name(firstnameUppercase);
-		String lastnameUppercase = user.getLastName().substring(0,1).toUpperCase(Locale.ROOT)
-				+ user.getLastName().substring(1).toLowerCase();
-		user.setLastName(lastnameUppercase);
-		System.out.println(firstnameUppercase);
-		repo.save(user);
-		return "signinUser";
+	@PostMapping("/process_register")
+	public String processRegister(@Valid  User user, Model model,BindingResult result) {
+		if(result.hasErrors()){
+			for (Object object : result.getAllErrors()) {
+				if(object instanceof FieldError) {
+					FieldError fieldError = (FieldError) object;
+
+					System.out.println(fieldError.getCode());
+				}
+
+				if(object instanceof ObjectError) {
+					ObjectError objectError = (ObjectError) object;
+
+					System.out.println(objectError.getCode());
+				}
+			}
+			return "signup_form";
+		}
+		if (userService.isUsernamePresent(user)) {
+			String message = String.format("Username already exists !");
+			model.addAttribute("nonUniqueUsername", message);
+			return showRegistrationForm(model,user,result);
+		} else {
+			String firstnameUppercase = user.getfirst_name().substring(0, 1).toUpperCase(Locale.ROOT)
+					+ user.getfirst_name().substring(1).toLowerCase();
+			user.setFirst_name(firstnameUppercase);
+			String lastnameUppercase = user.getLastName().substring(0, 1).toUpperCase(Locale.ROOT)
+					+ user.getLastName().substring(1).toLowerCase();
+			user.setLastName(lastnameUppercase);
+			repo.save(user);
+		}
+			return "signinUser";
 	}
 
 	@RequestMapping(value = "/save", method = RequestMethod.POST)
@@ -130,14 +162,13 @@ public class AppController {
 		order.setUserId(user.get().getUserId());
 		int quantity = order.getQuantity();
 		Optional<OrderList> orderListDb = listRepo.findByListName(orderList.getListName());
-		OrderCategory category = orderlistService.get(orderList.getListName()).getCategory();
+		net.codejava.Domains.OrderCategory category = orderlistService.get(orderList.getListName()).getCategory();
 		String priceWithout$sign = orderListDb.get().getPrice().substring(0,orderListDb.get().getPrice().length() - 1);
 		System.out.println(priceWithout$sign);
 		double sumofPrice = (Double.valueOf(priceWithout$sign)  * quantity);
 		System.out.println(sumofPrice);
 		order.setTotalPrice(Integer.toString((int) sumofPrice) + "$");
 		order.setPrice(orderListDb.get().getPrice());
-		order.setCategory(category);
 		order.setListName(orderList.getListName());
 		repoOrders.save(order);
 		if (user.get().getRoles().equals("USER")) {
@@ -146,8 +177,6 @@ public class AppController {
 			return "redirect:/admin";
 		}
 	}
-
-
 
 	@RequestMapping(value = "/edit/{id}", method = RequestMethod.POST)
 	public String editOrder(@PathVariable(name = "id") int id,Orders orderEdit,  Model model) {
@@ -202,9 +231,9 @@ public class AppController {
 		}
 	}
 	@RequestMapping("/new_product_listItems")
-	public String showProductForm(Model model , OrderCategory choseCategory) {
+	public String showProductForm(Model model , net.codejava.Domains.OrderCategory choseCategory) {
 		OrderList orderList = new OrderList();
-		List<OrderCategory> listCategory = categoryService.listAll();
+		List<net.codejava.Domains.OrderCategory> listCategory = categoryService.listAll();
 		List<OrderList> listProducts = listRepo.findAll();
 		model.addAttribute("listCategory", listCategory);
 		System.out.println(listCategory);
@@ -214,21 +243,53 @@ public class AppController {
 		return "new_product_listItems";
 	}
 
+	@RequestMapping("/admin-panel")
+		public String showAdminPanel(Model model ){
+		    List<User> users = userService.listAll();
+		    User user = new User();
+		    model.addAttribute("user",user);
+		    model.addAttribute("users" , users );
+			return "adminPanel";
+		}
+
+		@RequestMapping("/process_registerAdmin")
+		public String processRegisterAmin(User user1 , Model model, BindingResult  result ){
+			if (userService.isUsernamePresent(user1)) {
+				String message = String.format("Username already exists !");
+				model.addAttribute("nonUniqueUsername", message);
+				return showRegistrationForm(model,user1,result);
+			} else {
+				String firstnameUppercase = user1.getfirst_name().substring(0, 1).toUpperCase(Locale.ROOT)
+						+ user1.getfirst_name().substring(1).toLowerCase();
+				user1.setFirst_name(firstnameUppercase);
+				String lastnameUppercase = user1.getLastName().substring(0, 1).toUpperCase(Locale.ROOT)
+						+ user1.getLastName().substring(1).toLowerCase();
+				user1.setLastName(lastnameUppercase);
+				user1.setRoles("ADMIN");
+				user1.isEnabled();
+				repo.save(user1);
+			}
+		return "redirect:/admin-panel";
+		}
+
+	@RequestMapping("/delete-user-admin/{userId}")
+	public String deleteUser(@PathVariable(name = "userId") long userId) {
+		userService.delete(userId);
+			return "redirect:/admin-panel";
+		}
+
 	@RequestMapping("/process_register_product")
-	public String processRegisterProduct(Model model , OrderList orderList , OrderCategory listCategory) {
-//		Long categoryId = listCategory.getCategoryId();
-//		orderList.setCategory(listCategory.getCategory());
-		Optional<OrderCategory> categoryName = categoryRepo.findByCategory(listCategory.getCategory());
-		Optional<OrderList> category = listRepo.findByCategory(categoryName);
+	public String processRegisterProduct(Model model , OrderList orderList , net.codejava.Domains.OrderCategory listCategory) {
+		Optional<net.codejava.Domains.OrderCategory> categoryName = categoryRepo.findByCategory(listCategory.getCategory());
 		System.out.println(categoryName);
 		model.addAttribute("listCategory" , listCategory);
 		listRepo.save(orderList);
 		return "redirect:/admin";
 	}
 	@RequestMapping("/registerCategory")
-	public String saveCategory(Model model , OrderCategory choseCategory) {
-		OrderCategory category = new OrderCategory();
-		List<OrderCategory> listCategories = categoryService.listAll();
+	public String saveCategory(Model model , net.codejava.Domains.OrderCategory choseCategory) {
+		net.codejava.Domains.OrderCategory category = new net.codejava.Domains.OrderCategory();
+		List<net.codejava.Domains.OrderCategory> listCategories = categoryService.listAll();
 		model.addAttribute("choseCategory",choseCategory);
 		model.addAttribute("listCategories" , listCategories);
 		model.addAttribute("category", category);
@@ -236,13 +297,24 @@ public class AppController {
 	}
 
 	@RequestMapping("/process_register_category")
-	public String processRegister(OrderCategory orderCategory) {
-		categoryRepo.save(orderCategory);
-		return "redirect:/registerCategory";
+	public String processRegister(net.codejava.Domains.OrderCategory orderCategory , Model model) {
+        if(categoryService.isPresent(orderCategory)){
+        	String message = "Category already exists !";
+        	model.addAttribute("nonUniqueCategory" , message);
+        	return saveCategory(model,new OrderCategory());
+		}else{
+			categoryRepo.save(orderCategory);
+			return "redirect:/registerCategory";
+		}
 	}
 	@RequestMapping("/delete-category/{categoryId}")
-	public String deleteCategory(@PathVariable(name = "categoryId")long categoryId) {
+	public String deleteCategory(@PathVariable(name = "categoryId")long categoryId,OrderCategory orderCategory,Model model) {
 		System.out.println(categoryId);
+		Optional<OrderCategory> orderCategory1 = categoryRepo.findById(categoryId);
+		List<OrderList> orderLists = listRepo.findByCategory(orderCategory1);
+		orderLists.forEach(orderList -> {
+			listRepo.delete(orderList);
+		});
 		categoryService.delete(categoryId);
 			return "redirect:/registerCategory";
 	}
@@ -253,5 +325,31 @@ public class AppController {
 		return "redirect:/new_product_listItems";
 	}
 
+	@RequestMapping(value = "/user/edit/{userId}", method = RequestMethod.POST)
+	public String editUser(@PathVariable(name = "userId") int userId ,User userEdit,  Model model) {
+		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+		String username = authentication.getName();
+		long id = repo.findByUsername(username).get().getUserId();
+		User user = userService.get(id);
+		Optional<User> user1 = repo.findByUsername(username);
+		user.setUserId(repo.findByUsername(username).get().getUserId());
+		user.setUser_address(userEdit.getUser_address());
+		user.setUser_number(userEdit.getUser_number());
+		user.setFirst_name(userEdit.getFirst_name());
+		user.setLastName(userEdit.getLastName());
+		System.out.println(user);
+		repo.save(user);
+			return "redirect:/user";
+		}
+
+	@RequestMapping("/user/edit/{userId}")
+	public ModelAndView showEditUserPage(@PathVariable(name = "userId") int userId) {
+		ModelAndView mav = new ModelAndView("userProfile");
+		User user = userService.get(userId);
+		mav.addObject("user", user);
+		System.out.println(mav);
+		repo.save(user);
+		return mav;
+	}
 
 }
