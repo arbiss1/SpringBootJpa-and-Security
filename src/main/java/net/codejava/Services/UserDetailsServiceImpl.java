@@ -1,11 +1,15 @@
 package net.codejava.Services;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
 import net.codejava.Domains.MyUserDetails;
 import net.codejava.Repositories.UserRepository;
 import net.codejava.Domains.User;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -26,5 +30,7 @@ public class UserDetailsServiceImpl implements UserDetailsService {
 		
 		return user.map(MyUserDetails::new).get();
 	}
+
+
 
 }
