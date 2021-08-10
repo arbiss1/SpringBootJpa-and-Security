@@ -4,14 +4,8 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Optional;
 
-import net.codejava.Repositories.OrderCategoryRepository;
-import net.codejava.Repositories.OrderListRepository;
-import net.codejava.Repositories.OrdersRepository;
-import net.codejava.Repositories.UserRepository;
-import net.codejava.Services.OrderCategoryService;
-import net.codejava.Services.OrderListService;
-import net.codejava.Services.OrderService;
-import net.codejava.Services.UserService;
+import net.codejava.Repositories.*;
+import net.codejava.Services.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -44,17 +38,20 @@ public class AppController {
     private OrderCategoryService categoryService;
     @Autowired
     private OrderCategoryRepository categoryRepo;
+    @Autowired
+    private ProductRequestService productService;
+    @Autowired
+    private ProductRequestsRepository productRepo;
 
     @RequestMapping("/user")
-    public String viewHomePageUser(Model model, User user) {
+    public String viewHomePageUser(Model model) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         String username = authentication.getName();
-        Optional<User> username1 = repo.findByUsername(username);
-        if (username1.isPresent()) {
-            System.out.println(username1);
-            List<Orders> listOrders = service.listAllByUser(username1.get().getUserId());
+        Optional<User> user = repo.findByUsername(username);
+        if (user.isPresent()) {
+            List<Orders> listOrders = service.listAllByUser(user.get().getUserId());
             model.addAttribute("listOrders", listOrders);
-            model.addAttribute("userDetails", username1);
+            model.addAttribute("userDetails", user);
         }
 
         return "index";
@@ -69,23 +66,21 @@ public class AppController {
     }
 
     @RequestMapping("/login")
-    public String showUserSignin(Model model, @Valid User user, BindingResult result) {
+    public String showUserSignin() {
         return "signinUser";
     }
 
     @RequestMapping("/procces-login")
     public String showUserPage(Model model, @Valid User user, BindingResult result) {
-        if (!userService.isUsernamePresent(user)) {
-
-            System.out.println(user.getUsername());
-            String message = "Username doesn't exist !";
+        if (!userService.isUserValid(user)) {
+            String message = "Username or password is incorrect !";
             model.addAttribute("noUsernameExists", message);
-            return showUserSignin(model, user, result);
-        } else if (user.getRoles().equals("USER")) {
-            return "redirect:/user";
-        } else {
-            return "redirect:/admin";
+            return showUserSignin();
         }
+
+        return user.getRoles().equals("USER")
+                ? "redirect:/user"
+                : "redirect:/admin";
     }
 
     @RequestMapping("/new")
@@ -118,26 +113,11 @@ public class AppController {
 
     @PostMapping("/process_register")
     public String processRegister(@Valid User user, Model model, BindingResult result) {
-        if (result.hasErrors()) {
-            for (Object object : result.getAllErrors()) {
-                if (object instanceof FieldError) {
-                    FieldError fieldError = (FieldError) object;
-
-                    System.out.println(fieldError.getCode());
-                }
-
-                if (object instanceof ObjectError) {
-                    ObjectError objectError = (ObjectError) object;
-
-                    System.out.println(objectError.getCode());
-                }
-            }
-            return "signup_form";
-        }
         if (userService.isUsernamePresent(user)) {
-            String message = String.format("Username already exists !");
+            String message ="Username already exists !";
             model.addAttribute("nonUniqueUsername", message);
-            return showRegistrationForm(model, user, result);
+            return "signup_form";
+//            return showRegistrationForm(model, user, result);
         } else {
             String firstnameUppercase = user.getfirst_name().substring(0, 1).toUpperCase(Locale.ROOT)
                     + user.getfirst_name().substring(1).toLowerCase();
@@ -171,8 +151,6 @@ public class AppController {
         System.out.println(username);
         List<OrderList> listAllProdcts = orderlistService.listAllorders();
         Optional<User> user = repo.findByUsername(username);
-        ;
-        String orderName = orderList.getListName();
         order.setUser_address(user.get().getUser_address());
         order.setUser_number(user.get().getUser_number());
         String lastName = user.get().getLastName();
@@ -264,8 +242,10 @@ public class AppController {
     @RequestMapping("/admin-panel")
     public String showAdminPanel(Model model) {
         List<User> users = userService.listAll();
+        List<ProductRequests> productRequests = productService.listAllProductRequested();
         User user = new User();
         model.addAttribute("user", user);
+        model.addAttribute("productRequests",productRequests);
         model.addAttribute("users", users);
         return "adminPanel";
     }
@@ -275,7 +255,7 @@ public class AppController {
         if (userService.isUsernamePresent(user1)) {
             String message = String.format("Username already exists !");
             model.addAttribute("nonUniqueUsername", message);
-            return showRegistrationForm(model, user1, result);
+            return showAdminPanel(model);
         } else {
             String firstnameUppercase = user1.getfirst_name().substring(0, 1).toUpperCase(Locale.ROOT)
                     + user1.getfirst_name().substring(1).toLowerCase();
@@ -352,7 +332,6 @@ public class AppController {
         String username = authentication.getName();
         long id = repo.findByUsername(username).get().getUserId();
         User user = userService.get(id);
-        Optional<User> user1 = repo.findByUsername(username);
         user.setUserId(repo.findByUsername(username).get().getUserId());
         user.setUser_address(userEdit.getUser_address());
         user.setUser_number(userEdit.getUser_number());
@@ -373,4 +352,47 @@ public class AppController {
         return mav;
     }
 
+    @RequestMapping("/request-product")
+    public String showRequestProduct(Model model){
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String username = authentication.getName();
+        Optional<User> user = repo.findByUsername(username);
+        System.out.println(username);
+        long id = user.get().getUserId();
+        System.out.println(id);
+        List<ProductRequests> productRequests1 = productService.listAllByProduct(user.get().getUserId());
+        System.out.println(productRequests1);
+        System.out.println(productRepo.findByProductId(user.get().getUserId()));
+        ProductRequests productRequests = new ProductRequests();
+        model.addAttribute("productRequests" , productRequests);
+        model.addAttribute("listProductsRequested" , productRequests1);
+        return "requestNewProducts";
+    }
+
+//    @RequestMapping("/user")
+//    public String viewHomePageUser(Model model) {
+//        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+//        String username = authentication.getName();
+//        Optional<User> user = repo.findByUsername(username);
+//        if (user.isPresent()) {
+//            List<Orders> listOrders = service.listAllByUser(user.get().getUserId());
+//            model.addAttribute("listOrders", listOrders);
+//            model.addAttribute("userDetails", user);
+//        }
+
+    @RequestMapping("/process-product-register")
+    public String processRequestProduct(Model model , ProductRequests productRequests){
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String username = authentication.getName();
+        Optional<User> user = repo.findByUsername(username);
+        if(productService.isRequestedProductPresent(productRequests)){
+            String messageError = "Product already exists !";
+            model.addAttribute("messageError" , messageError);
+            return "requestNewProducts";
+        }else{
+            productRequests.setUserRequestedId(user.get().getUserId());
+            productRepo.save(productRequests);
+            return "redirect:/request-product";
+        }
+    }
 }

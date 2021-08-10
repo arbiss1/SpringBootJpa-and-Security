@@ -44,11 +44,13 @@
         </div>
     <div align="center">
         <p>Already have an account ? <a href = "/login">Login</a></p>
-        <span style = "color:red;" th:if="${nonUniqueUsername}" th:text = "${nonUniqueUsername}"></span>
+        <div style = "display:inline-grid;">
+        <span style = "color:red;" id = "nonUniqueUsername" th:if="${nonUniqueUsername}" th:text = "${nonUniqueUsername}"></span>
         <span id = "message"></span>
         <span id = "errorMessage"></span>
+        </div>
     </div>
-        <form th:action="@{/process_register}" th:object="${user}" onsubmit ="return verifyPassword()"
+        <form th:action="@{/process_register}" th:object="${user}"
             method="post" style="max-width: 600px; margin: 0 auto;">
         <div align = "center" style = "margin-top:20px">
               <div align = "center"><input class="form-control" th:id ="userEmail" type="text" th:field="*{username}" id = "username"
@@ -104,59 +106,11 @@
         $("#submit").click(function () {
             var password = $("#password").val();
             var confirmPassword = $("#passwordConfirm").val();
+            var nonUniqueUsername = $("#nonUniqueUsername").val();
             var message =  $("#message");
-            if (password != confirmPassword) {
+            if (password != confirmPassword && nonUniqueUsername == null) {
                  message.html("Password don't match !").css('color','red');
                 return false;
-            }
-            return true;
-        });
-    })
- $(function () {
-        $("#submit").click(function () {
-            var password = $("#password").val();
-            var confirmPassword = $("#passwordConfirm").val();
-            var username = $("#username").val();
-            var firstname = $("#firsname").val();
-            var lastname = $("#lastname").val();
-            var address = $("#address").val();
-            var phonenumber = $("#phonenumber").val();
-            var errorMessage = $("#errorMessage").val();
-            var message =  $("#message");
-            if (password === "") {
-            errorMessage.html().css('color' ,'red');
-            password.html().css('border-color','red');
-            return false;
-            }
-            if (confirmPassword === "") {
-            errorMessage.html().css('color' ,'red');
-            confirmPassword.html().css('border-color','red');
-            return false;
-            }
-            if (username === ""){
-            errorMessage.html().css('color' ,'red');
-            username.html().css('border-color','red');
-            return false;
-            }
-            if (firstname === ""){
-            errorMessage.html().css('color' ,'red');
-            firstname.html().css('border-color','red');
-            return false;
-            }
-            if (lastname === ""){
-            errorMessage.html().css('color' ,'red');
-            lastname.html().css('border-color','red');
-            return false;
-            }
-            if (address === ""){
-            errorMessage.html().css('color' ,'red');
-            address.html().css('border-color','red');
-            return false;
-            }
-            if (phonenumber === ""){
-            errorMessage.html().css('color' ,'red');
-            phonenumber.html().css('border-color','red');
-            return false;
             }
             return true;
         });

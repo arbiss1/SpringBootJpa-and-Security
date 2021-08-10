@@ -55,14 +55,14 @@
           method="post" >
       <button class = "btn btn-secondary saveButton" th:onclick = "category()" th:id = "button"  type="submit">Add new admin</button>
       <div th:id = "divHidden" class = "hiddenDiv">
-        <input style = "margin-bottom: 5px;"  class="form-control" th:field = "*{user.username}"   type="text" required placeholder="Username..."/>
-        <input style = "margin-bottom: 5px;"  class="form-control" th:field = "*{user.first_name}"  type="text" required placeholder="First Name..."/>
-        <input style = "margin-bottom: 5px;"   class="form-control" th:field = "*{user.lastName}"  type="text" required placeholder="Last Name..."/>
+        <input style = "margin-bottom: 5px;"  class="form-control" th:field = "*{user.username}" id="credintials1"  type="text" required placeholder="Username..."/>
+        <input style = "margin-bottom: 5px;"  class="form-control" th:field = "*{user.first_name}" id="credintials2"  type="text" required placeholder="First Name..."/>
+        <input style = "margin-bottom: 5px;"   class="form-control" th:field = "*{user.lastName}" id="credintials3"   type="text" required placeholder="Last Name..."/>
         <input style = "margin-bottom: 5px;"  class="form-control" th:field = "*{user.password}"   type="text" th:id ="password" required placeholder="Password..."/>
         <input style = "margin-bottom: 5px;"  class="form-control" th:field = "*{user.MatchingPassword}" th:id = "passwordConfirm"   type="text" required placeholder="Confirm Password..."/>
         <input style = "margin-bottom: 5px;"   class="form-control" th:field = "*{user.user_address}"   type="text" requi\red placeholder="Address..."/>
         <input style = "margin-bottom: 5px;"   class="form-control" th:field = "*{user.user_number}"   type="text" required placeholder="Phone Number..."/>
-        <button class = "btn btn-secondary saveButton" type="submit">Save</button>
+        <button class = "btn btn-primary saveButton" th:id = "submit" type="submit">Save</button>
       </div>
     </form>
     <form >
@@ -72,7 +72,7 @@
     <table border="1" cellpadding="10" class="table">
       <thead class="thead-dark">
       <tr scope = "row">
-        <th scope ="col">Username</th>
+<!--        <th scope ="col">Username</th>-->
         <th scope ="col">First Name</th>
         <th scope ="col">Last Name</th>
         <th scope ="col">Role</th>
@@ -81,19 +81,49 @@
       </thead>
       <tbody>
       <tr scope="row" th:each="allUsers: ${users}">
-        <td th:text="${allUsers.username}">Username<\td>
+<!--        <td th:text="${allUsers.username}">Username<\td>-->
         <td th:text="${allUsers.first_name}">First Name <\td>
         <td th:text="${allUsers.lastName}">Last Name <\td>
         <td th:text="${allUsers.roles}">Role <\td>
         <td>
           <div sec:authorize = "hasAnyAuthority('USER','ADMIN')">
             <a sec:authorize = "hasAuthority('ADMIN')" th:href="@{'/delete-user-admin/' + ${allUsers.userId}}" th:onclick="confirmAction()">Delete</a>
+          </div>
         </td>
         </td>
       </tr>
       </tbody>
     </table>
-      </div>
+    </div>
+        <form>
+            <button th:onclick = "category2()" class = "btn btn-secondary saveButton" type="button" th:id = "button2" >Show product requests</button>
+        </form>
+        <div th:id = "divHidden2" class = "hiddenDiv">
+            <table border="1" cellpadding="10" class="table">
+                <thead class="thead-dark">
+                <tr scope = "row">
+                    <!--        <th scope ="col">Username</th>-->
+                    <th scope ="col">Product Requested</th>
+                    <th scope ="col">Requested by</th>
+                    <th scope="col" sec:authorize = "hasAuthority('ADMIN')">Actions</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr scope="row" th:each="allProducts: ${productRequests}">
+                    <!--        <td th:text="${allUsers.username}">Username<\td>-->
+                    <td th:text="${allProducts.product}">Product Requested <\td>
+                    <td th:text="${allProducts.userRequestedId}">Requested by <\td>
+                    <td>
+                        <div sec:authorize = "hasAnyAuthority('USER','ADMIN')">
+                            <a sec:authorize = "hasAuthority('ADMIN')"  th:onclick="confirmAction()">Approve</a>
+                            <a sec:authorize = "hasAuthority('ADMIN')"  th:onclick="confirmAction()">Delete</a>
+                        </div>
+                    </td>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
   </div>
 </main>
 <script>
@@ -120,7 +150,20 @@
     div.style.display = "none"
     button.setAttribute("style" ,"background-color:gray;");
    }
-   }</script>
+   }
+   function category2(){
+   var div = document.getElementById("divHidden2");
+   var button = document.getElementById("button2");
+   if(div.style.display === "none"){
+   div.style.display = "block";
+   button.setAttribute("style" ,"background-color:red;");
+   }else
+   {
+    div.style.display = "none"
+    button.setAttribute("style" ,"background-color:gray;");
+   }
+   }
+</script>
    <script>
         $(function () {
         $("#submit").click(function () {

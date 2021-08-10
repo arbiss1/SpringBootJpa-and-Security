@@ -34,6 +34,10 @@ public class OrderListService {
         return repoList.findBylistId(categoryId);
     }
 
+    public List<OrderList> listAllProductsByCategory(OrderCategory categoryId){
+        return repoList.findBylistId(categoryId);
+    }
+
 //    public List<OrderList> listAllproductsBycategory(OrderCategory category){return repoList.findByCategory(Optional.ofNullable(category));}
 }
 
