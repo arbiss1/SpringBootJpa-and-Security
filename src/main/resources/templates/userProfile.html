@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:sec="https://www.thymeleaf.org/thymeleaf-extras-springsecurity5"
+      xmlns:th="http://www.thymeleaf.org">
+<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+<head>
+  <meta charset="utf-8"/>
+  <title>Product Manager</title>
+  <style>
+		body {
+		background-color : lightgray;
+		}
+		.centerDiv {
+  width: 40%;
+ background: white;
+  border : solid 2px lighblue ;
+  border-radius : 8px ;
+  padding :50px;
+  }
+		header{
+		heigh : 20%;
+		}
+		main {
+		heigh : 80%;
+		}
+		.topTitle {
+		font-weight:bolder;
+		}
+		tr:hover{
+		background-color : lightblack;
+		}
+		tr{
+		background-color : white;
+		}
+	</style>
+</head>
+<body>
+<header>
+  <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarTogglerDemo03" aria-controls="navbarTogglerDemo03" aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    <a  sec:authorize = "hasAuthority('ADMIN')" class="navbar-brand topTitle" href="/admin">Order Manager</a>
+    <a  sec:authorize = "hasAuthority('USER')" class="navbar-brand topTitle" href="/user">Order Manager</a>
+
+    <div class="collapse navbar-collapse" id="navbarTogglerDemo03">
+      <ul class="navbar-nav mr-auto mt-2 mt-lg-0">
+        <li class="nav-item">
+          <a sec:authorize = "hasAuthority('ADMIN')" class="nav-link" href="/registerCategory" th:onclick = "showModal()">Add new category</a>
+        </li>
+        <li class="nav-item">
+          <a sec:authorize = "hasAuthority('ADMIN')" class="nav-link " href="/new_product_listItems">Add new product</a>
+        </li>
+        <li class="nav-item">
+          <a sec:authorize = "hasAuthority('USER')" class="nav-link " href="#">My profile</a>
+        </li>
+      </ul>
+      <form  sec:authorize = "hasAnyAuthority('USER','ADMIN')" action = "/login" class="form-inline my-2 my-lg-0">
+        <button class="btn btn-danger my-2 my-sm-0" type="submit">Logout</button>
+      </form>
+    </div>
+  </nav>
+</header>
+<main>
+
+  <div align="center" class = "container text-center centerDiv">
+    <h1>Edit Details</h1>
+    <br />
+    <form action="POST" th:action="@{'/edit/' + ${user.userId}}" th:object="${user}"
+          method="post">
+
+      <table border="0" cellpadding="10" class="thead-dark">
+        <tr>
+          <td  sec:authorize = "hasAuthority('ADMIN')"  >Order ID:</td>
+          <td  sec:authorize = "hasAuthority('ADMIN')"  >
+            <input type="text" class="form-control" th:field="*{userId}" readonly="readonly" />
+          </td>
+        </tr>
+        <tr>
+          <td>First Name:</td>
+          <td>
+            <input type="text" class="form-control" th:field="*{first_name}" />
+          </td>
+        </tr>
+        <tr>
+          <td>Last Name:</td>
+          <td>
+            <input type="text" class="form-control" th:field="*{last_name}" disabled/>
+          </td>
+        </tr>
+        <tr>
+          <td>Address:</td>
+          <td><input type="text" class="form-control" th:field="*{user_address}" /></td>
+        </tr>
+        <tr>
+          <td>Phone Number:</td>
+          <td>
+            <input type="text" class="form-control" th:field="*{user_number}" />
+          </td>
+        </tr>
+        <tr>
+          <td colspan="2"><button class = "btn btn-secondary saveButton" type="submit">Save</button> </td>
+        </tr>
+      </table>
+    </form>
+  </div>
+</main>
+<script>
+    function showModal(){
+     var modal = document.getElementById("dialog");
+     modal.showModal();
+    }
+</script>
+</body>
+</html>

@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="en"
+      xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:sec="https://www.thymeleaf.org/thymeleaf-extras-springsecurity5"
+      xmlns:th="http://www.thymeleaf.org">
+<link rel="stylesheet" type="text/css" href="extensions/filter-control/bootstrap-table-filter-control.css">
+<script src="extensions/filter-control/bootstrap-table-filter-control.js"></script>
+<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+<head>
+  <meta charset="UTF-8">
+  <title>Title</title>
+  <style>
+      .centerDiv {
+  width: 30%;
+  height: 50%;
+  background: white;
+  border : solid 2px lighblue ;
+  border-radius : 8px ;
+  padding :50px;
+  margin-top : 5%;
+  }
+  body {
+  height : auto;
+  background-color:lightgray ;
+  }
+  .saveButton {
+  width:100%;
+  margin-top: 20px;
+  }
+  .selectNew {
+  width:100%;
+  border: solid 2px lightgray;
+    padding: 5px;
+    border-radius: 5px;
+  }
+  table {
+  margin-top:20px;
+  width:100%;
+  }
+  .hiddenDiv{
+   display:none;
+   margin-top:10px;
+  }
+  </style>
+</head>
+<body>
+<header th:insert="/navbarFragment :: navbar"></header>
+<main>
+  <div class="container text-center centerDiv">
+    <h1 style = "font-size:24px;">Admin functionalities</h1>
+    <span th:id = "message"></span>
+    <span style = "color:red;" th:if="${nonUniqueUsername}" th:text = "${nonUniqueUsername}"></span>
+    <br />
+    <form id="myform" th:action = "@{/process_registerAdmin}"
+          method="post" >
+      <button class = "btn btn-secondary saveButton" th:onclick = "category()" th:id = "button"  type="submit">Add new admin</button>
+      <div th:id = "divHidden" class = "hiddenDiv">
+        <input style = "margin-bottom: 5px;"  class="form-control" th:field = "*{user.username}"   type="text" required placeholder="Username..."/>
+        <input style = "margin-bottom: 5px;"  class="form-control" th:field = "*{user.first_name}"  type="text" required placeholder="First Name..."/>
+        <input style = "margin-bottom: 5px;"   class="form-control" th:field = "*{user.lastName}"  type="text" required placeholder="Last Name..."/>
+        <input style = "margin-bottom: 5px;"  class="form-control" th:field = "*{user.password}"   type="text" th:id ="password" required placeholder="Password..."/>
+        <input style = "margin-bottom: 5px;"  class="form-control" th:field = "*{user.MatchingPassword}" th:id = "passwordConfirm"   type="text" required placeholder="Confirm Password..."/>
+        <input style = "margin-bottom: 5px;"   class="form-control" th:field = "*{user.user_address}"   type="text" requi\red placeholder="Address..."/>
+        <input style = "margin-bottom: 5px;"   class="form-control" th:field = "*{user.user_number}"   type="text" required placeholder="Phone Number..."/>
+        <button class = "btn btn-secondary saveButton" type="submit">Save</button>
+      </div>
+    </form>
+    <form >
+      <button th:onclick = "category1()" class = "btn btn-secondary saveButton" type="button" th:id = "button1" >Show all users</button>
+    </form>
+    <div th:id = "divHidden1" class = "hiddenDiv">
+    <table border="1" cellpadding="10" class="table">
+      <thead class="thead-dark">
+      <tr scope = "row">
+        <th scope ="col">Username</th>
+        <th scope ="col">First Name</th>
+        <th scope ="col">Last Name</th>
+        <th scope ="col">Role</th>
+        <th scope="col" sec:authorize = "hasAuthority('ADMIN')">Actions</th>
+      </tr>
+      </thead>
+      <tbody>
+      <tr scope="row" th:each="allUsers: ${users}">
+        <td th:text="${allUsers.username}">Username<\td>
+        <td th:text="${allUsers.first_name}">First Name <\td>
+        <td th:text="${allUsers.lastName}">Last Name <\td>
+        <td th:text="${allUsers.roles}">Role <\td>
+        <td>
+          <div sec:authorize = "hasAnyAuthority('USER','ADMIN')">
+            <a sec:authorize = "hasAuthority('ADMIN')" th:href="@{'/delete-user-admin/' + ${allUsers.userId}}" th:onclick="confirmAction()">Delete</a>
+        </td>
+        </td>
+      </tr>
+      </tbody>
+    </table>
+      </div>
+  </div>
+</main>
+<script>
+  function category(){
+   var div = document.getElementById("divHidden");
+   var button = document.getElementById("button");
+   if(div.style.display === "none"){
+   div.style.display = "block";
+   button.setAttribute("style" ,"background-color:red;");
+   }else
+   {
+    div.style.display = "none"
+    button.setAttribute("style" ,"background-color:gray;");
+   }
+   }
+   function category1(){
+   var div = document.getElementById("divHidden1");
+   var button = document.getElementById("button1");
+   if(div.style.display === "none"){
+   div.style.display = "block";
+   button.setAttribute("style" ,"background-color:red;");
+   }else
+   {
+    div.style.display = "none"
+    button.setAttribute("style" ,"background-color:gray;");
+   }
+   }</script>
+   <script>
+        $(function () {
+        $("#submit").click(function () {
+            var password = $("#password").val();
+            var confirmPassword = $("#passwordConfirm").val();
+            var message =  $("#message");
+            if (password != confirmPassword) {
+                 message.html("Password don't match !").css('color','red');
+                return false;
+            }
+            return true;
+        });
+    })
+   </script>
+</body>
+</html>
