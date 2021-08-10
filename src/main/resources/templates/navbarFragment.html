@@ -30,7 +30,10 @@
           <a sec:authorize = "hasAuthority('ADMIN')" class="nav-link" href = "/admin-panel" th:object="${user}" disabled>Admin Panel</a>
         </li>
         <li class="nav-item">
-          <a sec:authorize = "hasAuthority('USER')" class="nav-link " href="#">This is for users</a>
+          <a sec:authorize = "hasAuthority('USER')" class="nav-link " href="/request-product">Request new products</a>
+        </li>
+        <li class="nav-item">
+          <a sec:authorize = "hasAuthority('USER')" class="nav-link " href="#">Support</a>
         </li>
       </ul>
       <form  sec:authorize = "hasAnyAuthority('USER','ADMIN')" action = "/login" class="form-inline  float-end">

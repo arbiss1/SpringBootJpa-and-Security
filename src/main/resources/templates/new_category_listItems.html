@@ -6,6 +6,9 @@
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
 <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
       integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+<link rel="stylesheet" href="https://unpkg.com/bootstrap-table@1.18.3/dist/bootstrap-table.min.css">
+<link rel="stylesheet" type="text/css" href="extensions/filter-control/bootstrap-table-filter-control.css">
+<script src="extensions/filter-control/bootstrap-table-filter-control.js"></script>
 <!--<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/zcss/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">-->
 <head>
   <meta charset="UTF-8">
@@ -72,7 +75,7 @@
             <td th:text="${categoryName.category}">Category List <\td>
               <td>
               <div sec:authorize = "hasAnyAuthority('USER','ADMIN')">
-                <a sec:authorize = "hasAuthority('ADMIN')"  th:href="@{'/delete-category/' + ${categoryName.categoryId}}" th:onclick="confirmAction()" data-bs-toggle="modal" data-bs-target="#staticBackdrop">Delete</a>
+               <a sec:authorize = "hasAuthority('ADMIN')"  th:href="@{'/delete-category/' + ${categoryName.categoryId}}" th:onclick="confirmAction()" data-bs-toggle="modal" data-bs-target="#staticBackdrop">Delete</a>
               </div>
             </td>
             </td>
@@ -80,31 +83,6 @@
           </tbody>
         </table>
         </div>
-  </div>
-  <!-- Button trigger modal -->
-  <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModalCenter">
-    Launch demo modal
-  </button>
-
-  <!-- Modal -->
-  <div class="modal fade" id="exampleModalCenter" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered" role="document">
-      <div class="modal-content">
-        <div class="modal-header">
-          <h5 class="modal-title" id="exampleModalCenterTitle">Modal title</h5>
-          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-            <span aria-hidden="true">×</span>
-          </button>
-        </div>
-        <div class="modal-body">
-          ...
-        </div>
-        <div class="modal-footer">
-          <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-          <button type="button" class="btn btn-primary">Save changes</button>
-        </div>
-      </div>
-    </div>
   </div>
 </main>
 <script>

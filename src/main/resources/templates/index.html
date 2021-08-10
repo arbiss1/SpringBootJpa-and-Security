@@ -2,7 +2,11 @@
 <html xmlns="http://www.w3.org/1999/xhtml"
 xmlns:sec="https://www.thymeleaf.org/thymeleaf-extras-springsecurity5"
       xmlns:th="http://www.thymeleaf.org">
-      <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+      <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
+            integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+      <link rel="stylesheet" href="https://unpkg.com/bootstrap-table@1.18.3/dist/bootstrap-table.min.css">
+      <link rel="stylesheet" type="text/css" href="extensions/filter-control/bootstrap-table-filter-control.css">
+      <script src="extensions/filter-control/bootstrap-table-filter-control.js"></script>
 <head>
 <meta charset="utf-8"/>
 <title>Product Manager</title>
@@ -51,15 +55,21 @@ xmlns:sec="https://www.thymeleaf.org/thymeleaf-extras-springsecurity5"
         </form>
     </div>
     <br/><br/>
-    <table border="1" cellpadding="10" class="table" style ="width:65%">
+    <table border="1" cellpadding="10" style ="width:65%" class = "table"
+           id = "table"
+           data-toggle="table"
+           data-search="true"
+           data-filter-control="true"
+           data-show-export="true"
+           data-click-to-select="true">
         <thead class="thead-dark">
             <tr scope = "row">
-                <th scope ="col">Customer Name</th>
+                <th  scope ="col">Customer Name</th>
                 <th scope="col">Order Name</th>
-                <th scope="col">Address</th>
-                <th scope ="col">Phone Number</th>
+                <th  scope="col">Address</th>
+                <th  scope ="col">Phone Number</th>
                 <th scope="col">Quantity</th>
-                <th scope="col">Price</th>
+                <th  scope="col">Price</th>
 <!--                <th scope = "col" sec:authorize = "hasAuthority('ADMIN')">Status</th>-->
                 <th scope="col" sec:authorize = "permitAll()">Actions</th>
             </tr>

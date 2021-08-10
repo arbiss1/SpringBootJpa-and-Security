@@ -42,7 +42,6 @@ public class SecutiryConfiguration extends WebSecurityConfigurerAdapter {
 		.antMatchers("/new").hasAuthority("USER")
 		.antMatchers("/edit/{id}").hasAnyAuthority("USER")
 		.antMatchers("/delete/{id}").hasAnyAuthority("ADMIN","USER")
-				.antMatchers("/delete/{id}").hasRole("USER")
 		.and()
 		.formLogin()
 		.loginPage("/procces-login")
