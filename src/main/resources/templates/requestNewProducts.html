@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en"
+      xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:sec="https://www.thymeleaf.org/thymeleaf-extras-springsecurity5"
+      xmlns:th="http://www.thymeleaf.org">
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
+      integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+<!--<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/zcss/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">-->
+<head>
+  <meta charset="UTF-8">
+  <title>Title</title>
+  <style>
+     .centerDiv {
+  width: 30%;
+  height: 50%;
+  background: white;
+  border : solid 2px lightblue ;
+  border-radius : 8px ;
+  padding :50px;
+  margin-top : 5%;
+  }
+  body {
+  height : auto;
+  background-color:lightgray ;
+  }
+  .saveButton {
+  width:100%;
+  margin-top: 20px;
+  }
+  .selectNew {
+  width:100%;
+  border: solid 2px lightgray;
+    padding: 5px;
+    border-radius: 5px;
+  }
+  table {
+  margin-top:20px;
+  width:100%;
+  }
+  </style>
+</head>
+<body>
+<header th:insert="/navbarFragment :: navbar"></header>
+<main>
+  <div class="container text-center centerDiv">
+    <h1>You can make requests for new products here</h1>
+    <p style = "color:red;" th:if = "${messageError}" th:text = "${messageError}"></p>
+    <p id = "message"></p>
+    <br />
+    <form id="myform" th:action="@{/process-product-register}"
+          method="post" th:object = "${productRequests}">
+      <div th:id = "formHidden">
+        <label>Product:</label>
+        <input  class="form-control" type="text" th:field = "*{product}" required placeholder="Enter new product..."/>
+      </div>
+      <button class = "btn btn-secondary saveButton" id = "submit" type="submit">Save</button>
+    </form>
+    <form  th:action = "@{/registerCategory}" th:object = "${listProductsRequested}">
+      <button th:onclick = "category()"    class = "btn btn-secondary saveButton" type="button" th:id = "button" >Show requested products</button>
+    </form>
+    <div th:id = "divHidden"  style ="display:none;">
+      <table border="1" cellpadding="10" class="table">
+        <thead class="thead-dark">
+        <tr scope = "row" >
+          <th scope ="col"  >Product List</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr scope="row" th:each = "products : ${listProductsRequested}">
+          <td th:text = "${products.product}" th:value = "${products.product}">Product List <\td>
+        </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</main>
+<script>
+  function category(){
+   var div = document.getElementById("divHidden");
+   var button = document.getElementById("button");
+   if(div.style.display === "none"){
+   div.style.display = "block";
+   button.setAttribute("style" ,"background-color:red;");
+   }else
+   {
+    div.style.display = "none"
+    button.setAttribute("style" ,"background-color:gray;");
+   }
+   }
+
+</script>
+      </script>
+<script>
+</script>
+</body>
+</html>
