@@ -28,7 +28,7 @@ public class SecutiryConfiguration extends WebSecurityConfigurerAdapter {
 	AuthenticationSuccessHandler successHandler;
 	
 	public void addViewControllers(ViewControllerRegistry registry) {
-        registry.addViewController("/login").setViewName("login");
+        registry.addViewController("/procces-login").setViewName("login");
     }
 	
 	protected void configure(AuthenticationManagerBuilder auth) throws Exception {
@@ -45,7 +45,7 @@ public class SecutiryConfiguration extends WebSecurityConfigurerAdapter {
 				.antMatchers("/delete/{id}").hasRole("USER")
 		.and()
 		.formLogin()
-		.loginPage("/login")
+		.loginPage("/procces-login")
 		.successHandler(successHandler)
 		.permitAll();
 		;

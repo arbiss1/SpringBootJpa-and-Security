@@ -49,7 +49,11 @@
                     <option th:each ="orderProduct:${orderList}"  th:text = "${orderProduct.listName}" th:value = "${orderProduct.listName}"></option>
                     </select>
 			<label>Quantity:</label>
-					<input  class="form-control" type="text" th:field="*{quantity}"  required/>
+					<input  class="form-control" type="text" th:field="*{quantity}" th:id = "quantity"  required/>
+			<label>Price:</label>
+			<input  class="form-control" type="text" th:field="${order.price}"  required/>
+			<label>Total Price:</label>
+			<input  class="form-control" type="text" th:id = "totalPrice"  required/>
 <!--			<p style = "display:none;">Price for your order is <span th:value = "${orderName.price}"><span th:value = "${order.quantity}"></span></span><p th:id = "totalPrice"></p></p>-->
 					<button  class = "btn btn-secondary saveButton" type="submit">Save</button>
 		</form>
@@ -58,5 +62,12 @@
 <!--		  var totalPrice = document.getElementById("totalPrice");-->
 
 <!--	  </script>-->
+	  <script>
+		  var totalPrice = document.getElementById("totalPrice");
+		  var price  = document.getElementById("price").value;
+		  var quantity = document.getElementById("quantity").value;
+		  totalPrice = (quantity * price) ;
+		  totalPrice.innerHTML = totalPrice.value;
+	  </script>
 </body>
 </html>

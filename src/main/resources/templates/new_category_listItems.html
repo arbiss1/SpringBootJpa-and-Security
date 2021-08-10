@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="en"
+      xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:sec="https://www.thymeleaf.org/thymeleaf-extras-springsecurity5"
+      xmlns:th="http://www.thymeleaf.org">
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
+      integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+<!--<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/zcss/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">-->
+<head>
+  <meta charset="UTF-8">
+  <title>Title</title>
+  <style>
+     .centerDiv {
+  width: 30%;
+  height: 50%;
+  background: white;
+  border : solid 2px lightblue ;
+  border-radius : 8px ;
+  padding :50px;
+  margin-top : 5%;
+  }
+  body {
+  height : auto;
+  background-color:lightgray ;
+  }
+  .saveButton {
+  width:100%;
+  margin-top: 20px;
+  }
+  .selectNew {
+  width:100%;
+  border: solid 2px lightgray;
+    padding: 5px;
+    border-radius: 5px;
+  }
+  table {
+  margin-top:20px;
+  width:100%;
+  }
+  </style>
+</head>
+<body>
+<header th:insert="/navbarFragment :: navbar"></header>
+<main>
+  <div class="container text-center centerDiv">
+    <h1>Add a Category</h1>
+    <p style = "color:red;" th:if = "${nonUniqueCategory}" th:text = "${nonUniqueCategory}"></p>
+    <br />
+    <form id="myform"  th:action="@{/process_register_category}"
+           method="post" th:object = "${category}">
+      <div th:id = "formHidden">
+            <label>Category Name:</label>
+
+            <input  class="form-control" type="text" required th:field = "*{category}" placeholder="Enter new category..."/>
+      </div>
+      <button class = "btn btn-secondary saveButton" type="submit">Save</button>
+    </form>
+      <form th:action = "@{/registerCategory}" th:object = "${listCategories}">
+      <button th:onclick = "category()"  class = "btn btn-secondary saveButton" type="button" th:id = "button" >Show Category List</button>
+      </form>
+        <div th:id = "divHidden"  style ="display:none;">
+        <table border="1" cellpadding="10" class="table">
+          <thead class="thead-dark">
+          <tr scope = "row">
+            <th scope ="col">Category List</th>
+            <th scope="col" sec:authorize = "hasAuthority('ADMIN')">Actions</th>
+          </tr>
+          </thead>
+          <tbody>
+          <tr scope="row" th:each="categoryName: ${listCategories}">
+            <td th:text="${categoryName.category}">Category List <\td>
+              <td>
+              <div sec:authorize = "hasAnyAuthority('USER','ADMIN')">
+                <a sec:authorize = "hasAuthority('ADMIN')"  th:href="@{'/delete-category/' + ${categoryName.categoryId}}" th:onclick="confirmAction()" data-bs-toggle="modal" data-bs-target="#staticBackdrop">Delete</a>
+              </div>
+            </td>
+            </td>
+          </tr>
+          </tbody>
+        </table>
+        </div>
+  </div>
+  <!-- Button trigger modal -->
+  <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModalCenter">
+    Launch demo modal
+  </button>
+
+  <!-- Modal -->
+  <div class="modal fade" id="exampleModalCenter" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="exampleModalCenterTitle">Modal title</h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">×</span>
+          </button>
+        </div>
+        <div class="modal-body">
+          ...
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+          <button type="button" class="btn btn-primary">Save changes</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</main>
+<script>
+  function category(){
+   var div = document.getElementById("divHidden");
+   var button = document.getElementById("button");
+   if(div.style.display === "none"){
+   div.style.display = "block";
+   button.setAttribute("style" ,"background-color:red;");
+   }else
+   {
+    div.style.display = "none"
+    button.setAttribute("style" ,"background-color:gray;");
+   }
+   }
+      </script>
+<script>
+var myModal = document.getElementById('myModal')
+var myInput = document.getElementById('myInput')
+
+myModal.addEventListener('shown.bs.modal', function () {
+  myInput.focus()
+})
+</script>
+</body>
+</html>

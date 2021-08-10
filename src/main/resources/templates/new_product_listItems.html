@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en"
+      xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:sec="https://www.thymeleaf.org/thymeleaf-extras-springsecurity5"
+      xmlns:th="http://www.thymeleaf.org">
+<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
+      integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+  <style>
+      .centerDiv {
+  width: 30%;
+  height: 50%;
+  background: white;
+  border : solid 2px lighblue ;
+  border-radius : 8px ;
+  padding :50px;
+  margin-top : 5%;
+  }
+  body {
+  height : auto;
+  background-color:lightgray ;
+  }
+  .saveButton {
+  width:100%;
+  margin-top: 20px;
+  }
+  .selectNew {
+  width:100%;
+  border: solid 2px lightgray;
+    padding: 5px;
+    border-radius: 5px;
+  }
+  table {
+  margin-top:20px;
+  width:100%;
+  }
+  </style>
+</head>
+<body>
+<header th:insert="/navbarFragment :: navbar"></header>
+<main>
+  <div class="container text-center centerDiv">
+    <h1>Add a product</h1>
+    <br />
+    <form  th:action="@{/process_register_product}"
+          method="post">
+      <label>Category:</label>
+      <select class="selectNew" th:object = "${choseCategory}" th:field = "*{category}">
+        <option th:value = "null"disabled selected>--Please choose an option--</option>
+        <option th:each ="categoryName:${listCategory}" th:text = "${categoryName.category}" th:value = "${categoryName.categoryId}"></option>
+      </select>
+      <br>
+      <label>Product Name:</label>
+      <input  class="form-control" type="text" placeholder="Name..." required th:field = *{orderList.listName}/>
+      <label>Price($):</label>
+      <input  class="form-control" type="text" required placeholder="Price..." th:field = *{orderList.price}/>
+      <button class = "btn btn-secondary saveButton" type="submit">Save</button>
+      <form th:action = "@{/new_product_listItems}" th:object = "${listProducts}">
+        <button th:onclick = "product()" class = "btn btn-secondary saveButton" type="submit" th:id = "button">Show all products</button>
+      </form>
+      <div th:id = "divHidden"  style ="display:none;">
+        <table border="1" cellpadding="10" class="table">
+          <thead class="thead-dark">
+          <tr scope = "row">
+            <th scope ="col">Products</th>
+            <th scope ="col">Price</th>
+            <th scope="col" sec:authorize = "hasAuthority('ADMIN')">Actions</th>
+          </tr>
+          </thead>
+          <tbody>
+          <tr scope="row" th:each="productName: ${listProducts}">
+            <td th:text="${productName.listName}">Products<\td>
+            <td th:text="${productName.price}">Price<\td>
+            <td>
+              <div sec:authorize = "hasAnyAuthority('USER','ADMIN')">
+                <a sec:authorize = "hasAuthority('ADMIN')"  th:href="@{'/delete-product/' + ${productName.listId}}">Delete</a>
+              </div>
+            </td>
+            </td>
+          </tr>
+          </tbody>
+        </table>
+      </div>
+    </form>
+    </div>
+</main>
+<script>
+  function product(){
+   var div = document.getElementById("divHidden");
+   var button = document.getElementById("button");
+   if(div.style.display === "none"){
+   div.style.display = "block";
+   button.setAttribute("style" ,"background-color:red;");
+   }else
+   {
+    div.style.display = "none"
+    button.setAttribute("style" ,"background-color:gray;");
+   }
+   }
+</script>
+</body>
+</html>

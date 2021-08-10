@@ -32,7 +32,8 @@
 <body>
 <div class="container text-center centerDiv">
     <h1>Login</h1>
-      <form th:action="@{/login}" method="post" style="max-width: 350px; margin: 0 auto;">
+    <span style = "color:red;" th:if="${noUsernameExists}" th:text = "${noUsernameExists}"></span>
+      <form th:action="@{/procces-login}" method="post" style="max-width: 350px; margin: 0 auto;">
     <div th:if="${param.error}">
             <p class="text-danger" th:id = "exception">[[${session.SPRING_SECURITY_LAST_EXCEPTION.message}]]</p>
         </div>
