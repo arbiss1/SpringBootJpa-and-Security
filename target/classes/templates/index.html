@@ -2,9 +2,11 @@
 <html xmlns="http://www.w3.org/1999/xhtml"
 xmlns:sec="https://www.thymeleaf.org/thymeleaf-extras-springsecurity5"
       xmlns:th="http://www.thymeleaf.org">
-      <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
-            integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
+      integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
       <link rel="stylesheet" href="https://unpkg.com/bootstrap-table@1.18.3/dist/bootstrap-table.min.css">
+<link rel="stylesheet/less" type="text/css" href="styles.less" />
+<script src="less.js" type="text/javascript"></script>
       <link rel="stylesheet" type="text/css" href="extensions/filter-control/bootstrap-table-filter-control.css">
       <script src="extensions/filter-control/bootstrap-table-filter-control.js"></script>
 <head>
@@ -21,25 +23,10 @@ xmlns:sec="https://www.thymeleaf.org/thymeleaf-extras-springsecurity5"
   border-radius : 8px ;
   padding :50px;
   }
-		header{
-		heigh : 20%;
-		}
-		main {
-		heigh : 80%;
-		}
-		.topTitle {
-		font-weight:bolder;
-		}
-		tr:hover{
-		background-color : lightblack;
-		}
-		tr{
-		background-color : white;
-		}
 	</style>
 </head>
 <body>
-<header th:insert="/navbarFragment :: navbar"></header>
+<aside th:insert="/navbarFragment :: navbar"></aside>
 <main>
 
 <div align="center" style="margin-top:5%;">
