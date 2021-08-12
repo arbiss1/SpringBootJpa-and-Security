@@ -9,5 +9,7 @@ import java.util.Optional;
 public interface ProductRequestsRepository extends JpaRepository<ProductRequests,Long> {
 
 
-    List<ProductRequests> findByProductId(Long userRequestedId);
+    List<ProductRequests> findByuserRequestedId(Long userRequestedId);
+
+    Optional<ProductRequests> findByProduct (String product);
 }

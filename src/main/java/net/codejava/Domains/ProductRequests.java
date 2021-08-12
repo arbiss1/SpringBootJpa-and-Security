@@ -14,7 +14,27 @@ public class ProductRequests {
 
     private long userRequestedId;
 
+    private String requestedBy;
+
+    private String status;
+
     public ProductRequests(){}
+
+    public String getStatus() {
+        return status;
+    }
+
+    public void setStatus(String status) {
+        this.status = status;
+    }
+
+    public String getRequestedBy() {
+        return requestedBy;
+    }
+
+    public void setRequestedBy(String requestedBy) {
+        this.requestedBy = requestedBy;
+    }
 
     public long getProductId() {
         return productId;

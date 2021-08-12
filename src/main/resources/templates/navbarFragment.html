@@ -11,11 +11,6 @@
   <meta charset="UTF-8">
   <title>Title</title>
   <style>
-
-    .divNav{
-    width: 18%;
-    background-color:darkslateblue;
-    }
     .a{
         margin-left: 2px;
         }
@@ -23,9 +18,9 @@
 </head>
 <body>
 <div th:fragment="navbar">
-  <header class="header" id="header">
-    <div class="header_toggle"> <i class="fas fa-bars" onclick="myFunction()" id = "header-toggle" style = "color:purple;"></i> </div>
-  </header>
+<!--  <header class="header" id="header">-->
+<!--    <div class="header_toggle"> <i class="fas fa-bars" onclick="myFunction()" id = "header-toggle" style = "color:purple;"></i> </div>-->
+<!--  </header>-->
   <div class="l-navbar divNav" id="nav-bar">
     <nav class="nav">
       <div> <a sec:authorize = "hasAuthority('ADMIN')" href="/admin" class="nav_logo a">
@@ -48,7 +43,8 @@
           <a sec:authorize = "hasAuthority('ADMIN')" href = "/admin-panel" th:object="${user}" class="nav_link">
             <i class="fas fa-user-shield"></i> <span class="nav_name">Admin Panel</span>
         </a>
-          <a sec:authorize = "hasAuthority('USER')" href="/request-product" class="nav_link"> <i class='bx bx-bookmark nav_icon'></i>
+          <a sec:authorize = "hasAuthority('USER')" href="/request-product" class="nav_link">
+            <i class="fab fa-product-hunt"></i>
           <span class="nav_name">Request new products</span>
         </a>
           <a  sec:authorize = "hasAuthority('USER')" href="#" class="nav_link">
@@ -67,11 +63,11 @@
           <strong th:text = "${username}"></strong>
           </form>
           <form  sec:authorize = "hasAuthority('ADMIN')" th:object = "${adminUsername}">
-            <strong style = "margin-left:2px;" th:text = "${adminUsername}"></strong>
+            <strong style = "margin-left:2px;color:lightgray;" th:text = "${adminUsername}"></strong>
           </form>
         </a>
         <ul class="dropdown-menu text-small shadow" aria-labelledby="dropdownUser2" style="">
-          <li><a class="dropdown-item" href="#">Profile</a></li>
+          <li><a class="dropdown-item" href="/" id = "profile">Profile</a></li>
           <li><hr class="dropdown-divider"></li>
           <li><a class="dropdown-item" href="/login">Sign out</a></li>
         </ul>
@@ -80,7 +76,6 @@
   </div>
 </div>
 <script>
-
 </script>
 </body>
 </html>

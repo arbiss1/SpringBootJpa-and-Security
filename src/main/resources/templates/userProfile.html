@@ -26,43 +26,10 @@
 		.topTitle {
 		font-weight:bolder;
 		}
-		tr:hover{
-		background-color : lightblack;
-		}
-		tr{
-		background-color : white;
-		}
 	</style>
 </head>
 <body>
-<header>
-  <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
-    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarTogglerDemo03" aria-controls="navbarTogglerDemo03" aria-expanded="false" aria-label="Toggle navigation">
-      <span class="navbar-toggler-icon"></span>
-    </button>
-    <a  sec:authorize = "hasAuthority('ADMIN')" class="navbar-brand topTitle" href="/admin">Order Manager</a>
-    <a  sec:authorize = "hasAuthority('USER')" class="navbar-brand topTitle" href="/user">Order Manager</a>
-
-    <div class="collapse navbar-collapse" id="navbarTogglerDemo03">
-      <ul class="navbar-nav mr-auto mt-2 mt-lg-0">
-        <li class="nav-item">
-          <a sec:authorize = "hasAuthority('ADMIN')" class="nav-link" href="/registerCategory" th:onclick = "showModal()">Add new category</a>
-        </li>
-        <li class="nav-item">
-          <a sec:authorize = "hasAuthority('ADMIN')" class="nav-link " href="/new_product_listItems">Add new product</a>
-        </li>
-        <li class="nav-item">
-          <a sec:authorize = "hasAuthority('USER')" class="nav-link " href="#">My profile</a>
-        </li>
-      </ul>
-      <form  sec:authorize = "hasAnyAuthority('USER','ADMIN')" action = "/login" class="form-inline my-2 my-lg-0">
-        <button class="btn btn-danger my-2 my-sm-0" type="submit">Logout</button>
-      </form>
-    </div>
-  </nav>
-</header>
-<main>
-
+<dialog>
   <div align="center" class = "container text-center centerDiv">
     <h1>Edit Details</h1>
     <br />
@@ -104,12 +71,6 @@
       </table>
     </form>
   </div>
-</main>
-<script>
-    function showModal(){
-     var modal = document.getElementById("dialog");
-     modal.showModal();
-    }
-</script>
+</dialog>
 </body>
 </html>

@@ -9,6 +9,7 @@ import net.codejava.Services.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.parameters.P;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -95,7 +96,7 @@ public class AppController {
                 : "redirect:/admin";
     }
 
-    @RequestMapping("/new")
+    @RequestMapping(value = "/new" , method = RequestMethod.POST)
     public String showNewProductPage(Model model, OrderList choseOrder, net.codejava.Domains.OrderCategory choseCategory) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         String username = authentication.getName();
@@ -114,6 +115,11 @@ public class AppController {
         model.addAttribute("choseOrder", choseOrder);
         return "new_product";
     }
+    //puno ktu neser
+//    @RequestMapping(value = "/new", method = RequestMethod.GET)
+//    public @ResponseBody  List<Subcategory> getAllSubcategories(@RequestParam(value="categoryId") int categoryId) {
+//        return categoryService.getAllSubcategories(categoryId);
+//    }
 
     @GetMapping("/register")
     public String showRegistrationForm(Model model, User user2, BindingResult result) {
@@ -352,43 +358,42 @@ public class AppController {
         return "redirect:/new_product_listItems";
     }
 
-    @RequestMapping(value = "/user/edit/{userId}", method = RequestMethod.POST)
-    public String editUser(@PathVariable(name = "userId") int userId, User userEdit, Model model) {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        String username = authentication.getName();
-        long id = repo.findByUsername(username).get().getUserId();
-        User user = userService.get(id);
-        user.setUserId(repo.findByUsername(username).get().getUserId());
-        user.setUser_address(userEdit.getUser_address());
-        user.setUser_number(userEdit.getUser_number());
-        user.setFirst_name(userEdit.getFirst_name());
-        user.setLastName(userEdit.getLastName());
-        System.out.println(user);
-        repo.save(user);
-        return "redirect:/user";
-    }
-
-    @RequestMapping("/user/edit/{userId}")
-    public ModelAndView showEditUserPage(@PathVariable(name = "userId") int userId) {
-        ModelAndView mav = new ModelAndView("userProfile");
-        User user = userService.get(userId);
-        mav.addObject("user", user);
-        System.out.println(mav);
-        repo.save(user);
-        return mav;
-    }
+//    @RequestMapping(value = "/user/edit/{userId}", method = RequestMethod.POST)
+//    public String editUser(@PathVariable(name = "userId") int userId, User userEdit, Model model) {
+//        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+//        String username = authentication.getName();
+//        long id = repo.findByUsername(username).get().getUserId();
+//        User user = userService.get(id);
+//        user.setUserId(repo.findByUsername(username).get().getUserId());
+//        user.setUser_address(userEdit.getUser_address());
+//        user.setUser_number(userEdit.getUser_number());
+//        user.setFirst_name(userEdit.getFirst_name());
+//        user.setLastName(userEdit.getLastName());
+//        System.out.println(user);
+//        repo.save(user);
+//        return "redirect:/user";
+//    }
+//
+//    @RequestMapping("/user/edit/{userId}")
+//    public ModelAndView showEditUserPage(@PathVariable(name = "userId") int userId) {
+//        ModelAndView mav = new ModelAndView("userProfile");
+//        User user = userService.get(userId);
+//        mav.addObject("user", user);
+//        System.out.println(mav);
+//        repo.save(user);
+//        return mav;
+//    }
 
     @RequestMapping("/request-product")
-    public String showRequestProduct(Model model){
+    public String showRequestProduct(Model model , ProductRequests requests){
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         String username = authentication.getName();
         Optional<User> user = repo.findByUsername(username);
         System.out.println(username);
         long id = user.get().getUserId();
-        System.out.println(id);
-        List<ProductRequests> productRequests1 = productService.listAllByProduct(user.get().getUserId());
+        List<ProductRequests> productRequests1 = productService.listAllByProduct(id);
         System.out.println(productRequests1);
-        System.out.println(productRepo.findByProductId(user.get().getUserId()));
+        System.out.println(productRepo.findByuserRequestedId(user.get().getUserId()));
         ProductRequests productRequests = new ProductRequests();
         model.addAttribute("username",getUsername(model));
         model.addAttribute("adminUsername",getUsername(model));
@@ -413,14 +418,46 @@ public class AppController {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         String username = authentication.getName();
         Optional<User> user = repo.findByUsername(username);
+        long id = user.get().getUserId();
+        List<ProductRequests> productRequests1 = productService.listAllByProduct(id);
+        model.addAttribute("listProductsRequested" , productRequests1);
         if(productService.isRequestedProductPresent(productRequests)){
             String messageError = "Product already exists !";
             model.addAttribute("messageError" , messageError);
             return "requestNewProducts";
         }else{
+            productRequests.setRequestedBy(user.get().getFirst_name() + " " + user.get().getLastName());
             productRequests.setUserRequestedId(user.get().getUserId());
+            productRequests.setStatus("...");
             productRepo.save(productRequests);
             return "redirect:/request-product";
         }
     }
+
+    @RequestMapping("/delete-requested-product/{productId}")
+    public String deleteRequestedProduct(@PathVariable(name = "productId") long productId, ProductRequests productRequests, Model model) {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String username = authentication.getName();
+        Optional<User> user = repo.findByUsername(username);
+      productService.delete(productId);
+        return user.get().getRoles().equals("USER")
+                ? "redirect:/request-product"
+                : "redirect:/admin-panel";
+    }
+
+    @RequestMapping("/product-approved/{product}")
+    public String approvedProduct (@PathVariable(name = "product") String product, Model model,ProductRequests productRequests){
+        Optional<ProductRequests> productName = productRepo.findByProduct(product);
+        List<ProductRequests> productList = productRepo.findAll();
+        String statusM = "Approved";
+        productName.get().setStatus(statusM);
+        productRequests.setStatus(statusM);
+        productRequests.setUserRequestedId(productName.get().getUserRequestedId());
+        productRequests.setRequestedBy(productName.get().getRequestedBy());
+        productRequests.setProduct(productName.get().getProduct());
+        System.out.println(productRequests);
+        productRepo.save(productRequests);
+        return "redirect:/admin-panel";
+    }
+
 }

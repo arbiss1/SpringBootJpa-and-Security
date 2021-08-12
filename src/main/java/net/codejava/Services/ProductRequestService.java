@@ -28,6 +28,12 @@ public class ProductRequestService {
 
 
     public List<ProductRequests> listAllByProduct(Long userRequestedId) {
-        return repoProducts.findByProductId(userRequestedId);
+        return repoProducts.findByuserRequestedId(userRequestedId);
     }
-}
+    public void delete(long productRequests){repoProducts.deleteById(productRequests);}
+
+    public ProductRequests get(String product) {
+       return repoProducts.findByProduct(product).get();
+    }
+    }
+
