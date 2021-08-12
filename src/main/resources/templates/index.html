@@ -1,15 +1,18 @@
 <!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml"
-xmlns:sec="https://www.thymeleaf.org/thymeleaf-extras-springsecurity5"
+      xmlns:sec="https://www.thymeleaf.org/thymeleaf-extras-springsecurity5"
       xmlns:th="http://www.thymeleaf.org">
-      <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
-            integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
-      <link rel="stylesheet" href="https://unpkg.com/bootstrap-table@1.18.3/dist/bootstrap-table.min.css">
-      <link rel="stylesheet" type="text/css" href="extensions/filter-control/bootstrap-table-filter-control.css">
-      <script src="extensions/filter-control/bootstrap-table-filter-control.js"></script>
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet"
+      integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM"
+        crossorigin="anonymous"></script>
+<link rel="stylesheet" href="https://pro.fontawesome.com/releases/v5.10.0/css/all.css"
+      integrity="sha384-AYmEC3Yw5cVb3ZcuHtOA93w35dYTsvhLPVnYs9eStHfGJvOvKxVfELGroGkvsg+p" crossorigin="anonymous"/>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
 <head>
-<meta charset="utf-8"/>
-<title>Product Manager</title>
+    <meta charset="utf-8"/>
+    <title>Product Manager</title>
     <style>
 		body {
 		background-color : lightgray;
@@ -21,93 +24,298 @@ xmlns:sec="https://www.thymeleaf.org/thymeleaf-extras-springsecurity5"
   border-radius : 8px ;
   padding :50px;
   }
-		header{
-		heigh : 20%;
-		}
-		main {
-		heigh : 80%;
-		}
-		.topTitle {
-		font-weight:bolder;
-		}
-		tr:hover{
-		background-color : lightblack;
-		}
-		tr{
-		background-color : white;
-		}
-	</style>
-</head>
-<body>
-<header th:insert="/navbarFragment :: navbar"></header>
-<main>
+  table{
+  background-color:white;
+  }
+   @import url("https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700&display=swap");
 
-<div align="center" style="margin-top:5%;">
-   <h1 sec:authorize = "hasAuthority('USER')">Here are your orders</h1>
-    <h1 sec:authorize = "hasAuthority('ADMIN')">All orders </h1>
-<!--    <div sec:authorize = "isAuthenticated()">-->
-<!--    <h4 style = "font-wight:bold;">Hello <span sec:authentication = "name"></span></h4>-->
-<!--&lt;!&ndash;    Your role is : <span sec:authentication = "principal.authorities">Roles</span>&ndash;&gt;-->
-<!--    </div>-->
-    <div sec:authorize = "hasAnyAuthority('USER')">
-        <form th:action = "@{/new}" method="post">
-    <button class = "btn btn-primary">Create New Order</button>
-        </form>
-    </div>
-    <br/><br/>
-    <table border="1" cellpadding="10" style ="width:65%" class = "table"
-           id = "table"
-           data-toggle="table"
-           data-search="true"
-           data-filter-control="true"
-           data-show-export="true"
-           data-click-to-select="true">
-        <thead class="thead-dark">
-            <tr scope = "row">
-                <th  scope ="col">Customer Name</th>
+:root {
+    --header-height: 3rem;
+    --nav-width: 68px;
+    --first-color: #4723D9;
+    --first-color-light: #AFA5D9;
+    --white-color: #F7F6FB;
+    --body-font: 'Nunito', sans-serif;
+    --normal-font-size: 1rem;
+    --z-fixed: 100
+}
+
+*,
+::before,
+::after {
+    box-sizing: border-box
+}
+
+body {
+    position: relative;
+    margin: var(--header-height) 0 0 0;
+    padding: 0 1rem;
+    font-family: var(--body-font);
+    font-size: var(--normal-font-size);
+    transition: .5s
+}
+
+a {
+    text-decoration: none
+}
+
+.header {
+    width: 100%;
+    height: var(--header-height);
+    position: fixed;
+    top: 0;
+    left: 0;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 1rem;
+    background-color: lightgray;
+    z-index: var(--z-fixed);
+    transition: .5s
+}
+
+.header_toggle {
+    color: var(--first-color);
+    font-size: 1.5rem;
+    cursor: pointer
+}
+
+.header_img {
+    width: 35px;
+    height: 35px;
+    display: flex;
+    justify-content: center;
+    border-radius: 50%;
+    overflow: hidden
+}
+
+.header_img img {
+    width: 40px
+}
+
+.l-navbar {
+    position: fixed;
+    top: 0;
+    left: -30%;
+    width: var(--nav-width);
+    height: 100vh;
+    background-color: var(--first-color);
+    padding: .5rem 1rem 0 0;
+    transition: .5s;
+    z-index: var(--z-fixed)
+}
+
+.nav {
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    overflow: hidden
+}
+
+.nav_logo,
+.nav_link {
+    display: grid;
+    grid-template-columns: max-content max-content;
+    align-items: center;
+    column-gap: 1rem;
+    padding: .5rem 0 .5rem 1.5rem
+}
+
+.nav_logo {
+    margin-bottom: 2rem
+}
+
+.nav_logo-icon {
+    font-size: 1.25rem;
+    color: var(--white-color)
+}
+
+.nav_logo-name {
+    color: var(--white-color);
+    font-weight: 700
+}
+
+.nav_link {
+    position: relative;
+    color: var(--first-color-light);
+    margin-bottom: 1.5rem;
+    transition: .3s
+}
+
+.nav_link:hover {
+    color: var(--white-color)
+}
+
+.nav_icon {
+    font-size: 1.25rem
+}
+
+.show {
+    left: 0
+}
+
+.body-pd {
+    padding-left: calc(var(--nav-width) + 1rem)
+}
+
+.active {
+    color: var(--white-color)
+}
+
+.active::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    width: 2px;
+    height: 32px;
+    background-color: var(--white-color)
+}
+
+.height-100 {
+    height: 100vh
+}
+
+@media screen and (min-width: 768px) {
+    body {
+        margin: calc(var(--header-height) + 1rem) 0 0 0;
+        padding-left: calc(var(--nav-width) + 2rem)
+    }
+
+    .header {
+        height: calc(var(--header-height) + 1rem);
+        padding: 0 2rem 0 calc(var(--nav-width) + 2rem)
+    }
+
+    .header_img {
+        width: 40px;
+        height: 40px
+    }
+
+    .header_img img {
+        width: 45px
+    }
+
+    .l-navbar {
+        left: 0;
+        padding: 1rem 1rem 0 0
+    }
+
+    .show {
+        width: calc(var(--nav-width) + 156px)
+    }
+
+    .body-pd {
+        padding-left: calc(var(--nav-width) + 188px)
+    }
+}
+i {
+font-size: 23px;
+color: white;
+}
+    .aAncor{
+    color: lightgray;
+    font-weight: 100;
+    }
+.divNav{
+background-color:darkslateblue;}
+
+
+    </style>
+</head>
+<body id="body-pd">
+
+<main>
+    <div th:insert="/navbarFragment :: navbar"></div>
+    <div align="center" style="margin-top:5%;">
+        <h1 sec:authorize="hasAuthority('USER')">Here are your orders</h1>
+        <h1 sec:authorize="hasAuthority('ADMIN')">All orders </h1>
+        <!--    <div sec:authorize = "isAuthenticated()">-->
+        <!--    <h4 style = "font-wight:bold;">Hello <span sec:authentication = "name"></span></h4>-->
+        <!--&lt;!&ndash;    Your role is : <span sec:authentication = "principal.authorities">Roles</span>&ndash;&gt;-->
+        <!--    </div>-->
+        <div sec:authorize="hasAnyAuthority('USER')">
+            <form th:action="@{/new}" method="post">
+                <button class="btn btn-primary">Create New Order</button>
+            </form>
+        </div>
+        <br/><br/>
+        <table border="1" cellpadding="10" style="width:65%" class="table"
+               id="table"
+               data-toggle="table"
+               data-search="true"
+               data-filter-control="true"
+               data-show-export="true"
+               data-click-to-select="true">
+            <thead class="thead-dark">
+            <tr scope="row">
+                <th scope="col">Customer Name</th>
                 <th scope="col">Order Name</th>
-                <th  scope="col">Address</th>
-                <th  scope ="col">Phone Number</th>
+                <th scope="col">Address</th>
+                <th scope="col">Phone Number</th>
                 <th scope="col">Quantity</th>
-                <th  scope="col">Price</th>
-<!--                <th scope = "col" sec:authorize = "hasAuthority('ADMIN')">Status</th>-->
-                <th scope="col" sec:authorize = "permitAll()">Actions</th>
+                <th scope="col">Price</th>
+                <!--                <th scope = "col" sec:authorize = "hasAuthority('ADMIN')">Status</th>-->
+                <th scope="col" sec:authorize="permitAll()">Actions</th>
             </tr>
-        </thead>
-        <tbody>
+            </thead>
+            <tbody>
             <tr scope="row" th:each="order : ${listOrders}">
-            	<td th:text="${order.customer}">Customer Name<\td>
+                <td th:text="${order.customer}">Customer Name<\td>
                 <td th:text="${order.listName}">Name</td>
                 <td th:text="${order.user_address}">Address</td>
                 <td th:text="${order.user_number}">Phone Number</td>
                 <td th:text="${order.quantity}">Quantity</td>
                 <td th:text="${order.totalPrice}">Price</td>
-<!--                <td sec:authorize = "hasAuthority('ADMIN')"><select class="form-select" aria-label="Default select example">-->
-<!--                    <option selected disabled>&#45;&#45;Select an option&#45;&#45;</option>-->
-<!--                    <option th:value="Your order was sent sucessfully" th:text = "Your order was sent sucessfully"></option>-->
-<!--                    <option th:value="Is being prepared" th:text = "Is being prepared" ></option>-->
-<!--                    <option th:value="Is being delivered to your destination" th:text ="Is being delivered to your destination"></option>-->
-<!--                    <option th:value="Arrived" th:text = "Arrived"></option>-->
-<!--                </select></td>-->
-                <td sec:authorize = "hasAnyAuthority('USER','ADMIN')">
-                	<div sec:authorize = "hasAuthority('USER')">
-                	<a th:href="@{'/edit/' + ${order.id}}">Edit</a>
-                	</div>
-                	<br>
-                	<div sec:authorize = "hasAnyAuthority('USER','ADMIN')">
-                	<a sec:authorize = "hasAnyAuthority('USER','ADMIN')" th:href="@{'/delete/' + ${order.id}}">Delete</a>
-                	</div>
+                <td sec:authorize="hasAnyAuthority('USER','ADMIN')">
+                    <div sec:authorize="hasAuthority('USER')">
+                        <a th:href="@{'/edit/' + ${order.id}}">Edit</a>
+                    </div>
+                    <br>
+                    <div sec:authorize="hasAnyAuthority('USER','ADMIN')">
+                        <a sec:authorize="hasAnyAuthority('USER','ADMIN')"
+                           th:href="@{'/delete/' + ${order.id}}">Delete</a>
+                    </div>
                 </td>
             </tr>
-        </tbody>
-    </table>
-</div>
+            </tbody>
+        </table>
+    </div>
 </main>
 <script>
-    function showModal(){
-     var modal = document.getElementById("dialog");
-     modal.showModal();
-    }
+
+    document.addEventListener("DOMContentLoaded", function(event) {
+
+const showNavbar = (toggleId, navId, bodyId, headerId) =>{
+const toggle = document.getElementById(toggleId),
+nav = document.getElementById(navId),
+bodypd = document.getElementById(bodyId),
+headerpd = document.getElementById(headerId)
+
+
+if(toggle && nav && bodypd && headerpd){
+toggle.addEventListener('click', ()=>{
+nav.classList.toggle('show')
+toggle.classList.toggle('fa-times')
+bodypd.classList.toggle('body-pd')
+headerpd.classList.toggle('body-pd')
+})
+}
+}
+
+showNavbar('header-toggle','nav-bar','body-pd','header')
+
+const linkColor = document.querySelectorAll('.nav_link')
+
+function colorLink(){
+if(linkColor){
+linkColor.forEach(l=> l.classList.remove('active'))
+this.classList.add('active')
+}
+}
+linkColor.forEach(l=> l.addEventListener('click', colorLink))
+});
+
 </script>
 </body>
 </html>

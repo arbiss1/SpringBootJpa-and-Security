@@ -12,8 +12,6 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
-import org.springframework.validation.FieldError;
-import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 
@@ -43,15 +41,26 @@ public class AppController {
     @Autowired
     private ProductRequestsRepository productRepo;
 
+    public Object getUsername (Model model){
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String username = authentication.getName();
+        Optional<User> user = repo.findByUsername(username);
+        model.addAttribute("username",username);
+        return username;
+    }
+
+
     @RequestMapping("/user")
     public String viewHomePageUser(Model model) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         String username = authentication.getName();
         Optional<User> user = repo.findByUsername(username);
+        System.out.println(username);
         if (user.isPresent()) {
             List<Orders> listOrders = service.listAllByUser(user.get().getUserId());
             model.addAttribute("listOrders", listOrders);
             model.addAttribute("userDetails", user);
+            model.addAttribute("username",getUsername(model));
         }
 
         return "index";
@@ -59,8 +68,11 @@ public class AppController {
 
     @RequestMapping("/admin")
     public String viewHomePageAdmin(Model model) {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String username = authentication.getName();
         List<Orders> listOrders = service.listAll();
         model.addAttribute("listOrders", listOrders);
+        model.addAttribute("adminUsername",getUsername(model));
 
         return "index";
     }
@@ -75,7 +87,7 @@ public class AppController {
         if (!userService.isUserValid(user)) {
             String message = "Username or password is incorrect !";
             model.addAttribute("noUsernameExists", message);
-            return showUserSignin();
+            return "signinUser";
         }
 
         return user.getRoles().equals("USER")
@@ -85,11 +97,15 @@ public class AppController {
 
     @RequestMapping("/new")
     public String showNewProductPage(Model model, OrderList choseOrder, net.codejava.Domains.OrderCategory choseCategory) {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String username = authentication.getName();
         List<Orders> listOrders = service.listAll();
         List<net.codejava.Domains.OrderCategory> listCategory = categoryService.listAll();
         List<OrderList> orderList = orderlistService.listAllorders();
         System.out.println(choseCategory.getCategory());
         Orders order = new Orders();
+        model.addAttribute("username",getUsername(model));
+        model.addAttribute("adminUsername",getUsername(model));
         model.addAttribute("choseCategory", choseCategory);
         model.addAttribute("listCategory", listCategory);
         model.addAttribute("listOrders", listOrders);
@@ -136,6 +152,8 @@ public class AppController {
         String username = authentication.getName();
         Optional<User> user = repo.findByUsername(username);
         model.addAttribute("order", order);
+        model.addAttribute("username",getUsername(model));
+        model.addAttribute("adminUsername",getUsername(model));
         if (user.get().getRoles().equals("USER")) {
             return "redirect:/user";
         } else {
@@ -166,6 +184,8 @@ public class AppController {
         order.setTotalPrice(Integer.toString((int) sumofPrice) + "$");
         order.setPrice(orderListDb.get().getPrice());
         order.setListName(orderList.getListName());
+        model.addAttribute("username",getUsername(model));
+        model.addAttribute("adminUsername",getUsername(model));
         repoOrders.save(order);
         if (user.get().getRoles().equals("USER")) {
             return "redirect:/user";
@@ -192,6 +212,8 @@ public class AppController {
         double newSum = (Double.valueOf(priceWithout$sign) * quantity);
         order.setTotalPrice(Integer.toString((int) newSum) + "$");
         repoOrders.save(order);
+        model.addAttribute("username",getUsername(model));
+        model.addAttribute("adminUsername",getUsername(model));
         model.addAttribute("order", order);
         if (user.get().getRoles().equals("USER")) {
             return "redirect:/user";
@@ -233,6 +255,8 @@ public class AppController {
         List<OrderList> listProducts = listRepo.findAll();
         model.addAttribute("listCategory", listCategory);
         System.out.println(listCategory);
+        model.addAttribute("username",getUsername(model));
+        model.addAttribute("adminUsername",getUsername(model));
         model.addAttribute("choseCategory", choseCategory);
         model.addAttribute("orderList", orderList);
         model.addAttribute("listProducts", listProducts);
@@ -244,6 +268,8 @@ public class AppController {
         List<User> users = userService.listAll();
         List<ProductRequests> productRequests = productService.listAllProductRequested();
         User user = new User();
+        model.addAttribute("username",getUsername(model));
+        model.addAttribute("adminUsername",getUsername(model));
         model.addAttribute("user", user);
         model.addAttribute("productRequests",productRequests);
         model.addAttribute("users", users);
@@ -364,6 +390,8 @@ public class AppController {
         System.out.println(productRequests1);
         System.out.println(productRepo.findByProductId(user.get().getUserId()));
         ProductRequests productRequests = new ProductRequests();
+        model.addAttribute("username",getUsername(model));
+        model.addAttribute("adminUsername",getUsername(model));
         model.addAttribute("productRequests" , productRequests);
         model.addAttribute("listProductsRequested" , productRequests1);
         return "requestNewProducts";
