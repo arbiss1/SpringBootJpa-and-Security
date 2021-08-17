@@ -37,7 +37,6 @@ public class OrderCategoryService {
    public boolean isPresent(net.codejava.Domains.OrderCategory orderCategory){
         return listAll().stream().anyMatch(category -> category.getCategory().equals(orderCategory.getCategory()));
    }
-
-   }
+}
 
 

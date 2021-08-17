@@ -37,8 +37,69 @@
   border: solid 2px lightgray;
     padding: 5px;
     border-radius: 5px;
-  }
 
+
+select:hover {
+  background-color: #39ace7;
+}
+
+select:active {
+  -moz-transform: scale(0.95);
+  -webkit-transform: scale(0.95);
+  -o-transform: scale(0.95);
+  -ms-transform: scale(0.95);
+  transform: scale(0.95);
+}
+
+input[type=text] {
+  background-color: #f6f6f6;
+  border: none;
+  color: #0d0d0d;
+  padding: 15px 32px;
+  text-align: center;
+  text-decoration: none;
+  display: inline-block;
+  font-size: 16px;
+  margin: 5px;
+  width: 85%;
+  border: 2px solid #f6f6f6;
+  -webkit-transition: all 0.5s ease-in-out;
+  -moz-transition: all 0.5s ease-in-out;
+  -ms-transition: all 0.5s ease-in-out;
+  -o-transition: all 0.5s ease-in-out;
+  transition: all 0.5s ease-in-out;
+  -webkit-border-radius: 5px 5px 5px 5px;
+  border-radius: 5px 5px 5px 5px;
+}
+select {
+  background-color: #f6f6f6;
+  border: none;
+  color: #0d0d0d;
+  padding: 15px 32px;
+  text-align: center;
+  text-decoration: none;
+  display: inline-block;
+  font-size: 16px;
+  margin: 5px;
+  width: 85%;
+  border: 2px solid #f6f6f6;
+  -webkit-transition: all 0.5s ease-in-out;
+  -moz-transition: all 0.5s ease-in-out;
+  -ms-transition: all 0.5s ease-in-out;
+  -o-transition: all 0.5s ease-in-out;
+  transition: all 0.5s ease-in-out;
+  -webkit-border-radius: 5px 5px 5px 5px;
+  border-radius: 5px 5px 5px 5px;
+}
+
+input[type=text]:focus {
+  background-color: #fff;
+  border-bottom: 2px solid #5fbae9;
+}
+
+input[type=text]:placeholder {
+  color: #cccccc;
+}
 </style>
 </head>
 <body>
@@ -73,6 +134,28 @@
 		console.log(dropDownCategory);
 		var dropDownProduct = document.getElementById("dropDownProduct").value;
 		console.log(dropDownProduct);
+
+
+		("#dropDownCategory").change(function(){
+    var categoryId = $(this).val();
+    $.ajax({
+        type: 'GET',
+        url: "/categories/" + categoryId,
+        success: function(data){
+            var slctSubcat=$('#dropDownProduct'), option="";
+            slctSubcat.empty();
+
+            for(var i=0; i<data.length; i++){
+                option = option + "<option value='"+data[i].id + "'>"+data[i].subcateogory_name + "</option>";
+            }
+            slctSubcat.append(option);
+        },
+        error:function(){
+            alert("error");
+        }
+
+    });
+});
 	  </script>
 </body>
 </html>

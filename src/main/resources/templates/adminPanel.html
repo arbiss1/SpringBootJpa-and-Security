@@ -31,8 +31,8 @@
   background-color:lightgray ;
   }
   .saveButton {
-  width:100%;
-  margin-top: 20px;
+  width:63%;
+  margin-top: 30px;
   }
   .selectNew {
   width:100%;
@@ -44,10 +44,97 @@
   margin-top:20px;
   width:100%;
   }
-  .hiddenDiv{
-   display:none;
-   margin-top:10px;
-  }
+  input[type=submit], input[type=submit], input[type=reset]  {
+  background-color: #56baed;
+  border: none;
+  color: white;
+  padding: 15px 80px;
+  text-align: center;
+  text-decoration: none;
+  display: inline-block;
+  text-transform: uppercase;
+  font-size: 13px;
+  -webkit-box-shadow: 0 10px 30px 0 rgba(95,186,233,0.4);
+  box-shadow: 0 10px 30px 0 rgba(95,186,233,0.4);
+  -webkit-border-radius: 5px 5px 5px 5px;
+  border-radius: 5px 5px 5px 5px;
+  margin: 5px 20px 40px 20px;
+  -webkit-transition: all 0.3s ease-in-out;
+  -moz-transition: all 0.3s ease-in-out;
+  -ms-transition: all 0.3s ease-in-out;
+  -o-transition: all 0.3s ease-in-out;
+  transition: all 0.3s ease-in-out;
+}
+
+input[type=button]:hover, input[type=submit]:hover, input[type=reset]:hover  {
+  background-color: #39ace7;
+}
+
+input[type=submit]:active, input[type=submit]:active, input[type=reset]:active  {
+  -moz-transform: scale(0.95);
+  -webkit-transform: scale(0.95);
+  -o-transform: scale(0.95);
+  -ms-transform: scale(0.95);
+  transform: scale(0.95);
+}
+
+input[type=text] {
+  background-color: #f6f6f6;
+  border: none;
+  color: #0d0d0d;
+  padding: 15px 32px;
+  text-align: center;
+  text-decoration: none;
+  display: inline-block;
+  font-size: 16px;
+  margin: 5px;
+  width: 85%;
+  border: 2px solid #f6f6f6;
+  -webkit-transition: all 0.5s ease-in-out;
+  -moz-transition: all 0.5s ease-in-out;
+  -ms-transition: all 0.5s ease-in-out;
+  -o-transition: all 0.5s ease-in-out;
+  transition: all 0.5s ease-in-out;
+  -webkit-border-radius: 5px 5px 5px 5px;
+  border-radius: 5px 5px 5px 5px;
+}
+input[type=password] {
+  background-color: #f6f6f6;
+  border: none;
+  color: #0d0d0d;
+  padding: 15px 32px;
+  text-align: center;
+  text-decoration: none;
+  display: inline-block;
+  font-size: 16px;
+  margin: 5px;
+  width: 85%;
+  border: 2px solid #f6f6f6;
+  -webkit-transition: all 0.5s ease-in-out;
+  -moz-transition: all 0.5s ease-in-out;
+  -ms-transition: all 0.5s ease-in-out;
+  -o-transition: all 0.5s ease-in-out;
+  transition: all 0.5s ease-in-out;
+  -webkit-border-radius: 5px 5px 5px 5px;
+  border-radius: 5px 5px 5px 5px;
+}
+
+input[type=text]:focus {
+  background-color: #fff;
+  border-bottom: 2px solid #5fbae9;
+}
+
+input[type=text]:placeholder {
+  color: #cccccc;
+}
+input[type=password]:focus {
+  background-color: #fff;
+  border-bottom: 2px solid #5fbae9;
+}
+
+input[type=password]:placeholder {
+  color: #cccccc;
+}
 
   </style>
 </head>
@@ -55,124 +142,25 @@
 <div th:insert="/navbarFragment :: navbar"></div>
 <main>
   <div class="container text-center centerDiv">
-    <h1 style = "font-size:24px;">Admin functionalities</h1>
+    <h1>Add admin</h1>
     <span th:id = "message"></span>
     <span style = "color:red;" th:if="${nonUniqueUsername}" th:text = "${nonUniqueUsername}"></span>
     <br />
-    <form id="myform" th:action = "@{/process_registerAdmin}"
+    <form id="myform" th:action="@{/process_registerAdmin}"
           method="post" >
-      <button class = "btn btn-secondary saveButton" th:onclick = "category()" th:id = "button"  type="submit">Add new admin</button>
       <div th:id = "divHidden" class = "hiddenDiv">
-        <input style = "margin-bottom: 5px;"  class="form-control" th:field = "*{user.username}" id="credintials1"  type="text" required placeholder="Username..."/>
-        <input style = "margin-bottom: 5px;"  class="form-control" th:field = "*{user.first_name}" id="credintials2"  type="text" required placeholder="First Name..."/>
-        <input style = "margin-bottom: 5px;"   class="form-control" th:field = "*{user.lastName}" id="credintials3"   type="text" required placeholder="Last Name..."/>
-        <input style = "margin-bottom: 5px;"  class="form-control" th:field = "*{user.password}"   type="text" th:id ="password" required placeholder="Password..."/>
-        <input style = "margin-bottom: 5px;"  class="form-control" th:field = "*{user.MatchingPassword}" th:id = "passwordConfirm"   type="text" required placeholder="Confirm Password..."/>
-        <input style = "margin-bottom: 5px;"   class="form-control" th:field = "*{user.user_address}"   type="text" requi\red placeholder="Address..."/>
-        <input style = "margin-bottom: 5px;"   class="form-control" th:field = "*{user.user_number}"   type="text" required placeholder="Phone Number..."/>
-        <button class = "btn btn-primary saveButton" th:id = "submit" type="submit">Save</button>
+        <input style = "margin-bottom: 5px;"  class="fadeIn" th:field = "*{user.username}" id="credintials1"  type="text" required placeholder="Username..."/>
+        <input style = "margin-bottom: 5px;"  class="fadeIn" th:field = "*{user.first_name}" id="credintials2"  type="text" required placeholder="First Name..."/>
+        <input style = "margin-bottom: 5px;"   class="fadeIn" th:field = "*{user.lastName}" id="credintials3"   type="text" required placeholder="Last Name..."/>
+        <input style = "margin-bottom: 5px;"  class="fadeIn" th:field = "*{user.password}"   type="text" th:id ="password" required placeholder="Password..."/>
+        <input style = "margin-bottom: 5px;"  class="fadeIn" th:field = "*{user.MatchingPassword}" th:id = "passwordConfirm"   type="text" required placeholder="Confirm Password..."/>
+        <input style = "margin-bottom: 5px;"   class="fadeIn" th:field = "*{user.user_address}"   type="text" requi\red placeholder="Address..."/>
+        <input style = "margin-bottom: 5px;"   class="fadeIn" th:field = "*{user.user_number}"   type="text" required placeholder="Phone Number..."/>
+        <input class = "btn btn-primary saveButton" th:id = "submit" type="submit" value="save">
       </div>
     </form>
-    <form >
-      <button th:onclick = "category1()" class = "btn btn-secondary saveButton" type="button" th:id = "button1" >Show all users</button>
-    </form>
-    <div th:id = "divHidden1" class = "hiddenDiv">
-    <table border="1" cellpadding="10" class="table">
-      <thead class="thead-dark">
-      <tr scope = "row">
-<!--        <th scope ="col">Username</th>-->
-        <th scope ="col">First Name</th>
-        <th scope ="col">Last Name</th>
-        <th scope ="col">Role</th>
-        <th scope="col" sec:authorize = "hasAuthority('ADMIN')">Actions</th>
-      </tr>
-      </thead>
-      <tbody>
-      <tr scope="row" th:each="allUsers: ${users}">
-<!--        <td th:text="${allUsers.username}">Username<\td>-->
-        <td th:text="${allUsers.first_name}">First Name <\td>
-        <td th:text="${allUsers.lastName}">Last Name <\td>
-        <td th:text="${allUsers.roles}">Role <\td>
-        <td>
-          <div sec:authorize = "hasAnyAuthority('USER','ADMIN')">
-            <a sec:authorize = "hasAuthority('ADMIN')" th:href="@{'/delete-user-admin/' + ${allUsers.userId}}" th:onclick="confirmAction()">Delete</a>
-          </div>
-        </td>
-        </td>
-      </tr>
-      </tbody>
-    </table>
-    </div>
-        <form>
-            <button th:onclick = "category2()" class = "btn btn-secondary saveButton" type="button" th:id = "button2" >Show product requests</button>
-        </form>
-        <div th:id = "divHidden2" class = "hiddenDiv">
-            <table border="1" cellpadding="10" class="table">
-                <thead class="thead-dark">
-                <tr scope = "row">
-                    <!--        <th scope ="col">Username</th>-->
-                    <th scope ="col">Product Requested</th>
-                    <th scope ="col">Requested by</th>
-                    <th scope="col" sec:authorize = "hasAuthority('ADMIN')">Actions</th>
-                    <th scope ="col"> Status</th>
-                </tr>
-                </thead>
-                <tbody>
-                <tr scope="row" th:each="allProducts: ${productRequests}">
-                    <!--        <td th:text="${allUsers.username}">Username<\td>-->
-                    <td th:text="${allProducts.product}">Product<\td>
-                    <td th:text="${allProducts.requestedBy}">Requested by<\td>
-                    <td>
-                        <div sec:authorize = "hasAnyAuthority('USER','ADMIN')">
-                            <a sec:authorize = "hasAuthority('ADMIN')"  th:onclick="confirmAction()"th:href="@{'/product-approved/'+ ${allProducts.product}}"><i style = "color:green;" class="fas fa-check"></i></a>
-                            <a sec:authorize = "hasAuthority('ADMIN')"  th:onclick="confirmAction()" th:href="@{'/delete-requested-product/' + ${allProducts.productId}}"><i style = "color:red;margin-left: 15px;" class="fas fa-times"></i></a>
-                        </div>
-                    </td>
-                     <td th:text = "${allProducts.status}">Status</td>
-                </tr>
-                </tbody>
-            </table>
-        </div>
   </div>
 </main>
-<script>
-  function category(){
-   var div = document.getElementById("divHidden");
-   var button = document.getElementById("button");
-   if(div.style.display === "none"){
-   div.style.display = "block";
-   button.setAttribute("style" ,"background-color:red;");
-   }else
-   {
-    div.style.display = "none"
-    button.setAttribute("style" ,"background-color:gray;");
-   }
-   }
-   function category1(){
-   var div = document.getElementById("divHidden1");
-   var button = document.getElementById("button1");
-   if(div.style.display === "none"){
-   div.style.display = "block";
-   button.setAttribute("style" ,"background-color:red;");
-   }else
-   {
-    div.style.display = "none"
-    button.setAttribute("style" ,"background-color:gray;");
-   }
-   }
-   function category2(){
-   var div = document.getElementById("divHidden2");
-   var button = document.getElementById("button2");
-   if(div.style.display === "none"){
-   div.style.display = "block";
-   button.setAttribute("style" ,"background-color:red;");
-   }else
-   {
-    div.style.display = "none"
-    button.setAttribute("style" ,"background-color:gray;");
-   }
-   }
-</script>
    <script>
         $(function () {
         $("#submit").click(function () {

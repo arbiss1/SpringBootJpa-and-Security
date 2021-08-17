@@ -50,6 +50,9 @@ public class User {
 //	@NotNull
 	private String MatchingPassword;
 
+	@Lob
+	private Byte[] image;
+
 
 	
 	public User() {}
@@ -76,6 +79,14 @@ public class User {
 
 	public void setUser_number(String user_number) {
 		this.user_number = user_number;
+	}
+
+	public Byte[] getImage() {
+		return image;
+	}
+
+	public void setImage(Byte[] image) {
+		this.image = image;
 	}
 
 	public Long getId() {

@@ -15,6 +15,7 @@ import org.springframework.security.crypto.password.NoOpPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.provisioning.InMemoryUserDetailsManager;
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
+import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 import org.springframework.web.servlet.config.annotation.ViewControllerRegistry;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 
@@ -38,7 +39,10 @@ public class SecutiryConfiguration extends WebSecurityConfigurerAdapter {
 	protected void configure(HttpSecurity http) throws Exception {
 		
 		http.authorizeRequests()
-		.antMatchers("/").hasAnyAuthority("USER", "ADMIN")
+				.antMatchers("/").hasAnyAuthority("USER","ADMIN")
+		.antMatchers("/login").permitAll()
+				.antMatchers("/procces-login").hasAnyAuthority("USER","ADMIN")
+				.antMatchers("/**").hasAnyAuthority("USER","ADMIN")
 		.antMatchers("/new").hasAuthority("USER")
 		.antMatchers("/edit/{id}").hasAnyAuthority("USER")
 		.antMatchers("/delete/{id}").hasAnyAuthority("ADMIN","USER")
@@ -46,8 +50,14 @@ public class SecutiryConfiguration extends WebSecurityConfigurerAdapter {
 		.formLogin()
 		.loginPage("/procces-login")
 		.successHandler(successHandler)
-		.permitAll();
-		;
+		.permitAll()
+				.and()
+				.logout()
+				.logoutRequestMatcher(new AntPathRequestMatcher("/logout"))
+				.logoutSuccessUrl("/login.html")
+				.and()
+				.exceptionHandling()
+				.accessDeniedPage("/access-denied");
 }
 	@Bean
 	public PasswordEncoder getPasswordEncoder() {

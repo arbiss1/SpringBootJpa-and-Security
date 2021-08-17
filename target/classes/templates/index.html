@@ -4,11 +4,12 @@
       xmlns:th="http://www.thymeleaf.org">
 <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet"
       integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+<script src="//cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"
         integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM"
         crossorigin="anonymous"></script>
 <link rel = "stylesheet" th:href = "@{/styles/stylesheet1.css}">
-<script type = "text/javascript" th:href = "@{/styles/scripts.js}"></script>
+<script type = "text/javascript" th:src = "@{/styles/scripts.js}"></script>
 <link rel="stylesheet" href="https://pro.fontawesome.com/releases/v5.10.0/css/all.css"
       integrity="sha384-AYmEC3Yw5cVb3ZcuHtOA93w35dYTsvhLPVnYs9eStHfGJvOvKxVfELGroGkvsg+p" crossorigin="anonymous"/>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
@@ -37,8 +38,24 @@
    strong:hover{
   color:white;
   }
-
-
+#myBtn {
+  display: none;
+  position: fixed;
+  bottom: 20px;
+  right: 30px;
+  z-index: 99;
+  font-size: 18px;
+  border: none;
+  outline: none;
+  background-color: darkslateblue;
+  color: white;
+  cursor: pointer;
+  padding: 15px;
+  border-radius: 4px;
+}
+.swal2-confirm{
+margin:20px;
+}
     </style>
 </head>
 <body id="body-pd">
@@ -87,16 +104,84 @@
                     <br>
                     <div sec:authorize="hasAnyAuthority('USER','ADMIN')">
                         <a sec:authorize="hasAnyAuthority('USER','ADMIN')"
-                           th:href="@{'/delete/' + ${order.id}}">Delete</a>
+                            href="#fire" class='show-example-btn'>
+                            Delete
+                        </a>
                     </div>
                 </td>
             </tr>
             </tbody>
         </table>
     </div>
+    <i style = "border-radius: 28px;" onclick="topFunction()" id="myBtn" title="Go to top" class="fas fa-arrow-circle-up"></i>
+
+<!--    <button class='show-example-btn' data-swal-template='#my-template'>-->
+<!--        Trigger modal-->
+<!--    </button>-->
 </main>
 <script>
 $(document).ready(() => $('#table').DataTable());
+</script>
+<script>
+//Get the button
+var mybutton = document.getElementById("myBtn");
+
+// When the user scrolls down 20px from the top of the document, show the button
+window.onscroll = function() {scrollFunction()};
+
+function scrollFunction() {
+  if (document.body.scrollTop > 20 || document.documentElement.scrollTop > 20) {
+    mybutton.style.display = "block";
+  } else {
+    mybutton.style.display = "none";
+  }
+}
+
+// When the user clicks on the button, scroll to the top of the document
+function topFunction() {
+  document.body.scrollTop = 0;
+  document.documentElement.scrollTop = 0;
+}
+
+$(document).ready(function(){
+   $('a[href="#fire"]').click(function(){
+const swalWithBootstrapButtons = Swal.mixin({
+  customClass: {
+    confirmButton: 'btn btn-success',
+    cancelButton: 'btn btn-danger'
+  },
+  buttonsStyling: false
+})
+swalWithBootstrapButtons.fire({
+  title: 'Are you sure?',
+  text: "You won't be able to revert this!",
+  icon: 'warning',
+  showCancelButton: true,
+  confirmButtonText: 'Yes, delete it!',
+  cancelButtonText: 'No, cancel!',
+  reverseButtons: true
+}).then((result) => {
+  if (result.isConfirmed) {
+    swalWithBootstrapButtons.fire(
+      'Deleted!',
+      'Your file has been deleted.',
+      'success'
+      location.th:href = "@{'/delete/' + ${order.id}}";
+
+      //todo: deleteProduct();
+    )
+  } else if (
+    /* Read more about handling dismissals below */
+    result.dismiss === Swal.DismissReason.cancel
+  ) {
+    swalWithBootstrapButtons.fire(
+      'Cancelled',
+      'Your imaginary file is safe :)',
+      'error'
+    )
+  }
+})
+}
 </script>
 </body>
 </html>

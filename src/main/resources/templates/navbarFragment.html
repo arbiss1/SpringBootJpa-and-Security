@@ -41,17 +41,25 @@
           <span class="nav_name">Add new product</span>
         </a>
           <a sec:authorize = "hasAuthority('ADMIN')" href = "/admin-panel" th:object="${user}" class="nav_link">
-            <i class="fas fa-user-shield"></i> <span class="nav_name">Admin Panel</span>
-        </a>
+            <i class="fas fa-user-shield"></i> <span class="nav_name">Add admin</span>
+          </a>
+          <a sec:authorize = "hasAuthority('ADMIN')" href = "/all-users" th:object="${user}" class="nav_link">
+            <i class="fas fa-users"></i> <span class="nav_name">Users</span>
+          </a>
+          <a sec:authorize = "hasAuthority('ADMIN')" href = "/all-requested-products" th:object="${user}" class="nav_link">
+            <i class="fas fa-registered"></i> <span class="nav_name">Requested products</span>
+          </a>
           <a sec:authorize = "hasAuthority('USER')" href="/request-product" class="nav_link">
             <i class="fab fa-product-hunt"></i>
           <span class="nav_name">Request new products</span>
         </a>
-          <a  sec:authorize = "hasAuthority('USER')" href="#" class="nav_link">
-            <i class="fas fa-info-circle"></i> <span class="nav_name">Support</span>
-        </a>
-          <a href="#" class="nav_link"> <i class="fas fa-check-circle"></i>
-          <span class="nav_name">Stats</span>
+          <a sec:authorize = "hasAuthority('USER')" href="#" class="nav_link">
+            <i class="fab fa-product-hunt"></i>
+            <span class="nav_name">Purchase history</span>
+          </a>
+          <a sec:authorize = "hasAuthority('USER')" href="#" class="nav_link">
+            <i class="fab fa-product-hunt"></i>
+            <span class="nav_name">Contact support</span>
           </a>
         </div>
       </div>
@@ -67,7 +75,7 @@
           </form>
         </a>
         <ul class="dropdown-menu text-small shadow" aria-labelledby="dropdownUser2" style="">
-          <li><a class="dropdown-item" href="/" id = "profile">Profile</a></li>
+          <li><a class="dropdown-item" href="/user-profile">Profile</a></li>
           <li><hr class="dropdown-divider"></li>
           <li><a class="dropdown-item" href="/login">Sign out</a></li>
         </ul>
@@ -75,7 +83,5 @@
     </nav>
   </div>
 </div>
-<script>
-</script>
 </body>
 </html>

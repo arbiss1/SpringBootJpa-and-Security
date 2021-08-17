@@ -27,8 +27,7 @@ body {
   margin:auto;
   background: #fff;
   box-shadow: 0 4px 10px 0 rgba(0,0,0,.5);
-  width: 70%;
-  display:flex;
+  padding: 15px;
 }
 
 .image-container {
@@ -43,7 +42,7 @@ body {
 
 .main-container {
   padding: 20px;
-width: 100%;
+
 }
 
 .skill-bar {
@@ -85,68 +84,34 @@ height:100%;
       <div class="title" style = "display:flex;">
       </div>
     </div>
+    <form action="POST" th:action="@{'/user-edit/' + ${userDetails.userId}}" th:object="${userDetails}" method="post">
     <div class="main-container">
       <div>
         <p style = "padding:3px;">Username:
-          <input class ="form-control"  th:id = "input" type = "text" th:value="${userDetails.get().username}" disabled></p>
+          <input class ="form-control" th:field="*{username}" th:id = "input" type = "text" ></p>
       </div>
       <div>
         <p style = "padding:3px;">First Name:
-          <input class ="form-control"  th:id = "input1" type = "text" th:value="${userDetails.get().first_name}" disabled></p>
+          <input class ="form-control" th:field="*{first_name}" th:id = "input1" type = "text" ></p>
       </div>
       <div>
         <p style = "padding:3px;">Last Name:
-          <input class ="form-control"  th:id = "input2" type = "text" th:value="${userDetails.get().lastName}" disabled></p>
+          <input class ="form-control" th:field="*{lastName}" th:id = "input2" type = "text" ></p>
       </div>
       <div>
         <p style = "padding:3px;">Address:
-          <input class ="form-control"  th:id = "input3" type = "text" th:value="${userDetails.get().user_address}" disabled></p>
+          <input class ="form-control" th:field="*{user_address}" th:id = "input3" type = "text"  ></p>
       </div>
       <div>
         <p style = "padding:3px;">Phone Number:
-          <input class ="form-control"  th:id = "input4" type = "text" th:value="${userDetails.get().user_number}" disabled></p>
+          <input class ="form-control" th:field="*{user_number}" th:id = "input4" type = "text" ></p>
       </div>
       <div>
-        <a style = "width:45%;" class = "btn btn-danger" th:object="${userDetails}" th:href="@{'/user-edit/' + ${userDetails.get().userId}}" type="submit">Edit details</a>
-        <button style = "float:right;width:45%;" class = "btn btn-secondary">Change password</button>
+        <input class="btn btn-primary" type="submit" value="Save changes">
       </div>
-      <div style = "width:100%;">
-      <button   th:id = "saveButton" class="btn btn-primary">Save changes</button>
-      </div>
-<!--      <p>Adobe Photoshop</p>-->
-<!--      <div class="skill-bar">-->
-<!--        <div class="progress-bar" style="width:80%">80%</div>-->
-<!--      </div>-->
-<!--      <p>UI</p>-->
-<!--      <div class="skill-bar">-->
-<!--        <div class="progress-bar" style="width:85%">85%</div>-->
-<!--      </div>-->
-<!--      <p>Word Press</p>-->
-<!--      <div class="skill-bar">-->
-<!--        <div class="progress-bar" style="width:75%">75%</div>-->
-<!--      </div>-->
-<!--      <p>Graphics</p>-->
-<!--      <div class="skill-bar">-->
-<!--        <div class="progress-bar" style="width:50%">50%</div>-->
-<!--      </div>-->
     </div>
+    </form>
   </div>
 </div>
-<script>
-  function editableInputs(){
-    document.getElementById("input").disabled = false;
-    document.getElementById("input1").disabled = false;
-    document.getElementById("input2").disabled = false;
-    document.getElementById("input3").disabled = false;
-    document.getElementById("input4").disabled = false;
-    var button = document.getElementById("saveButton");
-    if( document.getElementById("input").disabled == false){
-       button.setAttribute("style", "display:block");
-    }else
-    {
-    button.setAttribute("style", "display:none");
-    }
-  }
-</script>
 </body>
 </html>

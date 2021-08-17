@@ -5,6 +5,7 @@ import java.util.Optional;
 
 import net.codejava.Domains.OrderCategory;
 import net.codejava.Domains.OrderList;
+import net.codejava.Services.OrderListService;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
@@ -15,7 +16,6 @@ public interface OrderListRepository extends JpaRepository<OrderList, Long> {
 
     List<OrderList> findByCategory(Optional<OrderCategory> category);
 
-    List<OrderList> findBylistId (OrderCategory listId);
 
 }
 
