@@ -293,7 +293,7 @@ public class AppController {
         if (userService.isUsernamePresent(user1)) {
             String message = String.format("Username already exists !");
             model.addAttribute("nonUniqueUsername", message);
-            return showAdminPanel(model);
+            return "adminPanel";
         } else {
             String firstnameUppercase = user1.getfirst_name().substring(0, 1).toUpperCase(Locale.ROOT)
                     + user1.getfirst_name().substring(1).toLowerCase();
@@ -427,7 +427,7 @@ public class AppController {
       productService.delete(productId);
         return user.get().getRoles().equals("USER")
                 ? "redirect:/request-product"
-                : "redirect:/admin-panel";
+                : "redirect:/all-requested-products";
     }
 
     @RequestMapping("/product-approved/{product}")
@@ -441,7 +441,7 @@ public class AppController {
         productRequests.setProduct(productName.get().getProduct());
         System.out.println(productRequests);
         productRepo.save(productRequests);
-        return "redirect:/admin-panel";
+        return "redirect:/all-requested-products";
     }
 
 
@@ -494,6 +494,37 @@ public class AppController {
         model.addAttribute("username",getUsername(model));
         model.addAttribute("adminUsername",getUsername(model));
         mav.addObject("userDetails", user);
+        System.out.println(mav);
+        repo.save(user);
+        return mav;
+    }
+
+    @RequestMapping(value = "/user-edit-password/{userId}", method = RequestMethod.POST)
+    public String editPassword(@PathVariable(name = "userId") int userId,User userEdit, Model model) {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String username = authentication.getName();
+        User user = userService.get(userId);
+        Optional<User> user1 = repo.findByUsername(username);
+        user.setPassword(userEdit.getPassword());
+        user.setMatchingPassword(userEdit.getMatchingPassword());
+        repo.save(user);
+        model.addAttribute("username",getUsername(model));
+        model.addAttribute("adminUsername",getUsername(model));
+        model.addAttribute("user", user);
+        if (user.getRoles().equals("USER")) {
+            return "redirect:/user";
+        } else {
+            return "redirect:/admin";
+        }
+    }
+
+    @RequestMapping(value = "/user-edit-password/{userId}", method = RequestMethod.GET)
+    public ModelAndView showEditPasswordPage(@PathVariable(name = "userId") int userId ,Model model) {
+        ModelAndView mav = new ModelAndView("changePassword");
+        User user = userService.get(userId);
+        model.addAttribute("username",getUsername(model));
+        model.addAttribute("adminUsername",getUsername(model));
+        mav.addObject("user", user);
         System.out.println(mav);
         repo.save(user);
         return mav;

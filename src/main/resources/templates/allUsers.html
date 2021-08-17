@@ -44,6 +44,14 @@
   background-color:white;
   width : 100%;
   }
+  .divNav{
+ padding:0;
+}
+.nav_logo{
+background-color:black;
+padding:25px;
+border-bottom:1px solid lightgrey;
+}
   </style>
     <meta charset="UTF-8">
     <title>Title</title>
@@ -53,7 +61,7 @@
 
 <div align="center" style="margin-top:5%;">
   <h1 sec:authorize="hasAuthority('ADMIN')">Users </h1>
-  <table  style="width:65%" border="1" cellpadding="10" class="table" id = "table">
+  <table  style="width:65%;text-align:center;" border="1" cellpadding="10" class="table" id = "table">
     <thead class="thead-dark">
     <tr scope = "row">
       <!--        <th scope ="col">Username</th>-->
@@ -71,7 +79,7 @@
       <td th:text="${allUsers.roles}">Role <\td>
       <td>
         <div sec:authorize = "hasAnyAuthority('USER','ADMIN')">
-          <a sec:authorize = "hasAuthority('ADMIN')" th:href="@{'/delete-user-admin/' + ${allUsers.userId}}" th:onclick="confirmAction()">Delete</a>
+          <a sec:authorize = "hasAuthority('ADMIN')" th:href="@{'/delete-user-admin/' + ${allUsers.userId}}" th:onclick="confirmAction()"><i style = "color:red;" class="fas fa-trash-alt"></i></a>
         </div>
       </td>
       </td>

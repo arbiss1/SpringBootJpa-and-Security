@@ -73,7 +73,14 @@ width: 100%;
 img {
 height:100%;
 }
-
+.divNav{
+ padding:0;
+}
+.nav_logo{
+background-color:black;
+padding:25px;
+border-bottom:1px solid lightgrey;
+}
 	</style>
 </head>
 <body>
@@ -108,7 +115,7 @@ height:100%;
       </div>
       <div>
         <a style = "width:45%;" class = "btn btn-danger" th:object="${userDetails}" th:href="@{'/user-edit/' + ${userDetails.get().userId}}" type="submit">Edit details</a>
-        <button style = "float:right;width:45%;" class = "btn btn-secondary">Change password</button>
+        <a style = "float:right;width:45%;" class = "btn btn-secondary" th:object="${userDetails}" th:href="@{'/user-edit-password/' + ${userDetails.get().userId}}">Change password</a>
       </div>
       <div style = "width:100%;">
       <button   th:id = "saveButton" class="btn btn-primary">Save changes</button>

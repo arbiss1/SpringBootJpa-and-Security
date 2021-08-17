@@ -7,6 +7,7 @@
       integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
 <link rel = "stylesheet" th:href = "@{/styles/stylesheet1.css}" >
 <script type = "text/javascript" th:src = "@{/styles/scripts.js}"></script>
+<script src="//cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"
         integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
 <script src="https://use.fontawesome.com/your-embed-code.js"></script>
@@ -135,7 +136,14 @@ input[type=password]:focus {
 input[type=password]:placeholder {
   color: #cccccc;
 }
-
+.divNav{
+ padding:0;
+}
+.nav_logo{
+background-color:black;
+padding:25px;
+border-bottom:1px solid lightgrey;
+}
   </style>
 </head>
 <body>
@@ -144,7 +152,7 @@ input[type=password]:placeholder {
   <div class="container text-center centerDiv">
     <h1>Add admin</h1>
     <span th:id = "message"></span>
-    <span style = "color:red;" th:if="${nonUniqueUsername}" th:text = "${nonUniqueUsername}"></span>
+    <span th:id="error" style = "color:red;"  th:if="${nonUniqueUsername}" th:text = "${nonUniqueUsername}"></span>
     <br />
     <form id="myform" th:action="@{/process_registerAdmin}"
           method="post" >
@@ -152,8 +160,8 @@ input[type=password]:placeholder {
         <input style = "margin-bottom: 5px;"  class="fadeIn" th:field = "*{user.username}" id="credintials1"  type="text" required placeholder="Username..."/>
         <input style = "margin-bottom: 5px;"  class="fadeIn" th:field = "*{user.first_name}" id="credintials2"  type="text" required placeholder="First Name..."/>
         <input style = "margin-bottom: 5px;"   class="fadeIn" th:field = "*{user.lastName}" id="credintials3"   type="text" required placeholder="Last Name..."/>
-        <input style = "margin-bottom: 5px;"  class="fadeIn" th:field = "*{user.password}"   type="text" th:id ="password" required placeholder="Password..."/>
-        <input style = "margin-bottom: 5px;"  class="fadeIn" th:field = "*{user.MatchingPassword}" th:id = "passwordConfirm"   type="text" required placeholder="Confirm Password..."/>
+        <input style = "margin-bottom: 5px;"  class="fadeIn" th:field = "*{user.password}"   type="password" th:id ="password" required placeholder="Password..."/>
+        <input style = "margin-bottom: 5px;"  class="fadeIn" th:field = "*{user.MatchingPassword}" th:id = "passwordConfirm"   type="password" required placeholder="Confirm Password..."/>
         <input style = "margin-bottom: 5px;"   class="fadeIn" th:field = "*{user.user_address}"   type="text" requi\red placeholder="Address..."/>
         <input style = "margin-bottom: 5px;"   class="fadeIn" th:field = "*{user.user_number}"   type="text" required placeholder="Phone Number..."/>
         <input class = "btn btn-primary saveButton" th:id = "submit" type="submit" value="save">
@@ -174,6 +182,11 @@ input[type=password]:placeholder {
             return true;
         });
     })
+
+var error = document.getElementById("error").value;
+if(error != null){
+swal(error.value , "error");
+}
    </script>
 </body>
 </html>
