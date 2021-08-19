@@ -1,7 +1,5 @@
 package net.codejava.Domains;
 
-import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -9,8 +7,6 @@ import java.nio.file.Paths;
 import java.util.List;
 import java.util.Locale;
 import java.util.Optional;
-
-import com.google.gson.Gson;
 import net.codejava.Repositories.*;
 import net.codejava.Services.*;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,7 +14,6 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.util.ResourceUtils;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -66,14 +61,16 @@ public class AppController {
         String username = authentication.getName();
         Optional<User> user = repo.findByUsername(username);
         String filename = user.get().getFileName();
+        String baseUrl = "https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_960_720.png";
         String url = "images/" + filename;
         if(filename == null){
             model.addAttribute("profileImage",
-                    "https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_960_720.png");
+                    baseUrl);
+            return baseUrl;
         }else {
             model.addAttribute("profileImage", url);
+            return url;
         }
-        return url;
     }
 
 
