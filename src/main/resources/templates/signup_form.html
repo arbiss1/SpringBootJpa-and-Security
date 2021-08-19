@@ -97,7 +97,7 @@ input[type=button], input[type=submit], input[type=reset]  {
   background-color: #56baed;
   border: none;
   color: white;
-  padding: 15px 80px;
+  padding: 10px 80px;
   text-align: center;
   text-decoration: none;
   display: inline-block;
@@ -131,7 +131,7 @@ input[type=text] {
   background-color: #f6f6f6;
   border: none;
   color: #0d0d0d;
-  padding: 15px 32px;
+  padding: 10px 32px;
   text-align: center;
   text-decoration: none;
   display: inline-block;
@@ -151,7 +151,7 @@ input[type=password] {
   background-color: #f6f6f6;
   border: none;
   color: #0d0d0d;
-  padding: 15px 32px;
+  padding: 10px 32px;
   text-align: center;
   text-decoration: none;
   display: inline-block;
@@ -229,6 +229,73 @@ background-color:black;
 padding:25px;
 border-bottom:1px solid lightgrey;
 }
+.file-upload {
+  position: relative;
+  overflow: hidden;
+  margin: 10px; }
+
+.file-upload {
+  position: relative;
+  overflow: hidden;
+  margin: 10px;
+  width:100%;
+  max-width:105px;
+  text-align:center;
+  color:black;
+  background: transparent;
+  border: 2px solid #888;
+  display:inline;
+  -ms-transition: all 0.2s ease;
+  -webkit-transition: all 0.2s ease;
+  transition: all 0.2s ease;
+  &:hover{
+    background:black;
+    -webkit-box-shadow: 0px 0px 10px 0px rgba(255,255,255,0.75);
+    -moz-box-shadow: 0px 0px 10px 0px rgba(255,255,255,0.75);
+    box-shadow: 0px 0px 10px 0px rgba(255,255,255,0.75);
+  }
+}
+
+.file-upload input.file-input {
+  position: absolute;
+  top: 0;
+  right: 0;
+  margin: 0;
+  padding: 0;
+  font-size: 20px;
+  cursor: pointer;
+  opacity: 0;
+  filter: alpha(opacity=0);
+  height:100%;
+}
+.containers{
+  position:relative;
+  max-width: 320px;
+  margin: auto;
+  .imageWrapper{
+    border: 3px solid #888;
+    width:70%;
+    padding-bottom:70%;
+    border-radius:50%;
+    overflow:hidden;
+    position:absolute;
+    top:50%;
+    left:50%;
+    transform:translate(-50%,-50%);
+    img{
+      border-radius: 200px;
+    width: 25%;
+      width:initial;
+      max-height:100%;
+      max-width: initial;
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+    }
+  }
+}
+
     </style>
 </head>
 <body>
@@ -241,11 +308,23 @@ border-bottom:1px solid lightgrey;
                 <h3>Sign Up</h3>
                 <span style = "color:red;" id = "nonUniqueUsername" th:if="${nonUniqueUsername}" th:text = "${nonUniqueUsername}"></span>
                 <span id = "message"></span>
-                <span id = "errorMessage"></span>
+                    <span th:if="${message}" th:text="${message}"></span>
+                <span id = "Emessage"></span>
             </div>
             <!-- Login Form -->
-            <form th:action="@{/process_register}" th:object="${user}"
+
+            <form th:action="@{/process_register}" th:object="${user}"  enctype="multipart/form-data"
                   method="post">
+                <div class="containers">
+                    <div class="imageWrapper">
+                        <img class="image" style = "  border-radius: 200px;
+    width: 25%;"  src="https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_960_720.png">
+                    </div>
+                </div>
+                <button class="file-upload">
+                <input type="file" th:name="file" id="file" class="file-input">
+                    Choose File
+                </button>
                 <input class="fadeIn" th:id ="userEmail" type="text" th:field="*{username}" id = "username"
                        placeholder = "Username..."/>
                 <input class="fadeIn"  type="password" onkeyup="return passwordChanged();"  th:field="*{password}"
@@ -260,7 +339,7 @@ border-bottom:1px solid lightgrey;
                        minlength="2" maxlength="20" placeholder = "Address..."/>
                 <input class="fadeIn"  type="text" th:field="*{user_number}" id="phonenumber"
                        minlength="2" maxlength="20" placeholder = "Phone number..."/>
-                <input type="submit" id="submit" class="fadeIn fourth" th:onclick="login()" value="Sign up">
+                <input type="submit" id="submit" class="fadeIn fourth" value="Sign up">
             </form>
             <div id="formFooter">
                 <p>Already have an account? <a class="underlineHover" href="/login">Login</a></p>
@@ -281,6 +360,16 @@ border-bottom:1px solid lightgrey;
             return true;
         });
     })
+
+    $('.file-input').change(function(){
+    var curElement = $(this).parent().parent().find('.image');
+    console.log(curElement);
+    var reader = new FileReader();
+    reader.onload = function (e) {
+        curElement.attr('src', e.target.result);
+    };
+    reader.readAsDataURL(this.files[0]);
+});
 </script>
 </body>
 </html>

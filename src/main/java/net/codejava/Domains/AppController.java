@@ -1,7 +1,16 @@
 package net.codejava.Domains;
+
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.List;
 import java.util.Locale;
 import java.util.Optional;
+
+import com.google.gson.Gson;
 import net.codejava.Repositories.*;
 import net.codejava.Services.*;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -9,6 +18,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.util.ResourceUtils;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -40,26 +50,47 @@ public class AppController {
     @Autowired
     private ProductRequestsRepository productRepo;
 
-    public Object getUsername (Model model){
+
+    private static String UPLOADED_FOLDER = "C://Users//arbis//Desktop//OrderManager//src//main//resources//images//";
+
+
+    public Object getUsername(Model model) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         String username = authentication.getName();
         Optional<User> user = repo.findByUsername(username);
-        model.addAttribute("username",username);
+        model.addAttribute("username", username);
         return username;
     }
-
-    @RequestMapping("/user")
-    public String viewHomePageUser(Model model) {
+    public Object getProfileImage(Model model) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         String username = authentication.getName();
         Optional<User> user = repo.findByUsername(username);
-        System.out.println(username);
-        if (user.isPresent()) {
-            List<Orders> listOrders = service.listAllByUser(user.get().getUserId());
-            model.addAttribute("listOrders", listOrders);
-            model.addAttribute("userDetails", user);
-            model.addAttribute("username",getUsername(model));
+        String filename = user.get().getFileName();
+        String url = "images/" + filename;
+        if(filename == null){
+            model.addAttribute("profileImage",
+                    "https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_960_720.png");
+        }else {
+            model.addAttribute("profileImage", url);
         }
+        return url;
+    }
+
+
+    @RequestMapping("/user")
+    public String viewHomePageUser(Model model) throws IOException {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String username = authentication.getName();
+        Optional<User> user = repo.findByUsername(username);
+        if (!user.isPresent()) {
+            return "/user";
+        }
+        System.out.println(username);
+        List<Orders> listOrders = service.listAllByUser(user.get().getUserId());
+        model.addAttribute("listOrders", listOrders);
+        model.addAttribute("userDetails", user);
+        model.addAttribute("username", getUsername(model));
+        model.addAttribute("profileImage", getProfileImage(model));
 
         return "index";
     }
@@ -71,7 +102,8 @@ public class AppController {
         Optional<User> user = repo.findByUsername(username);
         List<Orders> listOrders = service.listAll();
         model.addAttribute("listOrders", listOrders);
-        model.addAttribute("adminUsername",getUsername(model));
+        model.addAttribute("adminUsername", getUsername(model));
+        model.addAttribute("profileImage", getProfileImage(model));
 
         return "index";
     }
@@ -104,8 +136,8 @@ public class AppController {
         List<OrderList> orderList = orderlistService.listAllorders();
         System.out.println(choseCategory.getCategory());
         Orders order = new Orders();
-        model.addAttribute("username",getUsername(model));
-        model.addAttribute("adminUsername",getUsername(model));
+        model.addAttribute("username", getUsername(model));
+        model.addAttribute("adminUsername", getUsername(model));
         model.addAttribute("choseCategory", choseCategory);
         model.addAttribute("listCategory", listCategory);
         model.addAttribute("listOrders", listOrders);
@@ -116,25 +148,33 @@ public class AppController {
     }
 
     @GetMapping("/register")
-    public String showRegistrationForm(Model model, User user2, BindingResult result) {
-        if (result.hasErrors()) {
-            return "signup_form";
-        } else {
-            System.out.println(result);
-            User user = new User();
-            model.addAttribute("user", user);
-            return "signup_form";
-        }
+    public String showRegistrationForm(Model model) {
+        User user = new User();
+        model.addAttribute("user", user);
+        return "signup_form";
     }
 
     @PostMapping("/process_register")
-    public String processRegister(@Valid User user, Model model, BindingResult result) {
+    public String processRegister(User user, @RequestParam("file") MultipartFile file, Model model, BindingResult result) {
+        if (result.hasErrors()) {
+            System.out.println(result);
+        }
         if (userService.isUsernamePresent(user)) {
-            String message ="Username already exists !";
+            String message = "Username already exists !";
             model.addAttribute("nonUniqueUsername", message);
             return "signup_form";
-//            return showRegistrationForm(model, user, result);
         } else {
+            try {
+                byte[] bytes = file.getBytes();
+                Path path = Paths.get(UPLOADED_FOLDER + file.getOriginalFilename());
+                Files.write(path, bytes);
+                model.addAttribute("Emessage",
+                        "You successfully uploaded '" + file.getOriginalFilename() + "'");
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            user.setFileName(file.getOriginalFilename());
+            System.out.println(file.getOriginalFilename());
             String firstnameUppercase = user.getfirst_name().substring(0, 1).toUpperCase(Locale.ROOT)
                     + user.getfirst_name().substring(1).toLowerCase();
             user.setFirst_name(firstnameUppercase);
@@ -146,14 +186,15 @@ public class AppController {
         return "signinUser";
     }
 
+
     @RequestMapping(value = "/save", method = RequestMethod.POST)
     public String saveOrder(@ModelAttribute("product") Orders order, OrderList orderList, Model model) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         String username = authentication.getName();
         Optional<User> user = repo.findByUsername(username);
         model.addAttribute("order", order);
-        model.addAttribute("username",getUsername(model));
-        model.addAttribute("adminUsername",getUsername(model));
+        model.addAttribute("username", getUsername(model));
+        model.addAttribute("adminUsername", getUsername(model));
         if (user.get().getRoles().equals("USER")) {
             return "redirect:/user";
         } else {
@@ -184,8 +225,8 @@ public class AppController {
         order.setTotalPrice(Integer.toString((int) sumofPrice) + "$");
         order.setPrice(orderListDb.get().getPrice());
         order.setListName(orderList.getListName());
-        model.addAttribute("username",getUsername(model));
-        model.addAttribute("adminUsername",getUsername(model));
+        model.addAttribute("username", getUsername(model));
+        model.addAttribute("adminUsername", getUsername(model));
         repoOrders.save(order);
         if (user.get().getRoles().equals("USER")) {
             return "redirect:/user";
@@ -212,8 +253,8 @@ public class AppController {
         double newSum = (Double.valueOf(priceWithout$sign) * quantity);
         order.setTotalPrice(Integer.toString((int) newSum) + "$");
         repoOrders.save(order);
-        model.addAttribute("username",getUsername(model));
-        model.addAttribute("adminUsername",getUsername(model));
+        model.addAttribute("username", getUsername(model));
+        model.addAttribute("adminUsername", getUsername(model));
         model.addAttribute("order", order);
         if (user.get().getRoles().equals("USER")) {
             return "redirect:/user";
@@ -255,8 +296,8 @@ public class AppController {
         List<OrderList> listProducts = listRepo.findAll();
         model.addAttribute("listCategory", listCategory);
         System.out.println(listCategory);
-        model.addAttribute("username",getUsername(model));
-        model.addAttribute("adminUsername",getUsername(model));
+        model.addAttribute("username", getUsername(model));
+        model.addAttribute("adminUsername", getUsername(model));
         model.addAttribute("choseCategory", choseCategory);
         model.addAttribute("orderList", orderList);
         model.addAttribute("listProducts", listProducts);
@@ -266,25 +307,26 @@ public class AppController {
     @RequestMapping("/admin-panel")
     public String showAdminPanel(Model model) {
         User user = new User();
-        model.addAttribute("username",getUsername(model));
-        model.addAttribute("adminUsername",getUsername(model));
+        model.addAttribute("username", getUsername(model));
+        model.addAttribute("adminUsername", getUsername(model));
         model.addAttribute("user", user);
         return "adminPanel";
     }
+
     @RequestMapping("/all-users")
-    public String showallUsers(Model model){
+    public String showallUsers(Model model) {
         List<User> users = userService.listAll();
-        model.addAttribute("adminUsername",getUsername(model));
+        model.addAttribute("adminUsername", getUsername(model));
         model.addAttribute("users", users);
 
         return "allUsers";
     }
 
     @RequestMapping("/all-requested-products")
-    public String showallProducts(Model model){
+    public String showallProducts(Model model) {
         List<ProductRequests> productRequests = productService.listAllProductRequested();
-        model.addAttribute("adminUsername",getUsername(model));
-        model.addAttribute("productRequests",productRequests);
+        model.addAttribute("adminUsername", getUsername(model));
+        model.addAttribute("productRequests", productRequests);
         return "requestedProducts";
     }
 
@@ -327,8 +369,8 @@ public class AppController {
     public String saveCategory(Model model, net.codejava.Domains.OrderCategory choseCategory) {
         net.codejava.Domains.OrderCategory category = new net.codejava.Domains.OrderCategory();
         List<net.codejava.Domains.OrderCategory> listCategories = categoryService.listAll();
-        model.addAttribute("username",getUsername(model));
-        model.addAttribute("adminUsername",getUsername(model));
+        model.addAttribute("username", getUsername(model));
+        model.addAttribute("adminUsername", getUsername(model));
         model.addAttribute("choseCategory", choseCategory);
         model.addAttribute("listCategories", listCategories);
         model.addAttribute("category", category);
@@ -340,8 +382,8 @@ public class AppController {
         if (categoryService.isPresent(orderCategory)) {
             String message = "Category already exists !";
             model.addAttribute("nonUniqueCategory", message);
-            model.addAttribute("username",getUsername(model));
-            model.addAttribute("adminUsername",getUsername(model));
+            model.addAttribute("username", getUsername(model));
+            model.addAttribute("adminUsername", getUsername(model));
             return saveCategory(model, new OrderCategory());
         } else {
             categoryRepo.save(orderCategory);
@@ -370,7 +412,7 @@ public class AppController {
 
 
     @RequestMapping("/request-product")
-    public String showRequestProduct(Model model , ProductRequests requests){
+    public String showRequestProduct(Model model, ProductRequests requests) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         String username = authentication.getName();
         Optional<User> user = repo.findByUsername(username);
@@ -380,10 +422,10 @@ public class AppController {
         System.out.println(productRequests1);
         System.out.println(productRepo.findByuserRequestedId(user.get().getUserId()));
         ProductRequests productRequests = new ProductRequests();
-        model.addAttribute("username",getUsername(model));
-        model.addAttribute("adminUsername",getUsername(model));
-        model.addAttribute("productRequests" , productRequests);
-        model.addAttribute("listProductsRequested" , productRequests1);
+        model.addAttribute("username", getUsername(model));
+        model.addAttribute("adminUsername", getUsername(model));
+        model.addAttribute("productRequests", productRequests);
+        model.addAttribute("listProductsRequested", productRequests1);
         return "requestNewProducts";
     }
 
@@ -399,18 +441,18 @@ public class AppController {
 //        }
 
     @RequestMapping("/process-product-register")
-    public String processRequestProduct(Model model , ProductRequests productRequests){
+    public String processRequestProduct(Model model, ProductRequests productRequests) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         String username = authentication.getName();
         Optional<User> user = repo.findByUsername(username);
         long id = user.get().getUserId();
         List<ProductRequests> productRequests1 = productService.listAllByProduct(id);
-        model.addAttribute("listProductsRequested" , productRequests1);
-        if(productService.isRequestedProductPresent(productRequests)){
+        model.addAttribute("listProductsRequested", productRequests1);
+        if (productService.isRequestedProductPresent(productRequests)) {
             String messageError = "Product already exists !";
-            model.addAttribute("messageError" , messageError);
+            model.addAttribute("messageError", messageError);
             return "requestNewProducts";
-        }else{
+        } else {
             productRequests.setRequestedBy(user.get().getFirst_name() + " " + user.get().getLastName());
             productRequests.setUserRequestedId(user.get().getUserId());
             productRequests.setStatus("...");
@@ -424,14 +466,14 @@ public class AppController {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         String username = authentication.getName();
         Optional<User> user = repo.findByUsername(username);
-      productService.delete(productId);
+        productService.delete(productId);
         return user.get().getRoles().equals("USER")
                 ? "redirect:/request-product"
                 : "redirect:/all-requested-products";
     }
 
     @RequestMapping("/product-approved/{product}")
-    public String approvedProduct (@PathVariable(name = "product") String product,ProductRequests productRequests){
+    public String approvedProduct(@PathVariable(name = "product") String product, ProductRequests productRequests) {
         Optional<ProductRequests> productName = productRepo.findByProduct(product);
         String statusM = "Approved";
         productRequests.setStatus(statusM);
@@ -445,24 +487,26 @@ public class AppController {
     }
 
 
-//User profile implementation
+    //User profile implementation
     @RequestMapping("/user-profile")
-    public String userProfile(Model model){
+    public String userProfile(Model model) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         String username = authentication.getName();
         Optional<User> user = repo.findByUsername(username);
         String lastName = user.get().getLastName();
-        String usernam1  = user.get().getUsername();
+        String usernam1 = user.get().getUsername();
         String firstName = user.get().getFirst_name();
         String address = user.get().getUser_address();
         String phonenumber = user.get().getUser_number();
         Long userId = user.get().getUserId();
-        model.addAttribute("username",getUsername(model));
-        model.addAttribute("adminUsername",getUsername(model));
-        model.addAttribute("userDetails",user);
+        model.addAttribute("username", getUsername(model));
+        model.addAttribute("adminUsername", getUsername(model));
+        model.addAttribute("userDetails", user);
+        model.addAttribute("profileImage", getProfileImage(model));
         System.out.println(lastName);
         return "userProfile";
     }
+
     @RequestMapping(value = "/user-edit/{userId}", method = RequestMethod.POST)
     public String editProfile(@PathVariable(name = "userId") int userId, User userEdit, Model model) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
@@ -477,8 +521,8 @@ public class AppController {
         user.setFirst_name(userEdit.getFirst_name());
         user.setUser_number(userEdit.getUser_number());
         repo.save(user);
-        model.addAttribute("username",getUsername(model));
-        model.addAttribute("adminUsername",getUsername(model));
+        model.addAttribute("username", getUsername(model));
+        model.addAttribute("adminUsername", getUsername(model));
         model.addAttribute("userDetails", user);
         if (user.getRoles().equals("USER")) {
             return "redirect:/user";
@@ -488,19 +532,22 @@ public class AppController {
     }
 
     @RequestMapping(value = "/user-edit/{userId}", method = RequestMethod.GET)
-    public ModelAndView showEditProfilePage(@PathVariable(name = "userId") int userId ,Model model) {
+    public ModelAndView showEditProfilePage(@PathVariable(name = "userId") int userId, Model model) {
         ModelAndView mav = new ModelAndView("userProfileEdit");
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String username = authentication.getName();
         User user = userService.get(userId);
-        model.addAttribute("username",getUsername(model));
-        model.addAttribute("adminUsername",getUsername(model));
+        model.addAttribute("username", getUsername(model));
+        model.addAttribute("adminUsername", getUsername(model));
         mav.addObject("userDetails", user);
+        model.addAttribute("profileImage", getProfileImage(model));
         System.out.println(mav);
         repo.save(user);
         return mav;
     }
 
     @RequestMapping(value = "/user-edit-password/{userId}", method = RequestMethod.POST)
-    public String editPassword(@PathVariable(name = "userId") int userId,User userEdit, Model model) {
+    public String editPassword(@PathVariable(name = "userId") int userId, User userEdit, Model model) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         String username = authentication.getName();
         User user = userService.get(userId);
@@ -508,8 +555,8 @@ public class AppController {
         user.setPassword(userEdit.getPassword());
         user.setMatchingPassword(userEdit.getMatchingPassword());
         repo.save(user);
-        model.addAttribute("username",getUsername(model));
-        model.addAttribute("adminUsername",getUsername(model));
+        model.addAttribute("username", getUsername(model));
+        model.addAttribute("adminUsername", getUsername(model));
         model.addAttribute("user", user);
         if (user.getRoles().equals("USER")) {
             return "redirect:/user";
@@ -519,14 +566,25 @@ public class AppController {
     }
 
     @RequestMapping(value = "/user-edit-password/{userId}", method = RequestMethod.GET)
-    public ModelAndView showEditPasswordPage(@PathVariable(name = "userId") int userId ,Model model) {
+    public ModelAndView showEditPasswordPage(@PathVariable(name = "userId") int userId, Model model) {
         ModelAndView mav = new ModelAndView("changePassword");
         User user = userService.get(userId);
-        model.addAttribute("username",getUsername(model));
-        model.addAttribute("adminUsername",getUsername(model));
+        model.addAttribute("username", getUsername(model));
+        model.addAttribute("adminUsername", getUsername(model));
+        model.addAttribute("profileImage", getProfileImage(model));
         mav.addObject("user", user);
         System.out.println(mav);
         repo.save(user);
         return mav;
     }
+
+//
+//    @ResponseBody
+//    @RequestMapping(value = "loadProductByCategory/{id}", method = RequestMethod.GET)
+//    public String loadProductByCategory(@PathVariable("id") int id) {
+//        Gson gson = new Gson();
+//        return gson.toJson(orderlistService.findByOrderCategory(id));
+//    }
+
+
 }

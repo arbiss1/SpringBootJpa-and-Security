@@ -1,12 +1,8 @@
 package net.codejava.Domains;
 
 
-import net.codejava.PasswordAnotation.ValidPassword;
-
 import javax.persistence.*;
-import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotEmpty;
-import javax.validation.constraints.NotNull;
 
 @Table
 @Entity
@@ -50,8 +46,11 @@ public class User {
 //	@NotNull
 	private String MatchingPassword;
 
+	private String fileName;
+
 	@Lob
-	private Byte[] image;
+	@Column(name = "Image")
+	private byte[] image;
 
 
 	
@@ -81,11 +80,19 @@ public class User {
 		this.user_number = user_number;
 	}
 
-	public Byte[] getImage() {
+	public String getFileName() {
+		return fileName;
+	}
+
+	public void setFileName(String fileName) {
+		this.fileName = fileName;
+	}
+
+	public byte[] getImage() {
 		return image;
 	}
 
-	public void setImage(Byte[] image) {
+	public void setImage(byte[] image) {
 		this.image = image;
 	}
 

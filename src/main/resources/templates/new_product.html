@@ -133,37 +133,5 @@ border-bottom:1px solid lightgrey;
 					<button  class = "btn btn-secondary saveButton" type="submit">Save</button>
 		</form>
 	</div>
-<!--	  <script>-->
-<!--		  var totalPrice = document.getElementById("totalPrice");-->
-
-<!--	  </script>-->
-	  <script th:inline="javascript">
-		var dropDownCategory = document.getElementById("dropDownCategory").value;
-		console.log(dropDownCategory);
-		var dropDownProduct = document.getElementById("dropDownProduct").value;
-		console.log(dropDownProduct);
-
-
-		("#dropDownCategory").change(function(){
-    var categoryId = $(this).val();
-    $.ajax({
-        type: 'GET',
-        url: "/categories/" + categoryId,
-        success: function(data){
-            var slctSubcat=$('#dropDownProduct'), option="";
-            slctSubcat.empty();
-
-            for(var i=0; i<data.length; i++){
-                option = option + "<option value='"+data[i].id + "'>"+data[i].subcateogory_name + "</option>";
-            }
-            slctSubcat.append(option);
-        },
-        error:function(){
-            alert("error");
-        }
-
-    });
-});
-	  </script>
 </body>
 </html>

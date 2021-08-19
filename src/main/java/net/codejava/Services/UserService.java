@@ -5,7 +5,12 @@ import net.codejava.Repositories.UserRepository;
 import net.codejava.Domains.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.util.StringUtils;
+import org.springframework.web.multipart.MultipartFile;
+
+import java.io.IOException;
 import java.util.List;
+import java.util.stream.Stream;
 
 @Service
 @Transactional
@@ -17,6 +22,8 @@ public class UserService {
     public void save(User info) {
         repo.save(info);
     }
+
+
 
     public User get(String roles) {
         return repo.findByRoles(roles).get();
@@ -42,6 +49,7 @@ public class UserService {
         return listAll().stream().anyMatch(p -> p.getPassword().equals(user.getPassword())
                 && p.getUsername().equals(user.getUsername()));
     }
+}
 
-    }
+
 

@@ -25,5 +25,10 @@ public class OrderListService {
         repoList.deleteById(listId);
     }
 
+//
+//    public List<OrderList> findByOrderCategory(int id) {
+//        return repoList.findByOrderCategory(id);
+//    }
+
 }
 

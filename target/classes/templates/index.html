@@ -112,7 +112,7 @@ border-bottom:1px solid lightgrey;
                     <br>
                     <div sec:authorize="hasAnyAuthority('USER','ADMIN')">
                         <a sec:authorize="hasAnyAuthority('USER','ADMIN')"
-                            href="#fire" class='show-example-btn'>
+                            th:href="@{'/delete/' + ${order.id}}" class='show-example-btn'>
                             Delete
                         </a>
                     </div>
@@ -151,45 +151,8 @@ function topFunction() {
   document.documentElement.scrollTop = 0;
 }
 
-$(document).ready(function(){
-   $('a[href="#fire"]').click(function(){
-const swalWithBootstrapButtons = Swal.mixin({
-  customClass: {
-    confirmButton: 'btn btn-success',
-    cancelButton: 'btn btn-danger'
-  },
-  buttonsStyling: false
-})
-swalWithBootstrapButtons.fire({
-  title: 'Are you sure?',
-  text: "You won't be able to revert this!",
-  icon: 'warning',
-  showCancelButton: true,
-  confirmButtonText: 'Yes, delete it!',
-  cancelButtonText: 'No, cancel!',
-  reverseButtons: true
-}).then((result) => {
-  if (result.isConfirmed) {
-    swalWithBootstrapButtons.fire(
-      'Deleted!',
-      'Your file has been deleted.',
-      'success'
-      location.th:href = "@{'/delete/' + ${order.id}}";
 
-      //todo: deleteProduct();
-    )
-  } else if (
-    /* Read more about handling dismissals below */
-    result.dismiss === Swal.DismissReason.cancel
-  ) {
-    swalWithBootstrapButtons.fire(
-      'Cancelled',
-      'Your imaginary file is safe :)',
-      'error'
-    )
-  }
-})
-}
+
 </script>
 </body>
 </html>

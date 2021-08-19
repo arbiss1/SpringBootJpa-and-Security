@@ -23,7 +23,6 @@ body {
  }
 
 .profile-card {
-  width:400px;
   margin:auto;
   background: #fff;
   box-shadow: 0 4px 10px 0 rgba(0,0,0,.5);
@@ -73,7 +72,6 @@ width: 100%;
 img {
 height:100%;
 }
-}
 .divNav{
  padding:0;
 }
@@ -82,6 +80,96 @@ background-color:black;
 padding:25px;
 border-bottom:1px solid lightgrey;
 }
+input[type=password]:focus {
+  background-color: #fff;
+  border-bottom: 2px solid #5fbae9;
+}
+
+input[type=password]:placeholder {
+  color: #cccccc;
+}
+input[type=password] {
+  background-color: #f6f6f6;
+  border: none;
+  color: #0d0d0d;
+  padding: 10px 32px;
+  text-align: center;
+  text-decoration: none;
+  display: inline-block;
+  font-size: 16px;
+  margin: 5px;
+  width: 85%;
+  border: 2px solid #f6f6f6;
+  -webkit-transition: all 0.5s ease-in-out;
+  -moz-transition: all 0.5s ease-in-out;
+  -ms-transition: all 0.5s ease-in-out;
+  -o-transition: all 0.5s ease-in-out;
+  transition: all 0.5s ease-in-out;
+  -webkit-border-radius: 5px 5px 5px 5px;
+  border-radius: 5px 5px 5px 5px;
+}
+input[type=button], input[type=submit], input[type=reset]  {
+  background-color: #56baed;
+  border: none;
+  color: white;
+  padding: 10px 80px;
+  text-align: center;
+  text-decoration: none;
+  display: inline-block;
+  text-transform: uppercase;
+  font-size: 13px;
+  -webkit-box-shadow: 0 10px 30px 0 rgba(95,186,233,0.4);
+  box-shadow: 0 10px 30px 0 rgba(95,186,233,0.4);
+  -webkit-border-radius: 5px 5px 5px 5px;
+  border-radius: 5px 5px 5px 5px;
+  margin: 5px 20px 40px 20px;
+  -webkit-transition: all 0.3s ease-in-out;
+  -moz-transition: all 0.3s ease-in-out;
+  -ms-transition: all 0.3s ease-in-out;
+  -o-transition: all 0.3s ease-in-out;
+  transition: all 0.3s ease-in-out;
+}
+
+input[type=button]:hover, input[type=submit]:hover, input[type=reset]:hover  {
+  background-color: #39ace7;
+}
+
+input[type=button]:active, input[type=submit]:active, input[type=reset]:active  {
+  -moz-transform: scale(0.95);
+  -webkit-transform: scale(0.95);
+  -o-transform: scale(0.95);
+  -ms-transform: scale(0.95);
+  transform: scale(0.95);
+}
+input[type=text] {
+  background-color: #f6f6f6;
+  border: none;
+  color: #0d0d0d;
+  padding: 10px 32px;
+  text-align: center;
+  text-decoration: none;
+  display: inline-block;
+  font-size: 16px;
+  margin: 5px;
+  width: 85%;
+  border: 2px solid #f6f6f6;
+  -webkit-transition: all 0.5s ease-in-out;
+  -moz-transition: all 0.5s ease-in-out;
+  -ms-transition: all 0.5s ease-in-out;
+  -o-transition: all 0.5s ease-in-out;
+  transition: all 0.5s ease-in-out;
+  -webkit-border-radius: 5px 5px 5px 5px;
+  border-radius: 5px 5px 5px 5px;
+}
+
+input[type=text]:focus {
+  background-color: #fff;
+  border-bottom: 2px solid #5fbae9;
+}
+
+input[type=text]:placeholder {
+  color: #cccccc;
+}
 	</style>
 </head>
 <body>
@@ -89,30 +177,30 @@ border-bottom:1px solid lightgrey;
 <div>
   <div class="profile-card">
     <div class="image-container">
-      <img src="https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_960_720.png" style="width:100%">
+      <img th:src="${profileImage}" style="width:100%">
       <div class="title" style = "display:flex;">
       </div>
     </div>
-    <form action="POST" th:action="@{'/user-edit/' + ${userDetails.userId}}" th:object="${userDetails}" method="post">
+    <form action="POST" style = "width:100%;" th:action="@{'/user-edit/' + ${userDetails.userId}}" th:object="${userDetails}" method="post">
     <div class="main-container">
       <div>
-        <p style = "padding:3px;">Username:
+        <p style = "padding:3px;width:100%;">Username:
           <input class ="form-control" th:field="*{username}" th:id = "input" type = "text" ></p>
       </div>
       <div>
-        <p style = "padding:3px;">First Name:
+        <p style = "padding:3px;width:100%;">First Name:
           <input class ="form-control" th:field="*{first_name}" th:id = "input1" type = "text" ></p>
       </div>
       <div>
-        <p style = "padding:3px;">Last Name:
+        <p style = "padding:3px;width:100%;">Last Name:
           <input class ="form-control" th:field="*{lastName}" th:id = "input2" type = "text" ></p>
       </div>
       <div>
-        <p style = "padding:3px;">Address:
+        <p style = "padding:3px;display:grid;width:100%;">Address:
           <input class ="form-control" th:field="*{user_address}" th:id = "input3" type = "text"  ></p>
       </div>
       <div>
-        <p style = "padding:3px;">Phone Number:
+        <p style = "padding:3px;width:100%;">Phone Number:
           <input class ="form-control" th:field="*{user_number}" th:id = "input4" type = "text" ></p>
       </div>
       <div>
