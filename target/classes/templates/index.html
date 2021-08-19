@@ -8,6 +8,7 @@
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"
         integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM"
         crossorigin="anonymous"></script>
+<script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
 <link rel = "stylesheet" th:href = "@{/styles/stylesheet1.css}">
 <script type = "text/javascript" th:src = "@{/styles/scripts.js}"></script>
 <link rel="stylesheet" href="https://pro.fontawesome.com/releases/v5.10.0/css/all.css"
@@ -112,7 +113,7 @@ border-bottom:1px solid lightgrey;
                     <br>
                     <div sec:authorize="hasAnyAuthority('USER','ADMIN')">
                         <a sec:authorize="hasAnyAuthority('USER','ADMIN')"
-                            th:href="@{'/delete/' + ${order.id}}" class='show-example-btn'>
+                             th:onclick="|deleteUser(${order.id});|" href="" class='show-example-btn'>
                             Delete
                         </a>
                     </div>
@@ -150,9 +151,22 @@ function topFunction() {
   document.body.scrollTop = 0;
   document.documentElement.scrollTop = 0;
 }
-
-
-
 </script>
+<script type="text/javascript">
+  function deleteUser(id) {
+    swal({
+      title: "Are you sure?",
+      text: "All user data will also be deleted",
+      icon: "warning",
+      buttons: true,
+      dangerMode: true,
+    }).then((willDelete) => {
+      if (willDelete)
+        location.href = "/delete/" + id;
+    });
+  }
+</script>
+
+
 </body>
 </html>

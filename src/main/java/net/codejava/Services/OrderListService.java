@@ -2,6 +2,7 @@ package net.codejava.Services;
 
 import java.util.List;
 
+import net.codejava.Domains.OrderCategory;
 import net.codejava.Domains.OrderList;
 import net.codejava.Repositories.OrderListRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,6 +25,8 @@ public class OrderListService {
     public void delete(long listId) {
         repoList.deleteById(listId);
     }
+
+    public List<OrderList> getbyCategory(OrderCategory category){return repoList.findBycategory(category);}
 
 //
 //    public List<OrderList> findByOrderCategory(int id) {

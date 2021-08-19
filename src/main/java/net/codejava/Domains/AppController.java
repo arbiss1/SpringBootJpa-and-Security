@@ -123,6 +123,15 @@ public class AppController {
                 ? "redirect:/user"
                 : "redirect:/admin";
     }
+    @RequestMapping(value = "/get-products/{category}",method = RequestMethod.GET)
+    public ModelAndView getProducts(@PathVariable(name = "category") OrderCategory category,Model model){
+        ModelAndView mav = new ModelAndView("new_product");
+        System.out.println(category);
+        List<OrderList> allProducts = listRepo.findBycategory(category);
+        model.addAttribute("products" , allProducts);
+        System.out.println(allProducts);
+        return mav;
+    }
 
     @RequestMapping("/new")
     public String showNewProductPage(Model model, OrderList choseOrder, net.codejava.Domains.OrderCategory choseCategory) {
@@ -350,7 +359,7 @@ public class AppController {
     @RequestMapping("/delete-user-admin/{userId}")
     public String deleteUser(@PathVariable(name = "userId") long userId) {
         userService.delete(userId);
-        return "redirect:/admin-panel";
+        return "redirect:/all-users";
     }
 
     @RequestMapping("/process_register_product")
@@ -574,14 +583,6 @@ public class AppController {
         repo.save(user);
         return mav;
     }
-
-//
-//    @ResponseBody
-//    @RequestMapping(value = "loadProductByCategory/{id}", method = RequestMethod.GET)
-//    public String loadProductByCategory(@PathVariable("id") int id) {
-//        Gson gson = new Gson();
-//        return gson.toJson(orderlistService.findByOrderCategory(id));
-//    }
 
 
 }

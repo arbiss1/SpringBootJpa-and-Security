@@ -17,6 +17,10 @@ public interface OrderListRepository extends JpaRepository<OrderList, Long> {
 	Optional <OrderList> findByListName (String listName);
 
     List<OrderList> findByCategory(Optional<OrderCategory> category);
+
+    List<OrderList> findBycategory(OrderCategory category);
+
+    List<OrderList> findBycategory(String category);
 //
 //    @Query("select new OrderList(listId , listName) from OrderList where category_category_id = :id")
 //    public List<OrderList> findByOrderCategory(@Param("id") long id);
