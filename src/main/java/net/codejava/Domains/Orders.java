@@ -2,10 +2,7 @@ package net.codejava.Domains;
 
 
 import javax.persistence.*;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.time.LocalTime;
-import java.time.OffsetDateTime;
 
 @Entity
 @Table(name = "orders")
@@ -135,8 +132,9 @@ public class Orders {
         return orderStatus;
     }
 
-    public void setStatus(String orderStatus) {
+    public String setStatus(String orderStatus) {
         this.orderStatus = orderStatus;
+        return orderStatus;
     }
 
     @Override

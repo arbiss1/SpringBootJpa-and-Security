@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en"  xmlns="http://www.w3.org/1999/xhtml"
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml"
       xmlns:sec="https://www.thymeleaf.org/thymeleaf-extras-springsecurity5"
       xmlns:th="http://www.thymeleaf.org">
 <head>
@@ -99,16 +99,21 @@ border-bottom:1px solid lightgrey;
       <td sec:authorize="hasAuthority('ADMIN')">
         <div sec:authorize="hasAuthority('ADMIN')">
           <a style="cursor:pointer" sec:authorize="hasAuthority('ADMIN')"
-             th:href ="@{'/status-update/' + ${order.listName}}" class='show-example-btn'>
-            Your order is being prepared
+             th:href ="@{'/status-update/' + ${order.id} + '/' + 'Your order is being prepared' + '/' + ${order.status}}"
+             class='show-example-btn' title="Your order is being prepared">
+            Status 1
           </a>
+          </br>
           <a style="cursor:pointer" sec:authorize="hasAuthority('ADMIN')"
-              class='show-example-btn'>
-            Your order is delivered to your destination
+              class='show-example-btn' title="Your order is delivered to your destination"
+             th:href ="@{'/status-update/' + ${order.id} + '/' + 'Your order is delivered to your destination' + '/' + ${order.status}}">
+            Status 2
           </a>
+          </br>
           <a style="cursor:pointer" sec:authorize="hasAuthority('ADMIN')"
-              class='show-example-btn'>
-            Arrived
+              class='show-example-btn' title="Arrived"
+             th:href ="@{'/status-update/' + ${order.id} + '/' + 'Arrived' + '/' + ${order.status}}">
+            Status 3
           </a>
         </div>
       </td>
@@ -116,5 +121,8 @@ border-bottom:1px solid lightgrey;
     </tbody>
   </table>
 </div>
+<script>
+$(document).ready(() => $('#table').DataTable());
+</script>
 </body>
 </html>

@@ -16,5 +16,4 @@ public interface UserRepository extends JpaRepository <User,Long> {
 	
 	Optional <User> findByRoles (String roles);
 
-    Optional<User> findByfileName(String fileName);
 }

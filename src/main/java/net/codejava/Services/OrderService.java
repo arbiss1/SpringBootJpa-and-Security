@@ -2,8 +2,8 @@
 package net.codejava.Services;
 
 import java.util.List;
+import java.util.Optional;
 
-import net.codejava.Domains.OrderList;
 import net.codejava.Domains.Orders;
 import net.codejava.Repositories.OrdersRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,6 +20,7 @@ public class OrderService {
 	public List<Orders> listAll() {
 		return repo.findAll();
 	}
+
 	public List<Orders> listAllByUser(Long userId) {
 		return repo.findByUserId(userId);
 	}
@@ -35,7 +36,4 @@ public class OrderService {
 		repo.deleteById(id);
 	}
 
-	public Orders getlistName(String listName) {
-		return repo.findBylistName(listName).get();
-	}
 }

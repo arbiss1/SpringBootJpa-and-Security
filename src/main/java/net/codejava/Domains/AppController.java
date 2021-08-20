@@ -13,6 +13,8 @@ import java.util.Locale;
 import java.util.Optional;
 import net.codejava.Repositories.*;
 import net.codejava.Services.*;
+import org.aspectj.weaver.ast.Or;
+import org.hibernate.criterion.Order;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -629,15 +631,23 @@ public class AppController {
         return "statusPageAdmin";
     }
 
-    @RequestMapping("/status-update/{listName}")
-    public String approvedProduct(@PathVariable(name = "listName") String listName) {
+    @RequestMapping("/status-update/{id}/{value}/{status}")
+    public String statusUpdate(@PathVariable(name = "id") long id ,
+                               @PathVariable(name = "status") String status,
+                               @PathVariable(name = "value") String value){
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         String username = authentication.getName();
         Optional<User> user2 = repo.findByUsername(username);
-        Optional<Orders> ordersByCustomer = repoOrders.findBylistName(listName);
-        System.out.println(ordersByCustomer.get().getStatus());
-        Orders order  = service.get(user2.get().getUserId());
-        System.out.println(username);
+        Orders allOrdersByListname = repoOrders.findByidAndOrderStatus(id,status);
+        System.out.println(id);
+        System.out.println(allOrdersByListname);
+        System.out.println(value);
+        allOrdersByListname.setStatus(value);
+//        String thisStatus = allOrdersByListname.get().getStatus();
+//        orders.setStatus(allOrdersByListname.get().setStatus(value));
+//        orders.setQuantity(allOrdersByListname.get().getQuantity());
+        System.out.println(allOrdersByListname);
+        repoOrders.save(allOrdersByListname);
         return "redirect:/order-status-admin";
     }
 
