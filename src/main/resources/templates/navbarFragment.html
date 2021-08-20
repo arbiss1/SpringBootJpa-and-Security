@@ -56,9 +56,13 @@
             <i class="fab fa-product-hunt"></i>
           <span class="nav_name">Request new products</span>
         </a>
-          <a sec:authorize = "hasAuthority('USER')" href="#" class="nav_link">
-            <i class="fab fa-product-hunt"></i>
-            <span class="nav_name">Purchase history</span>
+          <a sec:authorize = "hasAuthority('USER')" href="/order-status-user" class="nav_link">
+            <i class="fas fa-question"></i>
+            <span class="nav_name">Order Status</span>
+          </a>
+          <a sec:authorize = "hasAuthority('ADMIN')" href="/order-status-admin" class="nav_link">
+            <i class="fas fa-question"></i>
+            <span class="nav_name">Order Status</span>
           </a>
           <a sec:authorize = "hasAuthority('USER')" href="#" class="nav_link">
             <i class="fab fa-product-hunt"></i>

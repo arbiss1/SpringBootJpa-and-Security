@@ -11,6 +11,7 @@
 <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
 <link rel = "stylesheet" th:href = "@{/styles/stylesheet1.css}">
 <script type = "text/javascript" th:src = "@{/styles/scripts.js}"></script>
+<script type = "text/javascript" th:src = "@{/styles/sweetaler.js}"></script>
 <link rel="stylesheet" href="https://pro.fontawesome.com/releases/v5.10.0/css/all.css"
       integrity="sha384-AYmEC3Yw5cVb3ZcuHtOA93w35dYTsvhLPVnYs9eStHfGJvOvKxVfELGroGkvsg+p" crossorigin="anonymous"/>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
@@ -84,7 +85,7 @@ border-bottom:1px solid lightgrey;
             </form>
         </div>
         <br/><br/>
-        <table border="1" cellpadding="10" style="width:65%" class="table"
+        <table border="1" cellpadding="10" style="width:71%" class="table"
                id="table">
             <thead class="thead-dark">
             <tr scope="row">
@@ -94,6 +95,8 @@ border-bottom:1px solid lightgrey;
                 <th scope="col">Phone Number</th>
                 <th scope="col">Quantity</th>
                 <th scope="col">Price</th>
+                <th scope="col">Date</th>
+                <th scope="col">Time</th>
                 <!--                <th scope = "col" sec:authorize = "hasAuthority('ADMIN')">Status</th>-->
                 <th scope="col" sec:authorize="permitAll()">Actions</th>
             </tr>
@@ -106,14 +109,16 @@ border-bottom:1px solid lightgrey;
                 <td th:text="${order.user_number}">Phone Number</td>
                 <td th:text="${order.quantity}">Quantity</td>
                 <td th:text="${order.totalPrice}">Price</td>
+                <td th:text="${order.localDate}">Date</td>
+                <td th:text="${order.localTime}">Time</td>
                 <td sec:authorize="hasAnyAuthority('USER','ADMIN')">
                     <div sec:authorize="hasAuthority('USER')">
                         <a th:href="@{'/edit/' + ${order.id}}">Edit</a>
                     </div>
                     <br>
                     <div sec:authorize="hasAnyAuthority('USER','ADMIN')">
-                        <a sec:authorize="hasAnyAuthority('USER','ADMIN')"
-                             th:onclick="|deleteUser(${order.id});|" href="" class='show-example-btn'>
+                        <a style="cursor:pointer" sec:authorize="hasAnyAuthority('USER','ADMIN')"
+                             th:onclick="|deleteOrder(${order.id});|" class='show-example-btn'>
                             Delete
                         </a>
                     </div>
@@ -152,21 +157,5 @@ function topFunction() {
   document.documentElement.scrollTop = 0;
 }
 </script>
-<script type="text/javascript">
-  function deleteUser(id) {
-    swal({
-      title: "Are you sure?",
-      text: "All user data will also be deleted",
-      icon: "warning",
-      buttons: true,
-      dangerMode: true,
-    }).then((willDelete) => {
-      if (willDelete)
-        location.href = "/delete/" + id;
-    });
-  }
-</script>
-
-
 </body>
 </html>

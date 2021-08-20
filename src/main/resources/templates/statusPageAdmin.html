@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en"  xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:sec="https://www.thymeleaf.org/thymeleaf-extras-springsecurity5"
+      xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <title>Status</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+  <script src="//cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"
+          integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM"
+          crossorigin="anonymous"></script>
+  <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+  <link rel = "stylesheet" th:href = "@{/styles/stylesheet1.css}">
+  <script type = "text/javascript" th:src = "@{/styles/scripts.js}"></script>
+  <link rel="stylesheet" href="https://pro.fontawesome.com/releases/v5.10.0/css/all.css"
+        integrity="sha384-AYmEC3Yw5cVb3ZcuHtOA93w35dYTsvhLPVnYs9eStHfGJvOvKxVfELGroGkvsg+p" crossorigin="anonymous"/>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+  <script src="https://code.jquery.com/jquery-3.5.1.js"></script>
+  <script src="https://cdn.datatables.net/1.10.25/js/jquery.dataTables.min.js"></script>
+  <script src="https://cdn.datatables.net/1.10.25/js/dataTables.bootstrap5.min.js"></script>
+  <link href="https://cdn.datatables.net/1.10.25/css/dataTables.bootstrap5.min.css" rel="stylesheet">
+  <style>
+        	body {
+		background-color : lightgray;
+		}
+		.centerDiv {
+  width: 40%;
+ background: white;
+  border : solid 2px lighblue ;
+  border-radius : 8px ;
+  padding :50px;
+  }
+  table{
+  background-color:white;
+  width : 100%;
+  }
+   strong:hover{
+  color:white;
+  }
+#myBtn {
+  display: none;
+  position: fixed;
+  bottom: 20px;
+  right: 30px;
+  z-index: 99;
+  font-size: 18px;
+  border: none;
+  outline: none;
+  background-color: darkslateblue;
+  color: white;
+  cursor: pointer;
+  padding: 15px;
+  border-radius: 4px;
+}
+.swal2-confirm{
+margin:20px;
+}
+.divNav{
+ padding:0;
+}
+.nav_logo{
+background-color:black;
+padding:25px;
+border-bottom:1px solid lightgrey;
+}
+    </style>
+</head>
+<body>
+<div th:insert="/navbarFragment :: navbar"></div>
+<div align="center" style="margin-top:5%;">
+  <h1 sec:authorize="hasAuthority('USER')">Status</h1>
+  <br/><br/>
+  <table border="1" cellpadding="10" style="width:71%" class="table"
+         id="table">
+    <thead class="thead-dark">
+    <tr scope="row">
+      <th scope="col">Customer Name</th>
+      <th scope="col">Order Name</th>
+      <th scope="col">Quantity</th>
+      <th scope="col">Price</th>
+      <th scope="col">Date</th>
+      <th scope="col">Time</th>
+      <th scope="col">Status</th>
+
+      <th scope="col" sec:authorize="hasAuthority('ADMIN')">Actions</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr scope="row" th:each="order : ${listAll}">
+      <td th:text="${order.customer}">Customer Name<\td>
+      <td th:text="${order.listName}">Name</td>
+      <td th:text="${order.quantity}">Quantity</td>
+      <td th:text="${order.totalPrice}">Price</td>
+      <td th:text="${order.localDate}">Date</td>
+      <td th:text="${order.localTime}">Time</td>
+      <td th:text="${order.status}">Status</td>
+      <td sec:authorize="hasAuthority('ADMIN')">
+        <div sec:authorize="hasAuthority('ADMIN')">
+          <a style="cursor:pointer" sec:authorize="hasAuthority('ADMIN')"
+             th:href ="@{'/status-update/' + ${order.listName}}" class='show-example-btn'>
+            Your order is being prepared
+          </a>
+          <a style="cursor:pointer" sec:authorize="hasAuthority('ADMIN')"
+              class='show-example-btn'>
+            Your order is delivered to your destination
+          </a>
+          <a style="cursor:pointer" sec:authorize="hasAuthority('ADMIN')"
+              class='show-example-btn'>
+            Arrived
+          </a>
+        </div>
+      </td>
+    </tr>
+    </tbody>
+  </table>
+</div>
+</body>
+</html>

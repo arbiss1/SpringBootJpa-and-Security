@@ -2,6 +2,10 @@ package net.codejava.Domains;
 
 
 import javax.persistence.*;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
+import java.time.OffsetDateTime;
 
 @Entity
 @Table(name = "orders")
@@ -17,6 +21,13 @@ public class Orders {
     private Long userId;
     private String listName;
     private String price;
+    @Column(name = "localDate")
+    private String localDate;
+    @Column(name = "localTime")
+    private LocalTime localTime;
+    @Column(name = "status")
+    private String orderStatus;
+
 
 
     protected Orders() {
@@ -102,6 +113,30 @@ public class Orders {
 
     public void setUser_number(String user_number) {
         this.user_number = user_number;
+    }
+
+    public String getLocalDate() {
+        return localDate;
+    }
+
+    public void setLocalDate(String localDate) {
+        this.localDate = localDate;
+    }
+
+    public LocalTime getLocalTime() {
+        return localTime;
+    }
+
+    public void setLocalTime(LocalTime localTime) {
+        this.localTime = localTime;
+    }
+
+    public String getStatus() {
+        return orderStatus;
+    }
+
+    public void setStatus(String orderStatus) {
+        this.orderStatus = orderStatus;
     }
 
     @Override

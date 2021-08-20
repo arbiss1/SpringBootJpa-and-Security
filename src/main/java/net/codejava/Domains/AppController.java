@@ -4,6 +4,10 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.time.LocalDate;
+import java.time.LocalTime;
+import java.time.format.DateTimeFormatter;
+import java.time.format.FormatStyle;
 import java.util.List;
 import java.util.Locale;
 import java.util.Optional;
@@ -123,6 +127,7 @@ public class AppController {
                 ? "redirect:/user"
                 : "redirect:/admin";
     }
+
     @RequestMapping(value = "/get-products/{category}",method = RequestMethod.GET)
     public ModelAndView getProducts(@PathVariable(name = "category") OrderCategory category,Model model){
         ModelAndView mav = new ModelAndView("new_product");
@@ -145,6 +150,7 @@ public class AppController {
         model.addAttribute("username", getUsername(model));
         model.addAttribute("adminUsername", getUsername(model));
         model.addAttribute("choseCategory", choseCategory);
+        model.addAttribute("profileImage", getProfileImage(model));
         model.addAttribute("listCategory", listCategory);
         model.addAttribute("listOrders", listOrders);
         model.addAttribute("order", order);
@@ -201,6 +207,7 @@ public class AppController {
         model.addAttribute("order", order);
         model.addAttribute("username", getUsername(model));
         model.addAttribute("adminUsername", getUsername(model));
+        model.addAttribute("profileImage", getProfileImage(model));
         if (user.get().getRoles().equals("USER")) {
             return "redirect:/user";
         } else {
@@ -221,7 +228,16 @@ public class AppController {
         String lastName = user.get().getLastName();
         order.setCustomer(user.get().getFirst_name() + " " + lastName);
         order.setUserId(user.get().getUserId());
+        //time and date of order
+        LocalDate toadyDate = LocalDate.now();
+        String formattedDate = toadyDate.format(DateTimeFormatter.ofLocalizedDate(FormatStyle.FULL));
+        System.out.println("FULL format: " + formattedDate);
+        LocalTime todayTime = LocalTime.now();
+        order.setLocalDate(formattedDate);
+        order.setLocalTime(todayTime);
+        //
         int quantity = order.getQuantity();
+        order.setStatus("Order was sent successfully");
         Optional<OrderList> orderListDb = listRepo.findByListName(orderList.getListName());
         net.codejava.Domains.OrderCategory category = orderlistService.get(orderList.getListName()).getCategory();
         String priceWithout$sign = orderListDb.get().getPrice().substring(0, orderListDb.get().getPrice().length() - 1);
@@ -233,6 +249,7 @@ public class AppController {
         order.setListName(orderList.getListName());
         model.addAttribute("username", getUsername(model));
         model.addAttribute("adminUsername", getUsername(model));
+        model.addAttribute("profileImage", getProfileImage(model));
         repoOrders.save(order);
         if (user.get().getRoles().equals("USER")) {
             return "redirect:/user";
@@ -261,6 +278,7 @@ public class AppController {
         repoOrders.save(order);
         model.addAttribute("username", getUsername(model));
         model.addAttribute("adminUsername", getUsername(model));
+        model.addAttribute("profileImage", getProfileImage(model));
         model.addAttribute("order", order);
         if (user.get().getRoles().equals("USER")) {
             return "redirect:/user";
@@ -304,6 +322,7 @@ public class AppController {
         System.out.println(listCategory);
         model.addAttribute("username", getUsername(model));
         model.addAttribute("adminUsername", getUsername(model));
+        model.addAttribute("profileImage", getProfileImage(model));
         model.addAttribute("choseCategory", choseCategory);
         model.addAttribute("orderList", orderList);
         model.addAttribute("listProducts", listProducts);
@@ -315,6 +334,7 @@ public class AppController {
         User user = new User();
         model.addAttribute("username", getUsername(model));
         model.addAttribute("adminUsername", getUsername(model));
+        model.addAttribute("profileImage", getProfileImage(model));
         model.addAttribute("user", user);
         return "adminPanel";
     }
@@ -323,6 +343,7 @@ public class AppController {
     public String showallUsers(Model model) {
         List<User> users = userService.listAll();
         model.addAttribute("adminUsername", getUsername(model));
+        model.addAttribute("profileImage", getProfileImage(model));
         model.addAttribute("users", users);
 
         return "allUsers";
@@ -332,6 +353,7 @@ public class AppController {
     public String showallProducts(Model model) {
         List<ProductRequests> productRequests = productService.listAllProductRequested();
         model.addAttribute("adminUsername", getUsername(model));
+        model.addAttribute("profileImage", getProfileImage(model));
         model.addAttribute("productRequests", productRequests);
         return "requestedProducts";
     }
@@ -377,6 +399,7 @@ public class AppController {
         List<net.codejava.Domains.OrderCategory> listCategories = categoryService.listAll();
         model.addAttribute("username", getUsername(model));
         model.addAttribute("adminUsername", getUsername(model));
+        model.addAttribute("profileImage", getProfileImage(model));
         model.addAttribute("choseCategory", choseCategory);
         model.addAttribute("listCategories", listCategories);
         model.addAttribute("category", category);
@@ -390,6 +413,7 @@ public class AppController {
             model.addAttribute("nonUniqueCategory", message);
             model.addAttribute("username", getUsername(model));
             model.addAttribute("adminUsername", getUsername(model));
+            model.addAttribute("profileImage", getProfileImage(model));
             return saveCategory(model, new OrderCategory());
         } else {
             categoryRepo.save(orderCategory);
@@ -430,22 +454,11 @@ public class AppController {
         ProductRequests productRequests = new ProductRequests();
         model.addAttribute("username", getUsername(model));
         model.addAttribute("adminUsername", getUsername(model));
+        model.addAttribute("profileImage", getProfileImage(model));
         model.addAttribute("productRequests", productRequests);
         model.addAttribute("listProductsRequested", productRequests1);
         return "requestNewProducts";
     }
-
-//    @RequestMapping("/user")
-//    public String viewHomePageUser(Model model) {
-//        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-//        String username = authentication.getName();
-//        Optional<User> user = repo.findByUsername(username);
-//        if (user.isPresent()) {
-//            List<Orders> listOrders = service.listAllByUser(user.get().getUserId());
-//            model.addAttribute("listOrders", listOrders);
-//            model.addAttribute("userDetails", user);
-//        }
-
     @RequestMapping("/process-product-register")
     public String processRequestProduct(Model model, ProductRequests productRequests) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
@@ -468,7 +481,7 @@ public class AppController {
     }
 
     @RequestMapping("/delete-requested-product/{productId}")
-    public String deleteRequestedProduct(@PathVariable(name = "productId") long productId, ProductRequests productRequests, Model model) {
+    public String deleteRequestedProduct(@PathVariable(name = "productId") long productId) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         String username = authentication.getName();
         Optional<User> user = repo.findByUsername(username);
@@ -491,7 +504,6 @@ public class AppController {
         productRepo.save(productRequests);
         return "redirect:/all-requested-products";
     }
-
 
     //User profile implementation
     @RequestMapping("/user-profile")
@@ -529,6 +541,7 @@ public class AppController {
         repo.save(user);
         model.addAttribute("username", getUsername(model));
         model.addAttribute("adminUsername", getUsername(model));
+        model.addAttribute("profileImage", getProfileImage(model));
         model.addAttribute("userDetails", user);
         if (user.getRoles().equals("USER")) {
             return "redirect:/user";
@@ -563,6 +576,7 @@ public class AppController {
         repo.save(user);
         model.addAttribute("username", getUsername(model));
         model.addAttribute("adminUsername", getUsername(model));
+        model.addAttribute("profileImage", getProfileImage(model));
         model.addAttribute("user", user);
         if (user.getRoles().equals("USER")) {
             return "redirect:/user";
@@ -584,5 +598,47 @@ public class AppController {
         return mav;
     }
 
+    @RequestMapping("/order-status-user")
+    public String showStatusPage(Model model){
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String username = authentication.getName();
+        Optional<User> user = repo.findByUsername(username);
+        System.out.println(username);
+        List<Orders> listAllOrders = service.listAll();
+        List<Orders> listOrders = service.listAllByUser(user.get().getUserId());
+        model.addAttribute("listOrders", listOrders);
+        model.addAttribute("listAll",listAllOrders);
+        model.addAttribute("userDetails", user);
+        model.addAttribute("username", getUsername(model));
+        model.addAttribute("adminUsername", getUsername(model));
+        model.addAttribute("profileImage", getProfileImage(model));
+        return "statusPageUser";
+    }
+    @RequestMapping("/order-status-admin")
+    public String showStatusAdminPage(Model model){
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String username = authentication.getName();
+        Optional<User> user = repo.findByUsername(username);
+        System.out.println(username);
+        List<Orders> listAllOrders = service.listAll();
+        model.addAttribute("listAll",listAllOrders);
+        model.addAttribute("userDetails", user);
+        model.addAttribute("username", getUsername(model));
+        model.addAttribute("adminUsername", getUsername(model));
+        model.addAttribute("profileImage", getProfileImage(model));
+        return "statusPageAdmin";
+    }
+
+    @RequestMapping("/status-update/{listName}")
+    public String approvedProduct(@PathVariable(name = "listName") String listName) {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String username = authentication.getName();
+        Optional<User> user2 = repo.findByUsername(username);
+        Optional<Orders> ordersByCustomer = repoOrders.findBylistName(listName);
+        System.out.println(ordersByCustomer.get().getStatus());
+        Orders order  = service.get(user2.get().getUserId());
+        System.out.println(username);
+        return "redirect:/order-status-admin";
+    }
 
 }
