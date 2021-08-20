@@ -62,6 +62,7 @@ public class AppController {
         model.addAttribute("username", username);
         return username;
     }
+
     public Object getProfileImage(Model model) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         String username = authentication.getName();
@@ -137,6 +138,7 @@ public class AppController {
         List<OrderList> allProducts = listRepo.findBycategory(category);
         model.addAttribute("products" , allProducts);
         System.out.println(allProducts);
+        System.out.println(mav.getViewName());
         return mav;
     }
 
@@ -295,6 +297,7 @@ public class AppController {
         Orders order = service.get(id);
         mav.addObject("order", order);
         System.out.println(mav);
+        System.out.println(mav.getViewName());
         repoOrders.save(order);
         return mav;
     }
@@ -643,9 +646,6 @@ public class AppController {
         System.out.println(allOrdersByListname);
         System.out.println(value);
         allOrdersByListname.setStatus(value);
-//        String thisStatus = allOrdersByListname.get().getStatus();
-//        orders.setStatus(allOrdersByListname.get().setStatus(value));
-//        orders.setQuantity(allOrdersByListname.get().getQuantity());
         System.out.println(allOrdersByListname);
         repoOrders.save(allOrdersByListname);
         return "redirect:/order-status-admin";
