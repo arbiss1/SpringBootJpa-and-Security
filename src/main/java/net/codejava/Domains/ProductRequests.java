@@ -60,8 +60,4 @@ public class ProductRequests {
         this.product = product;
     }
 
-    public ProductRequests(long productId, String product) {
-        this.productId = productId;
-        this.product = product;
-    }
 }

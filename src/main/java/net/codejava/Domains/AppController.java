@@ -8,13 +8,9 @@ import java.time.LocalDate;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.time.format.FormatStyle;
-import java.util.List;
-import java.util.Locale;
-import java.util.Optional;
+import java.util.*;
 import net.codejava.Repositories.*;
 import net.codejava.Services.*;
-import org.aspectj.weaver.ast.Or;
-import org.hibernate.criterion.Order;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -24,8 +20,8 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.ModelAndView;
+import javax.validation.*;
 
-import javax.validation.Valid;
 
 @Controller
 public class AppController {
@@ -52,7 +48,7 @@ public class AppController {
     private ProductRequestsRepository productRepo;
 
 
-    private static String UPLOADED_FOLDER = "C://Users//arbis//Desktop//OrderManager//src//main//resources//images//";
+    private static final String UPLOADED_FOLDER = "C://Users//arbis//Desktop//OrderManager//src//main//resources//images//";
 
 
     public Object getUsername(Model model) {
@@ -171,10 +167,11 @@ public class AppController {
     }
 
     @PostMapping("/process_register")
-    public String processRegister(User user, @RequestParam("file") MultipartFile file, Model model, BindingResult result) {
-        if (result.hasErrors()) {
-            System.out.println(result);
-        }
+    public String processRegister(@ModelAttribute(name = "user") @Valid User user,BindingResult result,
+                                  @RequestParam("file") MultipartFile file, Model model) {
+            if (result.hasErrors())
+                return "signup_form";
+
         if (userService.isUsernamePresent(user)) {
             String message = "Username already exists !";
             model.addAttribute("nonUniqueUsername", message);
@@ -201,7 +198,6 @@ public class AppController {
         }
         return "signinUser";
     }
-
 
     @RequestMapping(value = "/save", method = RequestMethod.POST)
     public String saveOrder(@ModelAttribute("product") Orders order, OrderList orderList, Model model) {
@@ -649,6 +645,22 @@ public class AppController {
         System.out.println(allOrdersByListname);
         repoOrders.save(allOrdersByListname);
         return "redirect:/order-status-admin";
+    }
+
+    @RequestMapping("/purchase-history")
+    public String purchaseHistory (Model model){
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String username = authentication.getName();
+        Optional<User> user = repo.findByUsername(username);
+        long id = user.get().getUserId();
+        String status = "Arrived";
+        List<Orders> orders = repoOrders.findByUserIdAndOrderStatus(id , status);
+        System.out.println(orders);
+        model.addAttribute("allOrders", orders);
+        model.addAttribute("username", getUsername(model));
+        model.addAttribute("adminUsername", getUsername(model));
+        model.addAttribute("profileImage", getProfileImage(model));
+        return "purchasePage";
     }
 
 }

@@ -1,8 +1,12 @@
 package net.codejava.Domains;
 
 
+import net.codejava.PasswordAnotation.ValidPassword;
+
 import javax.persistence.*;
 import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.NotNull;
+
 
 @Table
 @Entity
@@ -27,6 +31,7 @@ public class User {
 	@Column(name = "username")
 	private String username;
 
+	@ValidPassword
 //	@NotNull(message = "stringValue has to be present")
 	@Column (name = "password")
 	private String password;
@@ -35,15 +40,14 @@ public class User {
 	private boolean enabled = true;
 	private String roles = "USER";
 
-//	@NotNull(message = "stringValue has to be present")
-	@NotEmpty
+	@NotEmpty(message = "not null")
 	private String user_address;
 
 //	@NotNull(message = "stringValue has to be present")
 	@NotEmpty
 	private String user_number;
 //
-//	@NotNull
+
 	private String MatchingPassword;
 
 	private String fileName;

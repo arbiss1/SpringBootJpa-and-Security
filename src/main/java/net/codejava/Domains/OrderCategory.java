@@ -1,7 +1,6 @@
 package net.codejava.Domains;
 
 import javax.persistence.*;
-import java.util.List;
 
 @Entity
 @Table(name = "OrderCategory")

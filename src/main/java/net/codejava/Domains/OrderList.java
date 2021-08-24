@@ -1,6 +1,5 @@
 package net.codejava.Domains;
 
-import java.util.List;
 
 import javax.persistence.*;
 
@@ -19,12 +18,6 @@ public class OrderList {
 	private String price;
 	public OrderList() {
 	}
-	public OrderList(int listId, String listName) {
-		super();
-		this.listId = listId;
-		this.listName = listName;
-	}
-
 	public OrderCategory getCategory() {
 		return category;
 	}

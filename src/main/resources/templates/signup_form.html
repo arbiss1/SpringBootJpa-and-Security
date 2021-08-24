@@ -328,9 +328,12 @@ border-bottom:1px solid lightgrey;
                 <input class="fadeIn" th:id ="userEmail" type="text" th:field="*{username}" id = "username"
                        placeholder = "Username..."/>
                 <input class="fadeIn"  type="password" onkeyup="return passwordChanged();"  th:field="*{password}"
-                       id="password" name="password"  placeholder = "Password..."/>
+                       id="password" name="password"  placeholder = "Password...">
+                <span th:errorclass="error"  th:if="${#fields.hasErrors('password')}" th:errors="*{password}"></span>
+
                 <input class="fadeIn"  type="password"
                        id = "passwordConfirm" th:field="*{MatchingPassword}"  placeholder = "Confirm Password..."/>
+                <span th:errorclass="error"  th:if="${#fields.hasErrors('user_address')}" th:errors="*{user_address}"></span>
                 <input class="fadeIn"  id = "firstname"  type="text" th:field="*{first_name}"
                        minlength="2" maxlength="20" placeholder = "First Name..."/>
                 <input class="fadeIn"  type="text" id="lastname" th:field="*{lastName}"
@@ -369,6 +372,25 @@ border-bottom:1px solid lightgrey;
         curElement.attr('src', e.target.result);
     };
     reader.readAsDataURL(this.files[0]);
+});
+
+$(document).ready(function () {
+    options = {
+        common: {minChar:8},
+        ui: {
+            showVerdictsInsideProgressBar:true,
+            showErrors:true,
+            errorMessages:{
+                wordLength: '<spring:message code="error.wordLength"/>',
+                wordNotEmail: '<spring:message code="error.wordNotEmail"/>',
+                wordSequences: '<spring:message code="error.wordSequences"/>',
+                wordLowercase: '<spring:message code="error.wordLowercase"/>',
+                wordUppercase: '<spring:message code="error.wordUppercase"/>',
+                wordOneNumber: '<spring:message code="error.wordOneNumber"/>',
+                wordOneSpecialChar: '<spring:message code="error.wordOneSpecialChar"/>'
+            }
+        }
+    };
 });
 </script>
 </body>

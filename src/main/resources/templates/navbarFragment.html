@@ -64,6 +64,10 @@
             <i class="fas fa-question"></i>
             <span class="nav_name">Order Status</span>
           </a>
+          <a sec:authorize = "hasAuthority('USER')" href="/purchase-history" class="nav_link">
+            <i class="fas fa-store"></i>
+            <span class="nav_name">Purchase history</span>
+          </a>
           <a sec:authorize = "hasAuthority('USER')" href="#" class="nav_link">
             <i class="fab fa-product-hunt"></i>
             <span class="nav_name">Contact support</span>

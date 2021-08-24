@@ -1,12 +1,9 @@
 package net.codejava.Repositories;
 
-import java.util.List;
+import java.util.Map;
 import java.util.Optional;
-
 import net.codejava.Domains.User;
-import net.codejava.Services.UserService;
 import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
 @Repository
@@ -16,4 +13,5 @@ public interface UserRepository extends JpaRepository <User,Long> {
 	
 	Optional <User> findByRoles (String roles);
 
+	User findByusername(String username);
 }

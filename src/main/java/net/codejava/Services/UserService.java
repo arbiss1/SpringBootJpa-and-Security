@@ -41,6 +41,8 @@ public class UserService {
         repo.deleteById(userId);
     }
 
+    public User getUsername(String username){return repo.findByusername(username);}
+
     public boolean isUsernamePresent(User user) {
         return listAll().stream().anyMatch(username -> username.getUsername().equals(user.getUsername()));
     }
