@@ -76,7 +76,7 @@ border-bottom:1px solid lightgrey;
     <div align="center" style="margin-top:5%;">
         <h1 sec:authorize="hasAuthority('USER')">Purchase history</h1>
         <br/><br/>
-        <table border="1" cellpadding="10" style="width:71%" class="table"
+        <table sec:authorize="hasAuthority('USER')" border="1" cellpadding="10" style="width:71%" class="table"
                id="table">
             <thead class="thead-dark">
             <tr scope="row">
@@ -90,6 +90,31 @@ border-bottom:1px solid lightgrey;
             </thead>
             <tbody>
             <tr scope="row" th:each="order : ${allOrders}">
+                <td th:text="${order.listName}">Name</td>
+                <td th:text="${order.quantity}">Quantity</td>
+                <td th:text="${order.totalPrice}">Price</td>
+                <td th:text="${order.localDate}">Date</td>
+                <td th:text="${order.localTime}">Time</td>
+                <td th:text="${order.status}">Status</td>
+            </tr>
+            </tbody>
+        </table>
+        <table sec:authorize="hasAuthority('ADMIN')" border="1" cellpadding="10" style="width:71%" class="table"
+               th:id="table">
+            <thead class="thead-dark">
+            <tr scope="row">
+                <th scope="col">Customer Name</th>
+                <th scope="col">Order Name</th>
+                <th scope="col">Quantity</th>
+                <th scope="col">Price</th>
+                <th scope="col">Date</th>
+                <th scope="col">Time</th>
+                <th scope="col">Status</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr scope="row" th:each="order : ${listAllorders}">
+                <td th:text = "${order.customer}">Customer Name</td>
                 <td th:text="${order.listName}">Name</td>
                 <td th:text="${order.quantity}">Quantity</td>
                 <td th:text="${order.totalPrice}">Price</td>

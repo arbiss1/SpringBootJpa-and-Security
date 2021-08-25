@@ -115,7 +115,7 @@ public class AppController {
     }
 
     @RequestMapping("/procces-login")
-    public String showUserPage(Model model, @Valid User user, BindingResult result) {
+    public String showUserPage(Model model,User user, BindingResult result) {
         if (!userService.isUserValid(user)) {
             String message = "Username or password is incorrect !";
             model.addAttribute("noUsernameExists", message);
@@ -534,8 +534,8 @@ public class AppController {
         Optional<User> user1 = repo.findByUsername(username);
         user.setUserId(user1.get().getUserId());
         user.setLastName(userEdit.getLastName());
-        user.setPassword(userEdit.getPassword());
-        user.setMatchingPassword(userEdit.getMatchingPassword());
+        userEdit.setPassword(user.getPassword());
+        userEdit.setMatchingPassword(user.getMatchingPassword());
         user.setUser_address(userEdit.getUser_address());
         user.setFirst_name(userEdit.getFirst_name());
         user.setUser_number(userEdit.getUser_number());
@@ -571,7 +571,6 @@ public class AppController {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         String username = authentication.getName();
         User user = userService.get(userId);
-        Optional<User> user1 = repo.findByUsername(username);
         user.setPassword(userEdit.getPassword());
         user.setMatchingPassword(userEdit.getMatchingPassword());
         repo.save(user);
@@ -655,7 +654,9 @@ public class AppController {
         long id = user.get().getUserId();
         String status = "Arrived";
         List<Orders> orders = repoOrders.findByUserIdAndOrderStatus(id , status);
+        List<Orders> allOrders = repoOrders.findByOrderStatus(status);
         System.out.println(orders);
+        model.addAttribute("listAllorders" ,allOrders);
         model.addAttribute("allOrders", orders);
         model.addAttribute("username", getUsername(model));
         model.addAttribute("adminUsername", getUsername(model));

@@ -64,7 +64,7 @@
             <i class="fas fa-question"></i>
             <span class="nav_name">Order Status</span>
           </a>
-          <a sec:authorize = "hasAuthority('USER')" href="/purchase-history" class="nav_link">
+          <a sec:authorize = "hasAnyAuthority('USER','ADMIN')" href="/purchase-history" class="nav_link">
             <i class="fas fa-store"></i>
             <span class="nav_name">Purchase history</span>
           </a>
@@ -97,5 +97,3 @@
 </div>
 </body>
 </html>
-
-<!--src="https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_960_720.png"-->
