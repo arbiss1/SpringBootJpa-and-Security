@@ -330,7 +330,6 @@ border-bottom:1px solid lightgrey;
                 <input class="fadeIn"  type="password" onkeyup="return passwordChanged();"  th:field="*{password}"
                        id="password" name="password"  placeholder = "Password...">
                 <span th:errorclass="error"  th:if="${#fields.hasErrors('password')}" th:errors="*{password}"></span>
-
                 <input class="fadeIn"  type="password"
                        id = "passwordConfirm" th:field="*{MatchingPassword}"  placeholder = "Confirm Password..."/>
                 <span th:errorclass="error"  th:if="${#fields.hasErrors('user_address')}" th:errors="*{user_address}"></span>

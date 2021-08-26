@@ -14,6 +14,7 @@ import net.codejava.Services.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -46,6 +47,8 @@ public class AppController {
     private ProductRequestService productService;
     @Autowired
     private ProductRequestsRepository productRepo;
+    @Autowired
+    private BCryptPasswordEncoder bCryptPasswordEncoder;
 
 
     private static final String UPLOADED_FOLDER = "C://Users//arbis//Desktop//OrderManager//src//main//resources//images//";
@@ -120,6 +123,7 @@ public class AppController {
             String message = "Username or password is incorrect !";
             model.addAttribute("noUsernameExists", message);
             return "signinUser";
+
         }
 
         return user.getRoles().equals("USER")
@@ -186,6 +190,7 @@ public class AppController {
             } catch (IOException e) {
                 e.printStackTrace();
             }
+            user.setPassword(bCryptPasswordEncoder.encode(user.getPassword()));
             user.setFileName(file.getOriginalFilename());
             System.out.println(file.getOriginalFilename());
             String firstnameUppercase = user.getfirst_name().substring(0, 1).toUpperCase(Locale.ROOT)

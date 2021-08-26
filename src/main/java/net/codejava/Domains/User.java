@@ -5,7 +5,6 @@ import net.codejava.PasswordAnotation.ValidPassword;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotEmpty;
-import javax.validation.constraints.NotNull;
 
 
 @Table

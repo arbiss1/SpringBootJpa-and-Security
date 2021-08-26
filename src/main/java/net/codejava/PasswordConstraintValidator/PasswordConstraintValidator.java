@@ -29,8 +29,8 @@ public class PasswordConstraintValidator implements ConstraintValidator<ValidPas
         }
         MessageResolver resolver = new PropertiesMessageResolver(props);
         PasswordValidator validator = new PasswordValidator(resolver, Arrays.asList(
-                // length between 8 and 16 characters
-        new LengthRule(8, 16),
+                // length between 8 and 40 characters
+        new LengthRule(8, 1000),
         // at least one upper-case character
         new CharacterRule(EnglishCharacterData.UpperCase, 1),
         // at least one lower-case character

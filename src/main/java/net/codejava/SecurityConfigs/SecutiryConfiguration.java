@@ -19,6 +19,8 @@ import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 import org.springframework.web.servlet.config.annotation.ViewControllerRegistry;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 
+import static org.hibernate.criterion.Restrictions.and;
+
 
 @Configuration
 @EnableWebSecurity
@@ -27,6 +29,9 @@ public class SecutiryConfiguration extends WebSecurityConfigurerAdapter {
 	UserDetailsService userDetailsService;
 	@Autowired
 	AuthenticationSuccessHandler successHandler;
+
+	@Bean
+	public BCryptPasswordEncoder getEncodedPassword(){return new BCryptPasswordEncoder();}
 	
 	public void addViewControllers(ViewControllerRegistry registry) {
         registry.addViewController("/procces-login").setViewName("login");
@@ -35,6 +40,10 @@ public class SecutiryConfiguration extends WebSecurityConfigurerAdapter {
 	protected void configure(AuthenticationManagerBuilder auth) throws Exception {
 		
 		auth.userDetailsService(userDetailsService);
+		auth.inMemoryAuthentication()
+				.withUser("admin").roles("ADMIN").password("{noop}password");
+		auth.inMemoryAuthentication()
+				.withUser("user").roles("USER").password("{noop}password");
 	}
 	protected void configure(HttpSecurity http) throws Exception {
 		
@@ -58,11 +67,12 @@ public class SecutiryConfiguration extends WebSecurityConfigurerAdapter {
 				.exceptionHandling()
 				.accessDeniedPage("/access-denied");
 }
-	@Bean
-	public PasswordEncoder getPasswordEncoder() {
-		return NoOpPasswordEncoder.getInstance();
-	}
+
+
 
 }
+//password encoder with bcrypt encoder spring security example
+//here
+
 
 
