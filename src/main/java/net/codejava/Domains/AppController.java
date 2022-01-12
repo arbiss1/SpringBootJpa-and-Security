@@ -69,7 +69,7 @@ public class AppController {
         String filename = user.get().getFileName();
         String baseUrl = "https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_960_720.png";
         String url = "images/" + filename;
-        if(filename == null){
+        if(filename.equals("") || filename == null){
             model.addAttribute("profileImage",
                     baseUrl);
             return baseUrl;
