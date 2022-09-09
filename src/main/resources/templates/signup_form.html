@@ -331,15 +331,15 @@ border-bottom:1px solid lightgrey;
                        id="password" name="password"  placeholder = "Password...">
                 <span th:errorclass="error"  th:if="${#fields.hasErrors('password')}" th:errors="*{password}"></span>
                 <input class="fadeIn"  type="password"
-                       id = "passwordConfirm" th:field="*{MatchingPassword}"  placeholder = "Confirm Password..."/>
-                <span th:errorclass="error"  th:if="${#fields.hasErrors('user_address')}" th:errors="*{user_address}"></span>
+                       id = "passwordConfirm" th:field="*{matchingPassword}"  placeholder = "Confirm Password..."/>
+                <span th:errorclass="error"  th:if="${#fields.hasErrors('userAddress')}" th:errors="*{userAddress}"></span>
                 <input class="fadeIn"  id = "firstname"  type="text" th:field="*{first_name}"
                        minlength="2" maxlength="20" placeholder = "First Name..."/>
                 <input class="fadeIn"  type="text" id="lastname" th:field="*{lastName}"
                        minlength="2" maxlength="20" placeholder = "Last Name..."/>
-                <input class="fadeIn"  type="text" th:field="*{user_address}" id="address"
+                <input class="fadeIn"  type="text" th:field="*{userAddress}" id="address"
                        minlength="2" maxlength="20" placeholder = "Address..."/>
-                <input class="fadeIn"  type="text" th:field="*{user_number}" id="phonenumber"
+                <input class="fadeIn"  type="text" th:field="*{userNumber}" id="phonenumber"
                        minlength="2" maxlength="20" placeholder = "Phone number..."/>
                 <input type="submit" id="submit" class="fadeIn fourth" value="Sign up">
             </form>

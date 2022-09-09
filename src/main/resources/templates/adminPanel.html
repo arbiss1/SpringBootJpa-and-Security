@@ -161,9 +161,9 @@ border-bottom:1px solid lightgrey;
         <input style = "margin-bottom: 5px;"  class="fadeIn" th:field = "*{user.first_name}" id="credintials2"  type="text" required placeholder="First Name..."/>
         <input style = "margin-bottom: 5px;"   class="fadeIn" th:field = "*{user.lastName}" id="credintials3"   type="text" required placeholder="Last Name..."/>
         <input style = "margin-bottom: 5px;"  class="fadeIn" th:field = "*{user.password}"   type="password" th:id ="password" required placeholder="Password..."/>
-        <input style = "margin-bottom: 5px;"  class="fadeIn" th:field = "*{user.MatchingPassword}" th:id = "passwordConfirm"   type="password" required placeholder="Confirm Password..."/>
-        <input style = "margin-bottom: 5px;"   class="fadeIn" th:field = "*{user.user_address}"   type="text" requi\red placeholder="Address..."/>
-        <input style = "margin-bottom: 5px;"   class="fadeIn" th:field = "*{user.user_number}"   type="text" required placeholder="Phone Number..."/>
+        <input style = "margin-bottom: 5px;"  class="fadeIn" th:field = "*{user.matchingPassword}" th:id = "passwordConfirm"   type="password" required placeholder="Confirm Password..."/>
+        <input style = "margin-bottom: 5px;"   class="fadeIn" th:field = "*{user.userAddress}"   type="text" requi\red placeholder="Address..."/>
+        <input style = "margin-bottom: 5px;"   class="fadeIn" th:field = "*{user.userNumber}"   type="text" required placeholder="Phone Number..."/>
         <input class = "btn btn-primary saveButton" th:id = "submit" type="submit" value="save">
       </div>
     </form>
